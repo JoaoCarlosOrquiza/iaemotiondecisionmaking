@@ -1,0 +1,18 @@
+<!-- templates/locations.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Locais de Apoio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Locais de Apoio Próximos</h2>
+    <ul>
+        {% for location in locations %}
+            <li>{{ location }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Voltar</a>
+</body>
+</html>

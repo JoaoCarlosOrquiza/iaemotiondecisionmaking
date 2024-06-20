@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Em andamento</title>
+    <style>
+        .result-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h2>Em andamento</h2>
+        <p>{{ resultado }}</p>
+        <form action="/continue" method="POST">
+            <label for="response">É suficiente para você? Se quiser, continue abaixo:</label>
+            <textarea name="response" id="response" rows="4" required></textarea>
+            <button type="submit">Continuar</button>
+        </form>
+        <p>Você ainda tem {{ tokens_used }}% de tokens restantes. Quando o limite for atingido, a sessão será encerrada automaticamente.</p>
+        <a href="/">Encerrar</a>
+    </div>
+</body>
+</html>
