@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import logging
 import os
+import openai  # Importando o módulo openai corretamente
 from decision_making_utils import decision_making_prompt, geocode_location, search_support_locations
 
 app = Flask(__name__)
