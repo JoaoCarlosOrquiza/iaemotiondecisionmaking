@@ -4,6 +4,9 @@ from decision_making_utils import decision_making_prompt, count_tokens, geocode_
 # Configuração do logger
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Adicione outras funcionalidades específicas se necessário.
+
+
 # Configurar chaves de API a partir das variáveis de ambiente
 openai.api_key = os.getenv('OPENAI_API_KEY')
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
