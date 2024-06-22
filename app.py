@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 import openai
 import os
+import requests
 
 app = Flask(__name__)
 
+# Configurar chaves de API a partir das variáveis de ambiente
 openai.api_key = os.getenv('OPENAI_API_KEY')
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+google_api_key = os.getenv('GOOGLE_API_KEY')
 
 @app.route('/')
 def home():
@@ -41,5 +45,28 @@ def decision_making_prompt(context, feelings, options):
     )
     return response.choices[0].message['content'].strip()
 
+@app.route('/geocode', methods=['GET'])
+def geocode():
+    try:
+        location = request.args.get('location')
+        if not location:
+            return jsonify({"error": "Missing 'location' parameter"}), 400
+        
+        geocode_response = geocode_location(location)
+        if not geocode_response:
+            return jsonify({"error": "Failed to geocode location"}), 500
+
+        return jsonify(geocode_response), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def geocode_location(location):
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={google_api_key}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
