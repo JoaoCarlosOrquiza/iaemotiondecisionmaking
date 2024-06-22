@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
-import openai
+import logging
 import os
-import requests
-from decision_making_gpt import decision_making_prompt, count_tokens, search_support_locations, geocode_location
+from decision_making_utils import decision_making_prompt, geocode_location, search_support_locations
 
 app = Flask(__name__)
 
@@ -19,20 +18,21 @@ def home():
 def decide():
     try:
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "Invalid input"}), 400
+        logging.debug(f'Received data: {data}')
         
         context = data.get('context', '')
         feelings = data.get('feelings', '')
         options = data.get('options', [])
         
         if not context or not feelings or not options:
-            return jsonify({"error": "Missing fields"}), 400
-
-        response = decision_making_prompt(context, feelings, options)
-        return jsonify({"decision": response}), 200
+            raise ValueError("Missing required fields: context, feelings, or options")
+        
+        decision = decision_making_prompt(context, feelings, options)
+        logging.debug(f'Generated decision: {decision}')
+        return jsonify({"decision": decision})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logging.error(f'Error processing request: {e}')
+        return jsonify({"error": "Internal server error"}), 500
 
 @app.route('/geocode', methods=['GET'])
 def geocode():
@@ -48,14 +48,6 @@ def geocode():
         return jsonify(geocode_response), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-def geocode_location(location):
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={google_api_key}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

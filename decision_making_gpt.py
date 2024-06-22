@@ -1,12 +1,5 @@
-from flask import Flask, request, jsonify
 import logging
-import openai
-import os
-import requests
-import tiktoken  # type: ignore
-from decision_making_gpt import decision_making_prompt
-
-app = Flask(__name__)
+from decision_making_utils import decision_making_prompt, count_tokens, geocode_location, search_support_locations
 
 # Configuração do logger
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
