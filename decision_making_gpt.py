@@ -1,12 +1,11 @@
 import logging
-from flask import Flask, request, jsonify
 from decision_making_utils import decision_making_prompt, count_tokens, geocode_location, search_support_locations
-import os
-
-app = Flask(__name__)
 
 # Configuração do logger
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Adicione outras funcionalidades específicas se necessário.
+
 
 # Configurar chaves de API a partir das variáveis de ambiente
 openai_api_key = os.getenv('OPENAI_API_KEY')
