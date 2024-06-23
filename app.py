@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
 import logging
-import os
+from flask import Flask, request, jsonify
 from decision_making_utils import decision_making_prompt, count_tokens, geocode_location, search_support_locations
+import openai
+import os
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def home():
 @app.route('/decide', methods=['POST'])
 def decide():
     try:
-        data = request.get_json()
+        data = request.json
         logging.debug(f'Received data: {data}')
         
         context = data.get('context', '')
@@ -36,6 +37,19 @@ def decide():
     except Exception as e:
         logging.error(f'Error processing request: {e}')
         return jsonify({"error": "Internal server error"}), 500
+
+# Função para gerar decisão com base no contexto, sentimentos e opções fornecidos
+def decision_making_prompt(context, feelings, options):
+    messages = [
+        {"role": "system", "content": "Você é um assistente útil."},
+        {"role": "user", "content": f"Contexto: {context}\nSentimentos: {feelings}\nOpções: {options}\nDecida:"}
+    ]
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        max_tokens=150
+    )
+    return response.choices[0].message['content'].strip()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
