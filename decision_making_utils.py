@@ -4,7 +4,6 @@ import requests
 import os
 
 def decision_making_prompt(context, feelings, options):
-    openai.api_key = os.getenv('OPENAI_API_KEY')
     messages = [
         {"role": "system", "content": "Você é um assistente útil."},
         {"role": "user", "content": f"Contexto: {context}\nSentimentos: {feelings}\nOpções: {options}\nDecida:"}
