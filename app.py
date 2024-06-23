@@ -1,7 +1,7 @@
 import logging
 from flask import Flask, request, jsonify
 from decision_making_utils import decision_making_prompt, count_tokens, geocode_location, search_support_locations
-import openai
+import openai  # Certifique-se de que esta linha está presente
 import os
 
 app = Flask(__name__)
