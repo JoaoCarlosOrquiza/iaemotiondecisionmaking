@@ -1,7 +1,7 @@
 import os
-import openai  # Certifique-se de que esta linha está presente
+import openai
 import requests
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env
@@ -52,9 +52,10 @@ def search_professionals():
     
     return render_template('search_results.html', professional_type=professional_type, location=location)
 
-@app.route('/current_model')
+@app.route('/current_model', methods=['GET'])
 def current_model():
-    return jsonify({"model": "text-davinci-003"})
+    model = "text-davinci-003"
+    return f"Current OpenAI model in use: {model}"
 
 if __name__ == '__main__':
     app.run(debug=True)
