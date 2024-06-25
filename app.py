@@ -1,7 +1,7 @@
 import os
 import openai  # Certifique-se de que esta linha está presente
 import requests
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env
@@ -51,6 +51,10 @@ def search_professionals():
     location = "-23.3106665, -51.1899247"  # Substitua pela lógica de geolocalização real
     
     return render_template('search_results.html', professional_type=professional_type, location=location)
+
+@app.route('/current_model')
+def current_model():
+    return jsonify({"model": "text-davinci-003"})
 
 if __name__ == '__main__':
     app.run(debug=True)
