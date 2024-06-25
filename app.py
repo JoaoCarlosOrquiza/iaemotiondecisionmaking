@@ -1,5 +1,5 @@
 import os
-import openai
+import openai  # Certifique-se de que esta linha está presente
 import requests
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
