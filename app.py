@@ -24,25 +24,29 @@ def process():
     emotions = request.form['emotions']
     support_reason = request.form['support_reason']
     
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",  # Use o modelo atualizado aqui
-        prompt=f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}\n",
-        max_tokens=150
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # Use o modelo atualizado aqui
+        messages=[
+            {"role": "system", "content": "Você é um assistente útil."},
+            {"role": "user", "content": f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}"}
+        ]
     )
     
-    return render_template('response.html', response=response.choices[0].text)
+    return render_template('response.html', response=response.choices[0].message['content'])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
     previous_answer = request.form['previous_answer']
     
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",  # Use o modelo atualizado aqui
-        prompt=f"Continuar a conversa: {previous_answer}\n",
-        max_tokens=150
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # Use o modelo atualizado aqui
+        messages=[
+            {"role": "system", "content": "Você é um assistente útil."},
+            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
+        ]
     )
     
-    return render_template('response.html', response=response.choices[0].text)
+    return render_template('response.html', response=response.choices[0].message['content'])
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
