@@ -1,7 +1,7 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
-import openai  # Importar openai logo no início
+import openai  # Certifique-se de importar openai aqui
 import requests
+from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env
