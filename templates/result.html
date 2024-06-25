@@ -1,29 +1,18 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Em andamento</title>
-    <style>
-        .result-container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            text-align: center;
-        }
-    </style>
+    <title>Resultados da Busca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="result-container">
-        <h2>Em andamento</h2>
-        <p>{{ resultado }}</p>
-        <form action="/continue" method="POST">
-            <label for="response">É suficiente para você? Se quiser, continue abaixo:</label>
-            <textarea name="response" id="response" rows="4" required></textarea>
-            <button type="submit">Continuar</button>
-        </form>
-        <p>Você ainda tem {{ tokens_used }}% de tokens restantes. Quando o limite for atingido, a sessão será encerrada automaticamente.</p>
-        <a href="/">Encerrar</a>
-    </div>
+    <h1>Resultados da Busca</h1>
+    <ul>
+        {% for professional in professionals %}
+            <li>{{ professional }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Voltar</a>
 </body>
 </html>

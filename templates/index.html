@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decisões Emocionais com GPT</title>
+    <title>IA Emotion Decision Making</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Decisões Emocionais com GPT</h1>
-    <form action="/decide" method="post">
-        <label for="context">Contexto:</label>
-        <input type="text" id="context" name="context"><br><br>
-        <label for="feelings">Sentimentos:</label>
-        <input type="text" id="feelings" name="feelings"><br><br>
-        <label for="options">Opções:</label>
-        <input type="text" id="options" name="options"><br><br>
-        <input type="submit" value="Decidir">
+    <h1>IA Emotion Decision Making</h1>
+    <form action="/process" method="post">
+        <label for="description">Descrição da situação:</label>
+        <textarea id="description" name="description" placeholder="Descreva a situação..."></textarea><br>
+
+        <label for="emotions">Qual ou quais sentimentos isso gera?</label>
+        <textarea id="emotions" name="emotions" placeholder="Descreva os sentimentos..."></textarea><br>
+
+        <label for="support_reason">Para qual motivo busca apoio?</label>
+        <textarea id="support_reason" name="support_reason" placeholder="Explique o motivo..."></textarea><br>
+
+        <button type="submit">Enviar</button>
     </form>
 </body>
 </html>

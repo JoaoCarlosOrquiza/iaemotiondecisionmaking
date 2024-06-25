@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados da Busca</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Resultados da Busca de Locais de Apoio</h1>
+    <h1>Resultados da Busca</h1>
+    <p>Resultados da busca para '{{ professional_type }}' próximos de {{ location }}</p>
     <ul>
-        {% for location in locations %}
-            <li>{{ location }}</li>
+        {% for professional in professionals %}
+            <li>{{ professional }}</li>
         {% endfor %}
     </ul>
-    <a href="/">Voltar</a>
+    <a href="{{ url_for('index') }}">Voltar</a>
 </body>
 </html>

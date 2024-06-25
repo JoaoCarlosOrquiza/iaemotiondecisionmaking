@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profissionais Próximos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .title {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .professional-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .professional-list li {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Profissionais Próximos</h1>
+        <ul class="professional-list">
+            {% for professional in professionals %}
+                <li>
+                    <strong>Nome:</strong> {{ professional.name }}<br>
+                    <strong>Especialidade:</strong> {{ professional.specialty }}<br>
+                    <strong>Distância:</strong> {{ professional.distance }}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/">Voltar</a>
+    </div>
+</body>
+</html>
