@@ -25,7 +25,7 @@ def process():
     support_reason = request.form['support_reason']
     
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # Use o modelo atualizado aqui
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil."},
             {"role": "user", "content": f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}"}
@@ -39,7 +39,7 @@ def continue_conversation():
     previous_answer = request.form['previous_answer']
     
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # Use o modelo atualizado aqui
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil."},
             {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
