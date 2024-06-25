@@ -1,5 +1,5 @@
-import openai  # Certifique-se de importar openai aqui
 import os
+import openai
 import requests
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
@@ -25,7 +25,7 @@ def process():
     support_reason = request.form['support_reason']
     
     response = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",  # Use o modelo atualizado aqui
         prompt=f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}\n",
         max_tokens=150
     )
@@ -37,7 +37,7 @@ def continue_conversation():
     previous_answer = request.form['previous_answer']
     
     response = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",  # Use o modelo atualizado aqui
         prompt=f"Continuar a conversa: {previous_answer}\n",
         max_tokens=150
     )
