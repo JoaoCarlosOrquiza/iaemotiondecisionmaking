@@ -25,7 +25,7 @@ def process():
     support_reason = request.form['support_reason']
     
     response = openai.Completion.create(
-        model="gpt-3.5-turbo",
+        model="text-davinci-003",
         prompt=f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}",
         max_tokens=150
     )
@@ -37,7 +37,7 @@ def continue_conversation():
     previous_answer = request.form['previous_answer']
     
     response = openai.Completion.create(
-        model="gpt-3.5-turbo",
+        model="text-davinci-003",
         prompt=f"Continuar a conversa: {previous_answer}",
         max_tokens=150
     )
