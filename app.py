@@ -1,5 +1,5 @@
-import os
 import openai  # Certifique-se de importar openai aqui
+import os
 import requests
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
