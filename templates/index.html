@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionário Inicial</title>
+    <title>IA Emotion Decision Making</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("questionnaireForm");
@@ -27,12 +33,12 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2>Questionário Inicial</h2>
+        <h2>IA Emotion Decision Making</h2>
         <form id="questionnaireForm" method="POST" action="/process" novalidate>
             <div class="form-group">
-                <label for="description">Descrição da Situação</label>
+                <label for="description">Descrição da situação:</label>
                 <textarea id="description" name="description" class="form-control" placeholder="Estou aqui para ajuda-lo, fique à vontade para relatar quais os motivos te trazem aqui." rows="4" required></textarea>
-                <div class="invalid-feedback">Por favor, descreva a situação.</div>
+                <div class="invalid-feedback">Por favor, descreva suas emoções.</div>
             </div>
             <div class="form-group">
                 <label for="emotions">Qual ou quais sentimentos isso gera?</label>
@@ -49,7 +55,7 @@
                 <input type="text" id="professional_type" name="professional_type" class="form-control" placeholder="Você quer ajuda de que tipo de profissional? (e.g., Psicólogo, Financeiro, Advogado, outros)" required>
                 <div class="invalid-feedback">Por favor, informe o tipo de profissional que você busca.</div>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="submit" class="btn btn-custom">Enviar</button>
         </form>
     </div>
 </body>
