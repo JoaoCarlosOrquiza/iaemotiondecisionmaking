@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Emotion Decision Making</title>
+    <title>Questionário Inicial</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -22,136 +22,34 @@
                     form.submit();
                 }
             });
-
-            // Detect user location and language
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    document.getElementById('user_location').value = `${lat}, ${lng}`;
-                });
-            }
-
-            fetch('/detect_language', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    text: 'Hello'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const userLang = data.detected_language;
-                if (userLang !== 'pt') {
-                    document.getElementById('lang').value = userLang;
-                    translateInterface(userLang);
-                }
-            });
-
-            function translateInterface(targetLang) {
-                const elementsToTranslate = document.querySelectorAll('[data-translate]');
-                elementsToTranslate.forEach(element => {
-                    const text = element.textContent;
-                    fetch('/translate', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            text: text,
-                            target_language: targetLang
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        element.textContent = data.translated_text;
-                    });
-                });
-            }
-
-            // Voice input for description
-            const descriptionInput = document.getElementById('description');
-            const descriptionButton = document.getElementById('description-button');
-            descriptionButton.addEventListener('click', () => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = document.getElementById('lang').value || 'pt-BR';
-                recognition.start();
-                recognition.onresult = (event) => {
-                    descriptionInput.value = event.results[0][0].transcript;
-                };
-            });
-
-            // Voice input for emotions
-            const emotionsInput = document.getElementById('emotions');
-            const emotionsButton = document.getElementById('emotions-button');
-            emotionsButton.addEventListener('click', () => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = document.getElementById('lang').value || 'pt-BR';
-                recognition.start();
-                recognition.onresult = (event) => {
-                    emotionsInput.value = event.results[0][0].transcript;
-                };
-            });
-
-            // Voice input for support reason
-            const supportReasonInput = document.getElementById('support_reason');
-            const supportReasonButton = document.getElementById('support_reason-button');
-            supportReasonButton.addEventListener('click', () => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = document.getElementById('lang').value || 'pt-BR';
-                recognition.start();
-                recognition.onresult = (event) => {
-                    supportReasonInput.value = event.results[0][0].transcript;
-                };
-            });
-
-            // Voice input for professional type
-            const professionalTypeInput = document.getElementById('professional_type');
-            const professionalTypeButton = document.getElementById('professional_type-button');
-            professionalTypeButton.addEventListener('click', () => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = document.getElementById('lang').value || 'pt-BR';
-                recognition.start();
-                recognition.onresult = (event) => {
-                    professionalTypeInput.value = event.results[0][0].transcript;
-                };
-            });
         });
     </script>
 </head>
 <body>
     <div class="container mt-5">
-        <h2 data-translate>IA Emotion Decision Making</h2>
+        <h2>Questionário Inicial</h2>
         <form id="questionnaireForm" method="POST" action="/process" novalidate>
             <div class="form-group">
-                <label for="description" data-translate>Descrição da situação:</label>
-                <textarea id="description" name="description" class="form-control" placeholder="Estou aqui para ajuda-lo, fique à vontade para relatar quais os motivos te trazem aqui." rows="4" required data-translate></textarea>
-                <button type="button" id="description-button" class="btn btn-secondary" data-translate>Falar</button>
-                <div class="invalid-feedback" data-translate>Por favor, descreva suas emoções.</div>
+                <label for="description">Descrição das Emoções</label>
+                <textarea id="description" name="description" class="form-control" placeholder="Estou aqui para ajuda-lo, fique à vontade para relatar quais os motivos te trazem aqui." rows="4" required></textarea>
+                <div class="invalid-feedback">Por favor, descreva suas emoções.</div>
             </div>
             <div class="form-group">
-                <label for="emotions" data-translate>Qual ou quais sentimentos isso gera?</label>
-                <input type="text" id="emotions" name="emotions" class="form-control" placeholder="Sentimentos ou emoções específicas (e.g., feliz, triste, ansioso)" required data-translate>
-                <button type="button" id="emotions-button" class="btn btn-secondary" data-translate>Falar</button>
-                <div class="invalid-feedback" data-translate>Por favor, liste suas emoções.</div>
+                <label for="emotions">Emoções</label>
+                <input type="text" id="emotions" name="emotions" class="form-control" placeholder="Sentimentos ou emoções específicas (e.g., feliz, triste, ansioso)" required>
+                <div class="invalid-feedback">Por favor, liste suas emoções.</div>
             </div>
             <div class="form-group">
-                <label for="support_reason" data-translate>Para qual motivo busca apoio?</label>
-                <input type="text" id="support_reason" name="support_reason" class="form-control" placeholder="Por que você está buscando apoio? (e.g., estresse no trabalho, problemas pessoais)" required data-translate>
-                <button type="button" id="support_reason-button" class="btn btn-secondary" data-translate>Falar</button>
-                <div class="invalid-feedback" data-translate>Por favor, informe a razão do apoio.</div>
+                <label for="support_reason">Razão do Apoio</label>
+                <input type="text" id="support_reason" name="support_reason" class="form-control" placeholder="Por que você está buscando apoio? (e.g., estresse no trabalho, problemas pessoais)" required>
+                <div class="invalid-feedback">Por favor, informe a razão do apoio.</div>
             </div>
             <div class="form-group">
-                <label for="professional_type" data-translate>Tipo de Profissional</label>
-                <input type="text" id="professional_type" name="professional_type" class="form-control" placeholder="Você quer ajuda de que tipo de profissional? (e.g., Psicólogo, Financeiro, Advogado, outros)" required data-translate>
-                <button type="button" id="professional_type-button" class="btn btn-secondary" data-translate>Falar</button>
-                <div class="invalid-feedback" data-translate>Por favor, informe o tipo de profissional que você busca.</div>
+                <label for="professional_type">Tipo de Profissional</label>
+                <input type="text" id="professional_type" name="professional_type" class="form-control" placeholder="Você quer ajuda de que tipo de profissional? (e.g., Psicólogo, Financeiro, Advogado, outros)" required>
+                <div class="invalid-feedback">Por favor, informe o tipo de profissional que você busca.</div>
             </div>
-            <input type="hidden" id="user_location" name="user_location">
-            <input type="hidden" id="lang" name="lang">
-            <button type="submit" class="btn btn-primary" data-translate>Enviar</button>
+            <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
     </div>
 </body>
