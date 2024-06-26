@@ -53,10 +53,8 @@ def continue_conversation():
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
     professional_type = request.form['professional_type']
-    # Simulando a obtenção de localização do usuário
-    location = "-23.3106665, -51.1899247"  # Substitua pela lógica de geolocalização real
+    location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
     
-    # Chamada à API do Google Places para buscar profissionais próximos
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
     response = requests.get(url)
     places = response.json().get('results', [])

@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resposta da IA</title>
+    <title>Resultados da Busca</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Resposta da IA</h1>
-        <div class="response">
-            <p>{{ response }}</p>
+        <h1>Profissionais Encontrados</h1>
+        <div class="results">
+            {% if places %}
+                <ul>
+                    {% for place in places %}
+                        <li>{{ place.name }} - {{ place.vicinity }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum profissional encontrado.</p>
+            {% endif %}
         </div>
-        <form action="{{ url_for('continue_conversation') }}" method="post">
-            <input type="hidden" name="previous_answer" value="{{ response }}">
-            <button type="submit">Continuar a Conversa</button>
-        </form>
         <a href="{{ url_for('index') }}">Voltar</a>
     </div>
 </body>

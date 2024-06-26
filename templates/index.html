@@ -12,15 +12,15 @@
         <form action="{{ url_for('process') }}" method="post">
             <div class="form-group">
                 <label for="description">Descrição da situação:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+                <textarea id="description" name="description" rows="4" required placeholder="Descreva a situação..."></textarea>
             </div>
             <div class="form-group">
                 <label for="emotions">Qual ou quais sentimentos isso gera?</label>
-                <textarea id="emotions" name="emotions" rows="2" required></textarea>
+                <textarea id="emotions" name="emotions" rows="2" required placeholder="Descreva os sentimentos..."></textarea>
             </div>
             <div class="form-group">
                 <label for="support_reason">Para qual motivo busca apoio?</label>
-                <input type="text" id="support_reason" name="support_reason" required>
+                <input type="text" id="support_reason" name="support_reason" required placeholder="Explique o motivo...">
             </div>
             <button type="submit">Enviar</button>
         </form>
