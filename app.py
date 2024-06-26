@@ -24,37 +24,32 @@ def process():
     emotions = request.form['emotions']
     support_reason = request.form['support_reason']
     
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}"}
-        ],
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}",
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])
+    return render_template('response.html', response=response.choices[0].text.strip())
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
     previous_answer = request.form['previous_answer']
     
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
-        ],
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=f"Continuar a conversa: {previous_answer}",
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])
+    return render_template('response.html', response=response.choices[0].text.strip())
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
     professional_type = request.form['professional_type']
     location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
     
+    # Chamada à API do Google Places para buscar profissionais próximos
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
     response = requests.get(url)
     places = response.json().get('results', [])
