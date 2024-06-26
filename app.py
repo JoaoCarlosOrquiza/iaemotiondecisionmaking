@@ -16,7 +16,7 @@ google_api_key = os.getenv('GOOGLE_API_KEY')
 
 @app.route('/')
 def index():
-    return render_template('voice_interaction.html')
+    return render_template('index.html')  # Certifique-se de que o nome do arquivo HTML é index.html
 
 @app.route('/process', methods=['POST'])
 def process():
