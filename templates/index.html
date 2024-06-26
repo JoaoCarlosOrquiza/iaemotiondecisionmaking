@@ -4,59 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IA Emotion Decision Making</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .btn-custom {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById("questionnaireForm");
-            form.addEventListener("submit", function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            });
-
-            const lastInput = document.getElementById("professional_type");
-            lastInput.addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                    form.submit();
-                }
-            });
-        });
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>IA Emotion Decision Making</h2>
-        <form id="questionnaireForm" method="POST" action="/process" novalidate>
-            <div class="form-group">
-                <label for="description">Descrição da situação:</label>
-                <textarea id="description" name="description" class="form-control" placeholder="Estou aqui para ajuda-lo, fique à vontade para relatar quais os motivos te trazem aqui." rows="4" required></textarea>
-                <div class="invalid-feedback">Por favor, descreva suas emoções.</div>
-            </div>
-            <div class="form-group">
-                <label for="emotions">Qual ou quais sentimentos isso gera?</label>
-                <input type="text" id="emotions" name="emotions" class="form-control" placeholder="Sentimentos ou emoções específicas (e.g., feliz, triste, ansioso)" required>
-                <div class="invalid-feedback">Por favor, liste suas emoções.</div>
-            </div>
-            <div class="form-group">
-                <label for="support_reason">Para qual motivo busca apoio?</label>
-                <input type="text" id="support_reason" name="support_reason" class="form-control" placeholder="Por que você está buscando apoio? (e.g., estresse no trabalho, problemas pessoais)" required>
-                <div class="invalid-feedback">Por favor, informe a razão do apoio.</div>
-            </div>
-            <div class="form-group">
-                <label for="professional_type">Você quer ajuda de que tipo de profissional?</label>
-                <input type="text" id="professional_type" name="professional_type" class="form-control" placeholder="Você quer ajuda de que tipo de profissional? (e.g., Psicólogo, Financeiro, Advogado, outros)" required>
-                <div class="invalid-feedback">Por favor, informe o tipo de profissional que você busca.</div>
-            </div>
-            <button type="submit" class="btn btn-custom">Enviar</button>
+    <div class="container">
+        <h1>IA Emotion Decision Making</h1>
+        <form id="emotion-form" method="POST" action="/process">
+            <label for="description">Descrição da situação:</label>
+            <textarea id="description" name="description" placeholder="Descreva brevemente a situação que está enfrentando." required></textarea>
+            
+            <label for="emotions">Qual ou quais sentimentos isso gera?</label>
+            <input type="text" id="emotions" name="emotions" placeholder="Sei lá, medo, receio, desconforto, escapar da situação." required>
+            
+            <label for="support_reason">Para qual motivo busca apoio?</label>
+            <input type="text" id="support_reason" name="support_reason" placeholder="Raiva, medo, estressado, depressivo, etc." required>
+            
+            <label for="professional_type">Você quer ajuda de que tipo de profissional?</label>
+            <input type="text" id="professional_type" name="professional_type" placeholder="Psicólogo, Advogado, Outro." required>
+            
+            <button type="submit" id="submit-button" disabled>Enviar</button>
         </form>
+        <div id="voice-dialog">
+            <button id="start-voice">Fale com a IA</button>
+        </div>
     </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+
+

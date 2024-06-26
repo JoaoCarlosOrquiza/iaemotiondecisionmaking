@@ -33,7 +33,7 @@ def process():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])
+    return render_template('response.html', response=response.choices[0].message["content"])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -48,7 +48,7 @@ def continue_conversation():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])
+    return render_template('response.html', response=response.choices[0].message["content"])
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
@@ -60,7 +60,17 @@ def search_professionals():
     response = requests.get(url)
     places = response.json().get('results', [])
 
-    return render_template('search_results.html', professional_type=professional_type, location=location, places=places)
+    # Criando uma lista de profissionais a partir dos resultados da API
+    professionals = []
+    for place in places:
+        professional = {
+            'name': place.get('name'),
+            'specialty': professional_type,
+            'distance': '1.5 km'  # Simulando a distância
+        }
+        professionals.append(professional)
+
+    return render_template('professionals.html', professionals=professionals)
 
 if __name__ == '__main__':
     app.run(debug=True)
