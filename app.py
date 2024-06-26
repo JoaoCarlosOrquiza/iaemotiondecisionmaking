@@ -65,29 +65,37 @@ def search_professionals():
 
 @app.route('/translate', methods=['POST'])
 def translate():
-    text = request.form['text']
-    target_language = request.form['target_language']
-    
-    url = f"https://translation.googleapis.com/language/translate/v2?key={google_translate_key}"
-    data = {
-        'q': text,
-        'target': target_language
-    }
-    response = requests.post(url, data=data)
-    translated_text = response.json()['data']['translations'][0]['translatedText']
-    
-    return jsonify({'translated_text': translated_text})
+    try:
+        text = request.form['text']
+        target_language = request.form['target_language']
+        
+        url = f"https://translation.googleapis.com/language/translate/v2?key={google_translate_key}"
+        data = {
+            'q': text,
+            'target': target_language
+        }
+        response = requests.post(url, data=data)
+        response.raise_for_status()  # Levanta um erro para códigos de status HTTP 4xx/5xx
+        translated_text = response.json()['data']['translations'][0]['translatedText']
+        
+        return jsonify({'translated_text': translated_text})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/detect_language', methods=['POST'])
 def detect_language():
-    text = request.form['text']
-    
-    url = f"https://translation.googleapis.com/language/translate/v2/detect?key={google_translate_key}"
-    data = {'q': text}
-    response = requests.post(url, data=data)
-    detected_language = response.json()['data']['detections'][0][0]['language']
-    
-    return jsonify({'detected_language': detected_language})
+    try:
+        text = request.form['text']
+        
+        url = f"https://translation.googleapis.com/language/translate/v2/detect?key={google_translate_key}"
+        data = {'q': text}
+        response = requests.post(url, data=data)
+        response.raise_for_status()  # Levanta um erro para códigos de status HTTP 4xx/5xx
+        detected_language = response.json()['data']['detections'][0][0]['language']
+        
+        return jsonify({'detected_language': detected_language})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
