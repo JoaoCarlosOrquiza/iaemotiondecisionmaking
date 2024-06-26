@@ -48,7 +48,7 @@ def continue_conversation():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response.choices[0].message["content"])
+    return render_template('response.html', response=response.choices[0].message["content"])  
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
@@ -71,6 +71,7 @@ def search_professionals():
         professionals.append(professional)
 
     return render_template('professionals.html', professionals=professionals)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
