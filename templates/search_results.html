@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados da Busca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Resultados da Busca</h1>
-    <p>Resultados da busca para '{{ professional_type }}' próximos de {{ location }}</p>
-    <ul>
-        {% for professional in professionals %}
-            <li>{{ professional }}</li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Voltar</a>
+    <div class="container">
+        <h1>Profissionais Encontrados</h1>
+        <div class="results">
+            {% if places %}
+                <ul>
+                    {% for place in places %}
+                        <li>{{ place.name }} - {{ place.vicinity }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum profissional encontrado.</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('index') }}">Voltar</a>
+    </div>
 </body>
 </html>

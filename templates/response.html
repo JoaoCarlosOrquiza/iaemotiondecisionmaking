@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Em andamento</title>
+    <title>Resposta da IA</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>IA Emotion Decision Making</h1>
-    <h2>Em andamento</h2>
-    <p>{{ response }}</p>
-
-    <form action="/continue" method="post">
-        <label for="previous_answer">É suficiente para você? Se quiser, continue abaixo:</label>
-        <textarea id="previous_answer" name="previous_answer"></textarea><br>
-        <button type="submit">Continuar</button>
-    </form>
-    
-    <p>Você ainda tem {{ tokens_remaining }}% de tokens restantes. Quando o limite for atingido, a sessão será encerrada automaticamente.</p>
-
-    <form action="/search_professionals" method="post">
-        <label for="professional_type">Quer apoio profissional, busque aqui um profissional próximo de você:</label>
-        <input type="text" id="professional_type" name="professional_type" placeholder="Psicólogo, terapeuta, etc.">
-        <input type="hidden" id="location" name="location" value="{{ location }}">
-        <button type="submit">Buscar</button>
-    </form>
-
-    <a href="/end_session">Encerrar</a>
+    <div class="container">
+        <h1>Resposta da IA</h1>
+        <div class="response">
+            <p>{{ response }}</p>
+        </div>
+        <form action="{{ url_for('continue_conversation') }}" method="post">
+            <input type="hidden" name="previous_answer" value="{{ response }}">
+            <button type="submit">Continuar a Conversa</button>
+        </form>
+        <a href="{{ url_for('index') }}">Voltar</a>
+    </div>
 </body>
 </html>

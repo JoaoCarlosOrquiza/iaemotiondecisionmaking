@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +7,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>IA Emotion Decision Making</h1>
-    <form action="/process" method="post">
-        <label for="description">Descrição da situação:</label>
-        <textarea id="description" name="description" placeholder="Descreva a situação..."></textarea><br>
-
-        <label for="emotions">Qual ou quais sentimentos isso gera?</label>
-        <textarea id="emotions" name="emotions" placeholder="Descreva os sentimentos..."></textarea><br>
-
-        <label for="support_reason">Para qual motivo busca apoio?</label>
-        <textarea id="support_reason" name="support_reason" placeholder="Explique o motivo..."></textarea><br>
-
-        <button type="submit">Enviar</button>
-    </form>
+    <div class="container">
+        <h1>IA Emotion Decision Making</h1>
+        <form action="{{ url_for('process') }}" method="post">
+            <div class="form-group">
+                <label for="description">Descrição da situação:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="emotions">Qual ou quais sentimentos isso gera?</label>
+                <textarea id="emotions" name="emotions" rows="2" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="support_reason">Para qual motivo busca apoio?</label>
+                <input type="text" id="support_reason" name="support_reason" required>
+            </div>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
 </body>
 </html>
