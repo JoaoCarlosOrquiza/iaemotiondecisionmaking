@@ -1,5 +1,5 @@
 import os
-import openai  # Certifique-se de que esta linha está presente
+import openai
 import requests
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
@@ -56,7 +56,12 @@ def search_professionals():
     # Simulando a obtenção de localização do usuário
     location = "-23.3106665, -51.1899247"  # Substitua pela lógica de geolocalização real
     
-    return render_template('search_results.html', professional_type=professional_type, location=location)
+    # Chamada à API do Google Places para buscar profissionais próximos
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
+    response = requests.get(url)
+    places = response.json().get('results', [])
+
+    return render_template('search_results.html', professional_type=professional_type, location=location, places=places)
 
 if __name__ == '__main__':
     app.run(debug=True)
