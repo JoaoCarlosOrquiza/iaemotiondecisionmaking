@@ -1,7 +1,7 @@
 import os
 import openai
 import requests
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env
@@ -13,10 +13,11 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 # Configuração das chaves de API
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
+google_translate_key = os.getenv('GOOGLE_TRANSLATE_KEY')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('voice_interaction.html')
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -61,6 +62,32 @@ def search_professionals():
     places = response.json().get('results', [])
 
     return render_template('search_results.html', professional_type=professional_type, location=location, places=places)
+
+@app.route('/translate', methods=['POST'])
+def translate():
+    text = request.form['text']
+    target_language = request.form['target_language']
+    
+    url = f"https://translation.googleapis.com/language/translate/v2?key={google_translate_key}"
+    data = {
+        'q': text,
+        'target': target_language
+    }
+    response = requests.post(url, data=data)
+    translated_text = response.json()['data']['translations'][0]['translatedText']
+    
+    return jsonify({'translated_text': translated_text})
+
+@app.route('/detect_language', methods=['POST'])
+def detect_language():
+    text = request.form['text']
+    
+    url = f"https://translation.googleapis.com/language/translate/v2/detect?key={google_translate_key}"
+    data = {'q': text}
+    response = requests.post(url, data=data)
+    detected_language = response.json()['data']['detections'][0][0]['language']
+    
+    return jsonify({'detected_language': detected_language})
 
 if __name__ == '__main__':
     app.run(debug=True)
