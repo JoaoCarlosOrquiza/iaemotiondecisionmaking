@@ -1,7 +1,6 @@
 import os
 import openai
 import requests
-import logging
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 
@@ -15,25 +14,18 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 
-# Configurar logging
-logging.basicConfig(level=logging.DEBUG)
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/process', methods=['POST'])
 def process():
-    if request.method == 'POST':
-        logging.debug("Recebendo dados do formulário...")
-        data = request.get_json()
-        logging.debug(f"Dados recebidos: {data}")
-        
-        language = data.get('language')
-        description = data.get('description')
-        emotions = data.get('emotions')
-        support_reason = data.get('support_reason')
-        ia_role = data.get('ia_role')
+    try:
+        language = request.json.get('language')
+        description = request.json.get('description')
+        emotions = request.json.get('emotions')
+        support_reason = request.json.get('support_reason')
+        ia_role = request.json.get('ia_role')
 
         # Preparar a entrada para a API do OpenAI
         prompt = f"""
@@ -58,6 +50,10 @@ def process():
         answer = response['choices'][0]['message']['content'].strip()
 
         return jsonify({'answer': answer})
+
+    except Exception as e:
+        # Retornar um erro JSON apropriado
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

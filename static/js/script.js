@@ -52,7 +52,12 @@ function submitForm() {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('response').innerHTML = data.answer;
+        if (data.error) {
+            console.error('Server error:', data.error);
+            document.getElementById('response').innerHTML = 'Erro no servidor: ' + data.error;
+        } else {
+            document.getElementById('response').innerHTML = data.answer;
+        }
     })
     .catch(error => console.error('Error:', error));
 }
