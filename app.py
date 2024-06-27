@@ -47,7 +47,7 @@ def process():
             ]
         )
 
-        answer = response.choices[0].message['content'].strip()
+        answer = response['choices'][0]['message']['content'].strip()
 
         return jsonify({'answer': answer})
 
