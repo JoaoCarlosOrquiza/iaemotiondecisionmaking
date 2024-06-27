@@ -38,10 +38,13 @@ def process():
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=150
+        # Atualização para usar o modelo gpt-3.5-turbo
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Você é um assistente útil."},
+                {"role": "user", "content": prompt}
+            ]
         )
 
         answer = response.choices[0].text.strip()
