@@ -38,7 +38,7 @@ def process():
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-         # Usar a nova API para criar uma conclusão de chat
+        # Usar a nova API para criar uma conclusão de chat
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -47,9 +47,9 @@ def process():
             ]
         )
 
-        answer = response.choices[0].text.strip()
+        answer = response.choices[0].message['content'].strip()
 
         return jsonify({'answer': answer})
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)
