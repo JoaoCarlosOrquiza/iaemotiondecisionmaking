@@ -1,4 +1,3 @@
-
 // Função para capturar os dados do formulário e enviar para o backend usando AJAX
 function submitForm() {
     const form = document.getElementById('emotion-form');
@@ -20,6 +19,11 @@ function submitForm() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('emotion-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm();
+    });
+
     const submitButton = document.getElementById('submit-button');
     const inputs = form.querySelectorAll('input, textarea, select');
 
@@ -40,8 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
 
+    // Placeholder for voice dialog functionality
+    const startVoiceButton = document.getElementById('start-voice');
+    startVoiceButton.addEventListener('click', () => {
+        alert('Iniciar diálogo por voz com a IA (Funcionalidade a ser implementada)');
+    });
+});
 
 // Outras funcionalidades já existentes no script.js
 // (adicione aqui as outras funções e lógicas que já estão no seu script.js)

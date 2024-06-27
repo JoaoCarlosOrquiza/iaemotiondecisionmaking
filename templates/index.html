@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>IA Emotion Decision Making</h1>
-        <form id="emotion-form" action="javascript:void(0);">
+        <form id="emotion-form" action="/process" method="post">
             <div class="form-group">
                 <label for="language">Idioma:</label>
                 <select id="language" name="language" class="form-control">
@@ -39,11 +39,10 @@
                     <option value="legal_support">Jurídico</option>
                 </select>
             </div>
-            <button id="submit-button" type="submit" class="btn btn-primary" onclick="submitForm()">Fale com a IA</button>
+            <button id="submit-button" type="submit" class="btn btn-primary">Fale com a IA</button>
         </form>
         <div id="response"></div>
     </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
-

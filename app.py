@@ -14,6 +14,9 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 
+# Configuração de logging
+logging.basicConfig(level=logging.DEBUG)
+
 @app.route('/')
 def index():
     return render_template('index.html')
