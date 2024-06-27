@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Placeholder for voice dialog functionality
     const startVoiceButton = document.getElementById('start-voice');
     if (startVoiceButton) {
         startVoiceButton.addEventListener('click', () => {
@@ -39,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function submitForm() {
     const form = document.getElementById('emotion-form');
     const formData = new FormData(form);
-
-    // Log para verificar os dados enviados
-    console.log(Object.fromEntries(formData));
 
     fetch('/process', {
         method: 'POST',
