@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados da Busca</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1>Resultados da Busca</h1>
     <ul>
-        {% for professional in professionals %}
-            <li>{{ professional }}</li>
-        {% endfor %}
+        {% if professionals %}
+            {% for professional in professionals %}
+                <li>{{ professional }}</li>
+            {% endfor %}
+        {% else %}
+            <li>Nenhum profissional encontrado.</li>
+        {% endif %}
     </ul>
     <a href="/">Voltar</a>
 </body>
 </html>
+
