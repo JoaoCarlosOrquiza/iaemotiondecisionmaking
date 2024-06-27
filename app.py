@@ -1,6 +1,5 @@
 import os
 import openai
-import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 import logging
@@ -13,7 +12,6 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # Configuração das chaves de API
 openai.api_key = os.getenv('OPENAI_API_KEY')
-google_api_key = os.getenv('GOOGLE_API_KEY')
 
 @app.route('/')
 def index():
@@ -48,7 +46,7 @@ def process():
                     {"role": "user", "content": prompt}
                 ]
             )
-            answer = response['choices'][0]['message']['content'].strip()
+            answer = response.choices[0].message.content.strip()
         except Exception as e:
             logging.error(f"Erro ao chamar a API do OpenAI: {e}")
             answer = f"Erro no servidor: {e}"
