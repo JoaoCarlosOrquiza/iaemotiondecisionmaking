@@ -20,64 +20,33 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process():
-    description = request.form['description']
-    emotions = request.form['emotions']
-    support_reason = request.form['support_reason']
-    user_language = request.form['language']
-    
-    # Chamada à API do OpenAI
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}"}
-        ],
-        max_tokens=150
-    )
-    
-    # Resposta da IA
-    response_text = response.choices[0].message["content"]
-    
-    return render_template('response.html', response=response_text)
+    if request.method == 'POST':
+        language = request.form.get('language')
+        description = request.form.get('description')
+        emotions = request.form.get('emotions')
+        support_reason = request.form.get('support_reason')
+        ia_role = request.form.get('ia_role')
 
-@app.route('/continue', methods=['POST'])
-def continue_conversation():
-    previous_answer = request.form['previous_answer']
-    
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
-        ],
-        max_tokens=150
-    )
-    
-    response_text = response.choices[0].message["content"]
-    
-    return render_template('response.html', response=response_text)
+        # Preparar a entrada para a API do OpenAI
+        prompt = f"""
+        Language: {language}
+        Description: {description}
+        Emotions: {emotions}
+        Support Reason: {support_reason}
+        IA Role: {ia_role}
 
-@app.route('/search_professionals', methods=['POST'])
-def search_professionals():
-    professional_type = request.form['professional_type']
-    location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
-    
-    # Chamada à API do Google Places para buscar profissionais próximos
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
-    response = requests.get(url)
-    places = response.json().get('results', [])
+        Responda de acordo com o papel da IA e forneça suporte apropriado.
+        """
 
-    # Criando uma lista de profissionais a partir dos resultados da API
-    professionals = []
-    for place in places:
-        professional = {
-            'name': place.get('name'),
-            'specialty': professional_type,
-            'distance': '1.5 km'  # Simulando a distância
-        }
-        professionals.append(professional)
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=150
+        )
 
-    return render_template('professionals.html', professionals=professionals)
+        answer = response.choices[0].text.strip()
+
+        return jsonify({'answer': answer})
 
 if __name__ == '__main__':
     app.run(debug=True)

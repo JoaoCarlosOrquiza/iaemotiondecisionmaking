@@ -1,5 +1,34 @@
+// script.js
+
+// Função para capturar os dados do formulário e enviar para o backend usando AJAX
+function submitForm() {
+    const form = document.getElementById('emotion-form');
+    const formData = new FormData(form);
+
+    fetch('/process', {
+        method: 'POST',
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('response').innerHTML = data.answer;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Outras funcionalidades já existentes no script.js
+// (adicione aqui as outras funções e lógicas que já estão no seu script.js)
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('emotion-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm();
+    });
+
     const submitButton = document.getElementById('submit-button');
     const inputs = form.querySelectorAll('input, textarea, select');
 
