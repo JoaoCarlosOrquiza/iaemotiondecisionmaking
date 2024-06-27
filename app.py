@@ -3,6 +3,7 @@ import openai
 import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
+import logging
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -20,13 +21,12 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process():
-    try:
-        data = request.json
-        language = data.get('language')
-        description = data.get('description')
-        emotions = data.get('emotions')
-        support_reason = data.get('support_reason')
-        ia_role = data.get('ia_role')
+    if request.method == 'POST':
+        language = request.form.get('language')
+        description = request.form.get('description')
+        emotions = request.form.get('emotions')
+        support_reason = request.form.get('support_reason')
+        ia_role = request.form.get('ia_role')
 
         # Preparar a entrada para a API do OpenAI
         prompt = f"""
@@ -40,20 +40,20 @@ def process():
         """
 
         # Usar a nova API para criar uma conclusão de chat
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Você é um assistente útil."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-
-        answer = response.choices[0].message['content'].strip()
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "Você é um assistente útil."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            answer = response['choices'][0]['message']['content'].strip()
+        except Exception as e:
+            logging.error(f"Erro ao chamar a API do OpenAI: {e}")
+            answer = f"Erro no servidor: {e}"
 
         return jsonify({'answer': answer})
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

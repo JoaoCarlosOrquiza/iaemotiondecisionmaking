@@ -1,3 +1,27 @@
+// Função para capturar os dados do formulário e enviar para o backend usando AJAX
+function submitForm() {
+    const form = document.getElementById('emotion-form');
+    const formData = new FormData(form);
+
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    fetch('/process', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('response').innerHTML = data.answer;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('emotion-form');
     form.addEventListener('submit', function(event) {
@@ -26,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Placeholder for voice dialog functionality
     const startVoiceButton = document.getElementById('start-voice');
     if (startVoiceButton) {
         startVoiceButton.addEventListener('click', () => {
@@ -33,27 +58,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Função para capturar os dados do formulário e enviar para o backend usando AJAX
-function submitForm() {
-    const form = document.getElementById('emotion-form');
-    const formData = new FormData(form);
-
-    fetch('/process', {
-        method: 'POST',
-        body: JSON.stringify(Object.fromEntries(formData)),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error('Server error:', data.error);
-            document.getElementById('response').innerHTML = 'Erro no servidor: ' + data.error;
-        } else {
-            document.getElementById('response').innerHTML = data.answer;
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
