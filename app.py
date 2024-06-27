@@ -22,11 +22,12 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     if request.method == 'POST':
-        language = request.form.get('language')
-        description = request.form.get('description')
-        emotions = request.form.get('emotions')
-        support_reason = request.form.get('support_reason')
-        ia_role = request.form.get('ia_role')
+        data = request.get_json()
+        language = data.get('language')
+        description = data.get('description')
+        emotions = data.get('emotions')
+        support_reason = data.get('support_reason')
+        ia_role = data.get('ia_role')
 
         # Preparar a entrada para a API do OpenAI
         prompt = f"""
@@ -39,7 +40,6 @@ def process():
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-        # Usar a nova API para criar uma conclusão de chat
         try:
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
