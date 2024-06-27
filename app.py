@@ -21,11 +21,12 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     try:
-        language = request.json.get('language')
-        description = request.json.get('description')
-        emotions = request.json.get('emotions')
-        support_reason = request.json.get('support_reason')
-        ia_role = request.json.get('ia_role')
+        data = request.json
+        language = data.get('language')
+        description = data.get('description')
+        emotions = data.get('emotions')
+        support_reason = data.get('support_reason')
+        ia_role = data.get('ia_role')
 
         # Preparar a entrada para a API do OpenAI
         prompt = f"""
@@ -47,12 +48,11 @@ def process():
             ]
         )
 
-        answer = response['choices'][0]['message']['content'].strip()
+        answer = response.choices[0].message['content'].strip()
 
         return jsonify({'answer': answer})
 
     except Exception as e:
-        # Retornar um erro JSON apropriado
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
