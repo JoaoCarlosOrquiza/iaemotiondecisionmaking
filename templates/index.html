@@ -10,15 +10,6 @@
     <div class="container">
         <h1>IA Emotion Decision Making</h1>
         <form id="emotion-form" action="/process" method="POST">
-            <label for="description">Descrição da situação:</label>
-            <textarea id="description" name="description" placeholder="Descreva brevemente a situação que está enfrentando" required></textarea>
-            
-            <label for="emotions">Qual ou quais sentimentos isso gera?</label>
-            <textarea id="emotions" name="emotions" placeholder="Sei lá, medo, receio, desconforto, etc." required></textarea>
-            
-            <label for="support_reason">Para qual motivo busca apoio?</label>
-            <textarea id="support_reason" name="support_reason" placeholder="Raiva, medo, estressado, depressivo, etc." required></textarea>
-            
             <label for="language">Idioma:</label>
             <select id="language" name="language">
                 <option value="en">English</option>
@@ -27,8 +18,24 @@
                 <option value="fr">Français</option>
                 <!-- Adicione mais opções conforme necessário -->
             </select>
+
+            <label for="description">Descrição da situação:</label>
+            <textarea id="description" name="description" placeholder="Você é muito bem bem-vindo. Descreva o motivo de você estar aqui. Junto com você, vamos elaborar alternativas." required></textarea>
             
-            <button type="submit" id="submit-button" disabled>Enviar</button>
+            <label for="emotions">Qual ou quais sentimentos isso gera?</label>
+            <textarea id="emotions" name="emotions" placeholder="Para entender melhor, seus sentimentos, emoções quais são. Raiva, Medo, Ansiedade, Estresse, etc." required></textarea>
+            
+            <label for="support_reason">Para qual motivo busca apoio?</label>
+            <textarea id="support_reason" name="support_reason" placeholder="Não sei com quem falar, Preciso de Ajuda, Me sinto só, etc." required></textarea>
+
+            <label for="ia_role">Como a IA deve atuar?</label>
+            <select id="ia_role" name="ia_role">
+                <option value="psychologist">Psicólogo (Saúde emocional)</option>
+                <option value="financial">Financeira</option>
+                <option value="legal">Jurídica</option>
+            </select>
+            
+            <button type="submit" id="submit-button">Fale com a IA</button>
         </form>
 
         <div id="satisfaction">Satisfação: 100%</div>
@@ -45,9 +52,10 @@
             <button type="submit">Buscar</button>
         </form>
         
-        <button id="start-voice"><span role="img" aria-label="microfone">🎤</span></button>
+        <button id="start-voice">🎤</button>
     </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
+
 
