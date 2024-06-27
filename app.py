@@ -38,7 +38,7 @@ def process():
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-        # Atualização para usar o modelo gpt-3.5-turbo
+         # Usar a nova API para criar uma conclusão de chat
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
