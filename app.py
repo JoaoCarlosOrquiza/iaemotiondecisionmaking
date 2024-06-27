@@ -23,7 +23,9 @@ def process():
     description = request.form['description']
     emotions = request.form['emotions']
     support_reason = request.form['support_reason']
+    user_language = request.form['language']
     
+    # Chamada à API do OpenAI
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -33,7 +35,10 @@ def process():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response.choices[0].message["content"])
+    # Resposta da IA
+    response_text = response.choices[0].message["content"]
+    
+    return render_template('response.html', response=response_text)
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -48,7 +53,9 @@ def continue_conversation():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response.choices[0].message["content"])  
+    response_text = response.choices[0].message["content"]
+    
+    return render_template('response.html', response=response_text)
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
