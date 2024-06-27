@@ -53,10 +53,6 @@ def process():
             answer = f"Erro no servidor: {e}"
 
         return jsonify({'answer': answer})
-        
-@app.route('/')
-def index():
-    return render_template('index.html', google_api_key=google_api_key)        
 
 if __name__ == '__main__':
     app.run(debug=True)
