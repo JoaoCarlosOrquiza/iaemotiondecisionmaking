@@ -16,7 +16,6 @@
                 <option value="pt">Português</option>
                 <option value="es">Español</option>
                 <option value="fr">Français</option>
-                <!-- Adicione mais opções conforme necessário -->
             </select>
 
             <label for="description">Descrição da situação:</label>
@@ -28,32 +27,15 @@
             <label for="support_reason">Para qual motivo busca apoio?</label>
             <textarea id="support_reason" name="support_reason" placeholder="Não sei com quem falar, Preciso de Ajuda, Me sinto só, etc." required></textarea>
             
-            <label for="ia_role">Como a IA deve atuar?</label>
-            <select id="ia_role" name="ia_role" required>
+            <label for="ia_action">Como a IA deve atuar?</label>
+            <select id="ia_action" name="ia_action">
                 <option value="psychologist">Psicólogo (Saúde emocional)</option>
                 <option value="financial">Financeira</option>
                 <option value="legal">Jurídica</option>
-                <!-- Adicione mais opções conforme necessário -->
             </select>
             
-            <button type="submit">Fale com a IA</button>
+            <button type="submit" id="submit-button">Fale com a IA</button>
         </form>
-
-        <div id="satisfaction">Satisfação: 100%</div>
-
-        <form id="interaction-form">
-            <label for="previous_answer">Continuar a conversa:</label>
-            <textarea id="previous_answer" name="previous_answer" placeholder="Digite sua resposta aqui..." required></textarea>
-            <button type="submit">Enviar</button>
-        </form>
-
-        <form id="search-form" action="/search_professionals" method="POST">
-            <label for="professional_type">Você quer ajuda de que tipo de profissional?</label>
-            <input id="professional_type" name="professional_type" placeholder="Psicólogo, Advogado, Outro" required />
-            <button type="submit">Buscar</button>
-        </form>
-        
-        <button id="start-voice">🎤</button>
     </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
