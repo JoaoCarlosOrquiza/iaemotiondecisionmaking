@@ -3,6 +3,7 @@ import openai
 import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
+import logging  # Importação do logging
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -14,7 +15,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 
-# Configuração de logging
+# Configuração do logging
 logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/')
