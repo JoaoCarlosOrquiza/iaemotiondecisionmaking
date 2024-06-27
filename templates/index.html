@@ -20,22 +20,23 @@
             </select>
 
             <label for="description">Descrição da situação:</label>
-            <textarea id="description" name="description" placeholder="Você é muito bem bem-vindo. Descreva o motivo de você estar aqui. Junto com você, vamos elaborar alternativas." required></textarea>
+            <textarea id="description" name="description" placeholder="Você é muito bem-vindo. Descreva o motivo de você estar aqui. Junto com você, vamos elaborar alternativas." required></textarea>
             
             <label for="emotions">Qual ou quais sentimentos isso gera?</label>
             <textarea id="emotions" name="emotions" placeholder="Para entender melhor, seus sentimentos, emoções quais são. Raiva, Medo, Ansiedade, Estresse, etc." required></textarea>
             
             <label for="support_reason">Para qual motivo busca apoio?</label>
             <textarea id="support_reason" name="support_reason" placeholder="Não sei com quem falar, Preciso de Ajuda, Me sinto só, etc." required></textarea>
-
+            
             <label for="ia_role">Como a IA deve atuar?</label>
-            <select id="ia_role" name="ia_role">
+            <select id="ia_role" name="ia_role" required>
                 <option value="psychologist">Psicólogo (Saúde emocional)</option>
                 <option value="financial">Financeira</option>
                 <option value="legal">Jurídica</option>
+                <!-- Adicione mais opções conforme necessário -->
             </select>
             
-            <button type="submit" id="submit-button">Fale com a IA</button>
+            <button type="submit">Fale com a IA</button>
         </form>
 
         <div id="satisfaction">Satisfação: 100%</div>
@@ -57,5 +58,3 @@
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
-
-
