@@ -72,6 +72,5 @@ def search_professionals():
 
     return render_template('professionals.html', professionals=professionals)
 
-
 if __name__ == '__main__':
     app.run(debug=True)
