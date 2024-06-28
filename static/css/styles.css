@@ -1,69 +1,107 @@
+/* styles.css */
+
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
-
-header {
-    text-align: center;
-    padding: 1em 0;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-}
-
-nav ul li {
-    display: inline;
-}
-
-nav ul li a {
-    text-decoration: none;
+    background-color: #f4f4f9;
     color: #333;
-    font-weight: bold;
+    margin: 0;
+    padding: 0;
 }
 
-main {
-    width: 50%;
-    margin: 2em auto;
-    padding: 1em;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
 }
 
 label {
-    display: block;
-    margin-top: 1em;
+    margin: 10px 0 5px;
 }
 
-textarea, select, input[type="text"] {
-    width: 100%;
-    padding: 0.5em;
-    margin-top: 0.5em;
+input, select, textarea {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 button {
-    display: block;
-    width: 100%;
-    padding: 1em;
+    padding: 15px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 1em;
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 1em;
 }
 
 button:hover {
     background-color: #218838;
 }
 
-.privacy-statement {
+.privacy {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 20px;
     text-align: center;
-    margin-top: 2em;
-    font-size: 1em;
+}
+
+#final-message {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#share-options a {
+    margin: 0 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+#share-options a:hover {
+    text-decoration: underline;
+}
+
+/* Adicionado para o menu de navegação adaptável */
+nav #menu {
+    display: none;
+}
+
+nav #menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+nav.open #menu {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    nav #menu {
+        display: flex;
+    }
+
+    nav #menu-toggle {
+        display: none;
+    }
+}
+
+/* Fonte menor para a mensagem de privacidade */
+.privacy-statement {
+    font-size: 0.8em;
 }

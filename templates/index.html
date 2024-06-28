@@ -13,16 +13,17 @@
     <header>
         <h1>IA Emotion Decision Making</h1>
         <nav>
-            <ul>
+            <ul id="menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">Sobre</a></li>
                 <li><a href="contact.html">Contato</a></li>
                 <li><a href="privacy.html">Política de Privacidade</a></li>
             </ul>
+            <button id="menu-toggle">☰</button>
         </nav>
     </header>
     <main>
-        <form id="decision-form">
+        <form id="decision-form" method="POST" action="/process-form">
             <label for="language">Idioma:</label>
             <select id="language" name="language" required>
                 <option value="pt">Português</option>
@@ -48,7 +49,12 @@
 
             <button type="submit">Fale com a IA</button>
         </form>
-        <p class="privacy-statement"><strong>Privacidade garantida:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
+        <p class="privacy-statement"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
     </main>
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('open');
+        });
+    </script>
 </body>
 </html>
