@@ -7,8 +7,7 @@
     <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
     <meta name="author" content="Seu Nome">
     <title>Resultados da Análise da IA</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <!-- Meta tags para controle de cache -->
+    <link rel="stylesheet" href="static/css/styles.css">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -26,6 +25,7 @@
 
             <h3>Essas informações foram suficientes?</h3>
             <textarea id="user-feedback" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
+            <button type="button" onclick="continuarConversa()">Continuar Conversa</button>
 
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
 
@@ -35,23 +35,19 @@
                 <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual">
                 <button type="submit">Buscar</button>
             </form>
-
-            <button onclick="window.location.href='/index.html'">Continuar Conversa</button>
         </main>
     </div>
     <script>
-        // Impedir prints de tela
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
             if (event.key === 'PrintScreen') {
                 event.preventDefault();
             }
         });
-        document.addEventListener('keyup', function(event) {
-            if ((event.key === 'PrintScreen') || (event.ctrlKey && event.key === 'p')) {
-                alert('Print screen desativado!');
-                event.preventDefault();
-            }
-        });
+
+        function continuarConversa() {
+            // Código para continuar a conversa
+        }
     </script>
 </body>
 </html>
