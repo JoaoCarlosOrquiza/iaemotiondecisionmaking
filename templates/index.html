@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="description" content="IA Emotion Decision Making - Ferramenta de suporte emocional com Inteligência Artificial.">
+    <meta name="keywords" content="IA, Emotion, Decision Making, Suporte Emocional, Terapia Comportamental Cognitiva">
+    <meta name="author" content="IA Emotion Decision Making Team">
     <title>IA Emotion Decision Making</title>
-	<script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}"></script>
 </head>
 <body>
     <div class="container">
         <h1>IA Emotion Decision Making</h1>
+        <p>Privacidade garantida: Nenhum dado seu será armazenado ou compartilhado.</p>
         <form id="emotion-form" action="/process" method="post">
             <div class="form-group">
                 <label for="language">Idioma:</label>
@@ -29,8 +33,8 @@
                 <textarea id="emotions" name="emotions" class="form-control" placeholder="Descreva os sentimentos"></textarea>
             </div>
             <div class="form-group">
-                <label for="support_reason">Para qual motivo busca apoio?</label>
-                <textarea id="support_reason" name="support_reason" class="form-control" placeholder="Descreva o motivo"></textarea>
+                <label for="support_reason">Para quem busca apoio?</label>
+                <textarea id="support_reason" name="support_reason" class="form-control" placeholder="Para mim, para um amigo, etc." required></textarea>
             </div>
             <div class="form-group">
                 <label for="ia_role">Como a IA deve atuar?</label>
