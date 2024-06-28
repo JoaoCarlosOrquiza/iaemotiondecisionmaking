@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IA Emotion Decision Making - Resultados">
     <title>IA Emotion Decision Making - Resultados</title>
-    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Bem-vindo. Vamos Pensar e Analisar Juntos, ok?</h1>
-        </header>
-        <main>
-            <section id="response">
-                <h2>Análise e Resposta da IA Emotion Decision Making</h2>
-                <p>Você descreveu a situação como: <strong id="situation_description"></strong></p>
-                <p>Respostas e Sugestões:</p>
-                <ol id="suggestions">
-                    <li>Sugestão 1: <span id="suggestion1"></span></li>
-                    <li>Sugestão 2: <span id="suggestion2"></span></li>
-                    <li>Sugestão 3: <span id="suggestion3"></span></li>
-                </ol>
-                <p>Essas informações foram suficientes?</p>
-                <textarea id="user_feedback" placeholder="Indique se precisa de mais informações ou uma nova interação."></textarea>
-                <p>Tokens usados nesta interação: <span id="token_percentage"></span>%</p>
-            </section>
-            <section id="support-search">
-                <h2>Busca por Profissionais/Entidades de Apoio</h2>
-                <form id="support-form">
-                    <label for="location">Endereço ou Localização Atual:</label>
-                    <input type="text" id="location" name="location" required>
-                    <button type="submit">Buscar</button>
-                </form>
-                <div id="support-results">
-                    <!-- Resultados da busca serão exibidos aqui -->
-                </div>
-            </section>
-        </main>
+        <h1>Bem-vindo. Vamos Pensar e Analisar Juntos, ok?</h1>
+        <div class="analysis">
+            <h2>Análise e Resposta da IA Emotion Decision Making</h2>
+            <p>Você descreveu a situação como: {{ description }}</p>
+            <h3>Respostas e Sugestões:</h3>
+            <ul>
+                {% for suggestion in suggestions %}
+                    <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="user-feedback">
+            <h3>Essas informações foram suficientes?</h3>
+            <textarea placeholder="Indique se precisa de mais informações ou uma nova interação"></textarea>
+        </div>
+        <div class="token-usage">
+            <p>Tokens usados nesta interação: {{ token_percentage }}%</p>
+        </div>
+        <div class="professional-search">
+            <h3>Busca por Profissionais/Entidades de Apoio</h3>
+            <label for="location">Endereço ou Localização Atual:</label>
+            <input type="text" id="location" name="location" placeholder="Digite seu endereço ou localização atual">
+            <button type="button" onclick="searchProfessionals()">Buscar</button>
+        </div>
     </div>
+    <script>
+        function searchProfessionals() {
+            const location = document.getElementById('location').value;
+            // Adicione a lógica para buscar profissionais usando a API do Google Places
+            alert("Busca por profissionais em: " + location);
+        }
+    </script>
 </body>
 </html>

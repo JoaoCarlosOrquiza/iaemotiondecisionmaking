@@ -20,50 +20,43 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    if request.method == 'POST':
+    try:
         language = request.form['language']
         description = request.form['situation_description']
         emotions = request.form['feelings']
         support_reason = request.form['support_reason']
-        ia_action = request.form['ia_action']
-
+        ia_role = request.form['ia_action']
+        
         prompt = f"""
         Language: {language}
         Description: {description}
         Emotions: {emotions}
         Support Reason: {support_reason}
-        IA Role: {ia_action}
+        IA Role: {ia_role}
 
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "Você é um assistente útil."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-            answer = response.choices[0].message.content.strip()
-            # Aqui você pode calcular o percentual de tokens usados
-            tokens_used = response['usage']['total_tokens']
-            token_percentage = (tokens_used / 4096) * 100  # Supondo um limite de 4096 tokens
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Você é um assistente útil."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        suggestions = response.choices[0].message.content.strip().split('\n')
+        token_usage = response.usage.total_tokens
+        token_percentage = (token_usage / 4096) * 100
 
-            return render_template('results.html', 
-                                   situation_description=description, 
-                                   suggestions=[answer], 
-                                   token_percentage=token_percentage)
-        except Exception as e:
-            logging.error(f"Erro ao chamar a API do OpenAI: {e}")
-            return render_template('results.html', 
-                                   situation_description=description, 
-                                   suggestions=["Erro no servidor: tente novamente mais tarde."], 
-                                   token_percentage=0)
-
-@app.route('/final')
-def final():
-    return render_template('final.html')
+        return render_template(
+            'results.html',
+            description=description,
+            suggestions=suggestions,
+            token_percentage=token_percentage
+        )
+    except Exception as e:
+        print(f"Erro ao processar o formulário: {e}")
+        return render_template('error.html', error_message=str(e))
 
 if __name__ == '__main__':
     app.run(debug=True)

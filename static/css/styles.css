@@ -18,23 +18,23 @@ body {
     border-radius: 8px;
 }
 
-h1 {
+h1, h2, h3 {
     text-align: center;
     color: #333;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin: 10px 0 5px;
-}
-
-input, select, textarea {
-    padding: 10px;
+.analysis, .user-feedback, .token-usage, .professional-search {
     margin-bottom: 20px;
+}
+
+label, textarea, input, button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+}
+
+textarea, input {
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
@@ -50,46 +50,4 @@ button {
 
 button:hover {
     background-color: #218838;
-}
-
-.privacy {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 20px;
-    text-align: center;
-}
-
-#final-message {
-    text-align: center;
-    margin-top: 30px;
-}
-
-#share-options a {
-    margin: 0 10px;
-    color: #007bff;
-    text-decoration: none;
-}
-
-#share-options a:hover {
-    text-decoration: underline;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    text-align: center;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-nav ul li a:hover {
-    text-decoration: underline;
 }
