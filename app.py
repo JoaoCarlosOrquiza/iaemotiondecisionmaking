@@ -27,7 +27,7 @@ def process_form():
     
     # Lógica para chamar a API do OpenAI
     response = openai.Completion.create(
-        engine="davinci",
+        engine="text-davinci-003",
         prompt=f"Situação: {description}\nSentimentos: {feelings}\nPara quem busca apoio: {support_reason}\nComo a IA deve atuar: {ia_action}\nSugestões:",
         max_tokens=150
     )
@@ -42,7 +42,7 @@ def continue_conversation():
     user_feedback = request.form['user_feedback']
     # Aqui você pode processar o feedback e gerar uma nova resposta da IA
     response = openai.Completion.create(
-        engine="davinci",
+        engine="text-davinci-003",
         prompt=f"Feedback do usuário: {user_feedback}\nNova resposta:",
         max_tokens=150
     )
