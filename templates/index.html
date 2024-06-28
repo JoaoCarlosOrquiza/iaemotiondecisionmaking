@@ -3,51 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IA Emotion Decision Making - Ferramenta de suporte emocional com Inteligência Artificial.">
-    <meta name="keywords" content="IA, Emotion, Decision Making, Suporte Emocional, Terapia Comportamental Cognitiva">
-    <meta name="author" content="IA Emotion Decision Making Team">
+    <meta name="description" content="IA Emotion Decision Making - Suporte para tomadas de decisões emocionais utilizando IA.">
+    <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
+    <meta name="author" content="Seu Nome">
     <title>IA Emotion Decision Making</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}"></script>
+    <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>IA Emotion Decision Making</h1>
-        <p>Privacidade garantida: Nenhum dado seu será armazenado ou compartilhado.</p>
-        <form id="emotion-form" action="/process" method="post">
-            <div class="form-group">
-                <label for="language">Idioma:</label>
-                <select id="language" name="language" class="form-control">
-                    <option value="pt">Português</option>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="fr">Français</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="description">Descrição da situação:</label>
-                <textarea id="description" name="description" class="form-control" placeholder="Descreva a situação"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="emotions">Qual ou quais sentimentos isso gera?</label>
-                <textarea id="emotions" name="emotions" class="form-control" placeholder="Descreva os sentimentos"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="support_reason">Para quem busca apoio?</label>
-                <textarea id="support_reason" name="support_reason" class="form-control" placeholder="Para mim, para um amigo, etc." required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="ia_role">Como a IA deve atuar?</label>
-                <select id="ia_role" name="ia_role" class="form-control">
-                    <option value="emotional_support">Psicólogo (Saúde emocional)</option>
-                    <option value="financial_support">Financeiro</option>
-                    <option value="legal_support">Jurídico</option>
-                </select>
-            </div>
-            <button id="submit-button" type="submit" class="btn btn-primary">Fale com a IA</button>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">Sobre</a></li>
+                <li><a href="contact.html">Contato</a></li>
+                <li><a href="privacy.html">Política de Privacidade</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form id="decision-form">
+            <label for="language">Idioma:</label>
+            <select id="language" name="language" required>
+                <option value="pt">Português</option>
+                <option value="en">Inglês</option>
+                <!-- Adicione mais opções conforme necessário -->
+            </select>
+
+            <label for="situation_description">Descrição da situação:</label>
+            <textarea id="situation_description" name="situation_description" placeholder="Descreva a situação" required></textarea>
+
+            <label for="feelings">Qual ou quais sentimentos isso gera?</label>
+            <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos" required></textarea>
+
+            <label for="support_reason">Para quem busca apoio?</label>
+            <textarea id="support_reason" name="support_reason" placeholder="Para mim, para um amigo, etc." required></textarea>
+
+            <label for="ia_action">Como a IA deve atuar?</label>
+            <select id="ia_action" name="ia_action" required>
+                <option value="psychologist">Psicólogo (Saúde emocional)</option>
+                <option value="counselor">Conselheiro (Aconselhamento geral)</option>
+                <!-- Adicione mais opções conforme necessário -->
+            </select>
+
+            <button type="submit">Fale com a IA</button>
         </form>
-        <div id="response"></div>
-    </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <p class="privacy-statement"><strong>Privacidade garantida:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
+    </main>
 </body>
 </html>
