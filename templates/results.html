@@ -24,8 +24,10 @@
             <p>{{ answer }}</p>
 
             <h3>Essas informações foram suficientes?</h3>
-            <textarea id="user-feedback" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
-            <button type="button" onclick="continuarConversa()">Continuar Conversa</button>
+            <form id="feedback-form" method="POST" action="/continue-conversation">
+                <textarea id="user-feedback" name="user_feedback" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
+                <button type="submit">Continuar Conversa</button>
+            </form>
 
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
 
@@ -44,10 +46,6 @@
                 event.preventDefault();
             }
         });
-
-        function continuarConversa() {
-            // Código para continuar a conversa
-        }
     </script>
 </body>
 </html>

@@ -20,42 +20,37 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    if request.method == 'POST':
-        data = request.form
-        language = data.get('language')
-        description = data.get('situation_description')
-        feelings = data.get('feelings')
-        support_reason = data.get('support_reason')
-        ia_action = data.get('ia_action')
+    description = request.form['situation_description']
+    feelings = request.form['feelings']
+    support_reason = request.form['support_reason']
+    ia_action = request.form['ia_action']
+    
+    # Lógica para chamar a API do OpenAI
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt=f"Situação: {description}\nSentimentos: {feelings}\nPara quem busca apoio: {support_reason}\nComo a IA deve atuar: {ia_action}\nSugestões:",
+        max_tokens=150
+    )
 
-        # Preparar a entrada para a API do OpenAI
-        prompt = f"""
-        Language: {language}
-        Description: {description}
-        Emotions: {feelings}
-        Support Reason: {support_reason}
-        IA Role: {ia_action}
+    answer = response.choices[0].text.strip()
+    tokens_used = response.usage['total_tokens']
 
-        Responda de acordo com o papel da IA e forneça suporte apropriado.
-        """
+    return render_template('results.html', description=description, answer=answer, tokens_used=tokens_used)
 
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "Você é um assistente útil."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-            answer = response.choices[0].message.content.strip()
-            tokens_used = 100 - response.usage.total_tokens / 4096 * 100
-            tokens_used = round(tokens_used, 2)
-        except Exception as e:
-            logging.error(f"Erro ao chamar a API do OpenAI: {e}")
-            answer = f"Erro no servidor: {e}"
-            tokens_used = 0
+@app.route('/continue-conversation', methods=['POST'])
+def continue_conversation():
+    user_feedback = request.form['user_feedback']
+    # Aqui você pode processar o feedback e gerar uma nova resposta da IA
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt=f"Feedback do usuário: {user_feedback}\nNova resposta:",
+        max_tokens=150
+    )
+    
+    new_answer = response.choices[0].text.strip()
+    tokens_used = response.usage['total_tokens']
 
-        return render_template('results.html', description=description, answer=answer, tokens_used=tokens_used)
+    return render_template('results.html', description="Continuação da conversa", answer=new_answer, tokens_used=tokens_used)
 
 if __name__ == '__main__':
     app.run(debug=True)
