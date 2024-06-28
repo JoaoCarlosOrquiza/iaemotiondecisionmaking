@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IA Emotion Decision Making - Resultados">
+    <title>IA Emotion Decision Making - Resultados</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bem-vindo. Vamos Pensar e Analisar Juntos, ok?</h1>
+        </header>
+        <main>
+            <section id="response">
+                <h2>Análise e Resposta da IA Emotion Decision Making</h2>
+                <p>Você descreveu a situação como: <strong id="situation_description"></strong></p>
+                <p>Respostas e Sugestões:</p>
+                <ol id="suggestions">
+                    <li>Sugestão 1: <span id="suggestion1"></span></li>
+                    <li>Sugestão 2: <span id="suggestion2"></span></li>
+                    <li>Sugestão 3: <span id="suggestion3"></span></li>
+                </ol>
+                <p>Essas informações foram suficientes?</p>
+                <textarea id="user_feedback" placeholder="Indique se precisa de mais informações ou uma nova interação."></textarea>
+                <p>Tokens usados nesta interação: <span id="token_percentage"></span>%</p>
+            </section>
+            <section id="support-search">
+                <h2>Busca por Profissionais/Entidades de Apoio</h2>
+                <form id="support-form">
+                    <label for="location">Endereço ou Localização Atual:</label>
+                    <input type="text" id="location" name="location" required>
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="support-results">
+                    <!-- Resultados da busca serão exibidos aqui -->
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
