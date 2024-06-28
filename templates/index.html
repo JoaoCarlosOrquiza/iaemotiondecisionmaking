@@ -14,11 +14,11 @@
         <header>
             <h1>IA Emotion Decision Making</h1>
             <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="privacy.html">Privacidade</a></li>
+                <ul style="text-align: center;">
+                    <li style="display: inline-block; margin-right: 20px;"><a href="index.html">Home</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="about.html">Sobre</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="contact.html">Contato</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="privacy.html">Privacidade</a></li>
                 </ul>
             </nav>
         </header>
@@ -52,5 +52,13 @@
             <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
         </main>
     </div>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'PrintScreen') {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

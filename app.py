@@ -1,6 +1,6 @@
 import os
 import openai
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 import logging
 
@@ -20,43 +20,42 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    try:
-        language = request.form['language']
-        description = request.form['situation_description']
-        emotions = request.form['feelings']
-        support_reason = request.form['support_reason']
-        ia_role = request.form['ia_action']
-        
+    if request.method == 'POST':
+        data = request.form
+        language = data.get('language')
+        description = data.get('situation_description')
+        feelings = data.get('feelings')
+        support_reason = data.get('support_reason')
+        ia_action = data.get('ia_action')
+
+        # Preparar a entrada para a API do OpenAI
         prompt = f"""
         Language: {language}
         Description: {description}
-        Emotions: {emotions}
+        Emotions: {feelings}
         Support Reason: {support_reason}
-        IA Role: {ia_role}
+        IA Role: {ia_action}
 
         Responda de acordo com o papel da IA e forneça suporte apropriado.
         """
 
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Você é um assistente útil."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        suggestions = response.choices[0].message.content.strip().split('\n')
-        token_usage = response.usage.total_tokens
-        token_percentage = (token_usage / 4096) * 100
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "Você é um assistente útil."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            answer = response.choices[0].message.content.strip()
+            tokens_used = 100 - response.usage.total_tokens / 4096 * 100
+            tokens_used = round(tokens_used, 2)
+        except Exception as e:
+            logging.error(f"Erro ao chamar a API do OpenAI: {e}")
+            answer = f"Erro no servidor: {e}"
+            tokens_used = 0
 
-        return render_template(
-            'results.html',
-            description=description,
-            suggestions=suggestions,
-            token_percentage=token_percentage
-        )
-    except Exception as e:
-        print(f"Erro ao processar o formulário: {e}")
-        return render_template('error.html', error_message=str(e))
+        return render_template('results.html', description=description, answer=answer, tokens_used=tokens_used)
 
 if __name__ == '__main__':
     app.run(debug=True)
