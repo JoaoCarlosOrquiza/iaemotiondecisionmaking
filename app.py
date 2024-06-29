@@ -20,18 +20,19 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    description = request.form.get('description')
-    emotions = request.form.get('emotions')
+    situation_description = request.form.get('situation_description')
+    feelings = request.form.get('feelings')
     support_reason = request.form.get('support_reason')
+    ia_action = request.form.get('ia_action')
     
-    if not description or not emotions or not support_reason:
+    if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
     
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Descrição: {description}\nEmoções: {emotions}\nRazão do apoio: {support_reason}"}
+            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}"}
         ],
         max_tokens=150
     )
@@ -40,7 +41,7 @@ def process_form():
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
-    previous_answer = request.form['previous_answer']
+    previous_answer = request.form.get('previous_answer')
     
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -55,7 +56,7 @@ def continue_conversation():
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
-    professional_type = request.form['professional_type']
+    professional_type = request.form.get('professional_type')
     location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
     
     # Chamada à API do Google Places para buscar profissionais próximos
@@ -74,7 +75,6 @@ def search_professionals():
         professionals.append(professional)
 
     return render_template('professionals.html', professionals=professionals)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
