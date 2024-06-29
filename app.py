@@ -71,13 +71,15 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Você é um assistente útil."},
+            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
             {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
         ],
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])  
+    continuation_response = response['choices'][0]['message']['content']
+    
+    return render_template('results.html', answer=continuation_response, tokens_used=150 - response['usage']['total_tokens'])
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
