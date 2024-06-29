@@ -1,7 +1,7 @@
 import os
 import openai
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env
@@ -37,27 +37,33 @@ def process_form():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])
+    answer = response['choices'][0]['message']['content']
+    tokens_used = response['usage']['total_tokens']
 
-@app.route('/continue', methods=['POST'])
+    return render_template('results.html', description=situation_description, answer=answer, tokens_used=tokens_used)
+
+@app.route('/continue-conversation', methods=['POST'])
 def continue_conversation():
-    previous_answer = request.form.get('previous_answer')
+    user_feedback = request.form.get('user_feedback')
     
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil."},
-            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
+            {"role": "user", "content": f"Continuar a conversa: {user_feedback}"}
         ],
         max_tokens=150
     )
     
-    return render_template('response.html', response=response['choices'][0]['message']['content'])  
+    answer = response['choices'][0]['message']['content']
+    tokens_used = response['usage']['total_tokens']
+    
+    return render_template('results.html', description=user_feedback, answer=answer, tokens_used=tokens_used)
 
-@app.route('/search_professionals', methods=['POST'])
-def search_professionals():
-    professional_type = request.form.get('professional_type')
+@app.route('/search-location', methods=['POST'])
+def search_location():
     location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
+    professional_type = "psychologist"  # Alterar conforme a lógica da aplicação
     
     # Chamada à API do Google Places para buscar profissionais próximos
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
@@ -74,7 +80,7 @@ def search_professionals():
         }
         professionals.append(professional)
 
-    return render_template('professionals.html', professionals=professionals)
+    return render_template('results.html', professionals=professionals)
 
 if __name__ == '__main__':
     app.run(debug=True)
