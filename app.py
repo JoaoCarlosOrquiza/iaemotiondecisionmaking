@@ -18,8 +18,8 @@ google_api_key = os.getenv('GOOGLE_API_KEY')
 def index():
     return render_template('index.html')
 
-@app.route('/process', methods=['POST'])
-def process():
+@app.route('/process-form', methods=['POST'])
+def process_form():
     description = request.form['description']
     emotions = request.form['emotions']
     support_reason = request.form['support_reason']
@@ -33,7 +33,7 @@ def process():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response.choices[0].message["content"])
+    return render_template('response.html', response=response['choices'][0]['message']['content'])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -48,7 +48,7 @@ def continue_conversation():
         max_tokens=150
     )
     
-    return render_template('response.html', response=response.choices[0].message["content"])  
+    return render_template('response.html', response=response['choices'][0]['message']['content'])  
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
