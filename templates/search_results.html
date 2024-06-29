@@ -10,18 +10,18 @@
     <div class="container">
         <h1>Profissionais Encontrados</h1>
         <div class="results">
-            {% if places %}
+            {% if professionals %}
                 <ul>
-                    {% for place in places %}
-                        <li>{{ place.name }} - {{ place.vicinity }}</li>
+                    {% for professional in professionals %}
+                        <li>{{ professional.name }} - {{ professional.specialty }} - {{ professional.distance }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
                 <p>Nenhum profissional encontrado.</p>
             {% endif %}
         </div>
-		<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-        <a href="{{ url_for('index') }}">Voltar</a>
+        <a href="/">Voltar</a>
     </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

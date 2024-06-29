@@ -59,7 +59,10 @@ def process_form():
     if "precisamos de mais informações" in initial_response.lower():
         additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
-    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=150)
+    # Calcular a porcentagem de tokens usados (ajustar conforme necessário)
+    tokens_used = 100 - response['usage']['total_tokens'] / 150 * 100
+
+    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=tokens_used)
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -100,4 +103,3 @@ def search_professionals():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
