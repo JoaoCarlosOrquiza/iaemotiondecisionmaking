@@ -39,12 +39,27 @@ def process_form():
     )
     initial_response = response['choices'][0]['message']['content']
     
+    # Formatar a resposta inicial com parágrafos numerados
+    formatted_response = f"""
+    <p><strong>1. Primeiramente,</strong> entendo que a situação pode ser desconfortável e causar estresse.</p>
+    <p><strong>2. Segundo,</strong> é importante reconhecer seus sentimentos e como eles afetam seu comportamento.</p>
+    <p><strong>3. Terceiro,</strong> sugiro estratégias práticas para lidar com a situação:</p>
+    <ul>
+        <li><strong>Escolha o Momento Certo:</strong> Encontre um momento em que ambos estejam calmos e sem pressa.</li>
+        <li><strong>Use um Tom Calmo e Amigável:</strong> Mantenha sua voz calma e amigável.</li>
+        <li><strong>Inicie com um Elogio:</strong> Comece com algo positivo.</li>
+        <li><strong>Seja Claro e Direto:</strong> Explique como você se sente sem rodeios.</li>
+        <li><strong>Ofereça uma Solução:</strong> Sugira uma forma de resolver a situação.</li>
+    </ul>
+    <p>{initial_response}</p>
+    """
+
     # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
     additional_info_request = ""
     if "precisamos de mais informações" in initial_response.lower():
         additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
-    return render_template('results.html', description=situation_description, answer=initial_response, additional_info=additional_info_request, tokens_used=150)
+    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=150)
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -53,7 +68,7 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
+            {"role": "system", "content": "Você é um assistente útil."},
             {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
         ],
         max_tokens=150
@@ -85,3 +100,4 @@ def search_professionals():
 
 if __name__ == '__main__':
     app.run(debug=True)
+

@@ -8,9 +8,6 @@
     <meta name="author" content="Seu Nome">
     <title>Resultados da Análise da IA</title>
     <link rel="stylesheet" href="static/css/styles.css">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
 </head>
 <body>
     <div class="container">
@@ -21,18 +18,20 @@
             <h2>Análise e Resposta da IA Emotion Decision Making</h2>
             <p>Você descreveu a situação como: {{ description }}</p>
             <h3>Respostas e Sugestões:</h3>
-            <p>{{ answer }}</p>
-
+            <div id="ia-response">
+                {{ answer|safe }}
+            </div>
+            {% if additional_info %}
+                <p>{{ additional_info }}</p>
+            {% endif %}
             <h3>Essas informações foram suficientes?</h3>
-            <form id="feedback-form" method="POST" action="/continue-conversation">
-                <textarea id="user-feedback" name="user_feedback" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
+            <form id="feedback-form" method="POST" action="/continue">
+                <textarea id="previous_answer" name="previous_answer" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
                 <button type="submit">Continuar Conversa</button>
             </form>
-
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
-
             <h3>Busca por Profissionais/Entidades de Apoio</h3>
-            <form id="location-form" method="POST" action="/search-location">
+            <form id="location-form" method="POST" action="/search_professionals">
                 <label for="user-location">Endereço ou Localização Atual:</label>
                 <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual">
                 <button type="submit">Buscar</button>
