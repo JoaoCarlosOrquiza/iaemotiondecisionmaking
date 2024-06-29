@@ -60,7 +60,7 @@ def process_form():
         additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
     # Calcular a porcentagem de tokens usados (ajustar conforme necessário)
-    tokens_used = 100 - response['usage']['total_tokens'] / 150 * 100
+    tokens_used = 100 - round((response['usage']['total_tokens'] / 150) * 100, 2)
 
     return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=tokens_used)
 
