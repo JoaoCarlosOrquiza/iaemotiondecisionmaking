@@ -20,9 +20,12 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    description = request.form['description']
-    emotions = request.form['emotions']
-    support_reason = request.form['support_reason']
+    description = request.form.get('description')
+    emotions = request.form.get('emotions')
+    support_reason = request.form.get('support_reason')
+    
+    if not description or not emotions or not support_reason:
+        return "All form fields are required", 400
     
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
