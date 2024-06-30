@@ -48,10 +48,20 @@ def process_form():
             {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
             {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}"}
         ],
-        max_tokens=150
+        max_tokens=250
     )
     initial_response = response['choices'][0]['message']['content']
     
+    # Formatar a resposta inicial com a resposta da IA incorporada
+    formatted_response = f"""
+    <p>{initial_response}</p>
+    <!-- Adicione os parágrafos e sugestões aqui -->
+    <p>1. [Estratégia 1]</p>
+    <p>2. [Estratégia 2]</p>
+    <p>- [Subestratégia 1]</p>
+    <p>- [Subestratégia 2]</p>
+    """
+
     # Contar tokens usados
     encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
     tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}")) + len(encoding.encode(initial_response))
@@ -66,11 +76,6 @@ def process_form():
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
-    
-    # Formatar a resposta inicial com a resposta da IA incorporada
-    formatted_response = f"""
-    <p>{initial_response}</p>
-    """
     
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
