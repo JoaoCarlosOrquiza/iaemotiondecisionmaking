@@ -15,18 +15,6 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 
-# Definir o roteiro
-script = """
-1. Primeiramente, entendo que a situação pode ser desconfortável e causar estresse.
-2. Segundo, é importante reconhecer seus sentimentos e como eles afetam seu comportamento.
-3. Terceiro, sugiro estratégias práticas para lidar com a situação:
-    - Escolha o Momento Certo: Encontre um momento em que ambos estejam calmos e sem pressa.
-    - Use um Tom Calmo e Amigável: Mantenha sua voz calma e amigável.
-    - Inicie com um Elogio: Comece com algo positivo.
-    - Seja Claro e Direto: Explique como você se sente sem rodeios.
-    - Ofereça uma Solução: Sugira uma forma de resolver a situação.
-"""
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -41,12 +29,12 @@ def process_form():
     if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
     
-    # Gerar uma resposta inicial com base nas informações fornecidas e no roteiro
+    # Gerar uma resposta inicial com base nas informações fornecidas
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
-            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nInstruções para a IA: Siga o roteiro abaixo ao responder, mas não exiba estas instruções ou o texto do roteiro na resposta final.\n\nRoteiro:\n{script}"}
+            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}"}
         ],
         max_tokens=250
     )
@@ -55,16 +43,6 @@ def process_form():
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
     <p>{initial_response}</p>
-    <p>1. Primeiramente, entendo que a situação pode ser desconfortável e causar estresse.</p>
-    <p>2. Segundo, é importante reconhecer seus sentimentos e como eles afetam seu comportamento.</p>
-    <p>3. Terceiro, sugiro estratégias práticas para lidar com a situação:</p>
-    <ul>
-        <li>Escolha o Momento Certo: Encontre um momento em que ambos estejam calmos e sem pressa.</li>
-        <li>Use um Tom Calmo e Amigável: Mantenha sua voz calma e amigável.</li>
-        <li>Inicie com um Elogio: Comece com algo positivo.</li>
-        <li>Seja Claro e Direto: Explique como você se sente sem rodeios.</li>
-        <li>Ofereça uma Solução: Sugira uma forma de resolver a situação.</li>
-    </ul>
     """
 
     # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
@@ -74,7 +52,7 @@ def process_form():
     
     # Contar tokens usados
     encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}")) + len(encoding.encode(initial_response))
+    tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")) + len(encoding.encode(initial_response))
     
     # Atualizar a contagem de tokens na sessão
     if 'tokens_used' not in session:
@@ -154,4 +132,3 @@ def reset():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
