@@ -15,6 +15,15 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 
+# Função para acumular histórico de mensagens
+def get_message_history():
+    return session.get('message_history', [])
+
+def add_message_to_history(role, content):
+    message_history = get_message_history()
+    message_history.append({"role": role, "content": content})
+    session['message_history'] = message_history
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -28,20 +37,23 @@ def process_form():
     
     if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
-    
+
+    # Adicionando mensagens ao histórico
+    add_message_to_history("user", f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")
+
     # Gerar uma resposta inicial com base nas informações fornecidas
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Teoria Cognitivo-Comportamental."},
-            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}"}
-        ],
+        messages=get_message_history(),
         max_tokens=250
     )
     initial_response = response['choices'][0]['message']['content']
     
     # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
     initial_response = initial_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
+    
+    # Adicionar a resposta da IA ao histórico
+    add_message_to_history("assistant", initial_response)
     
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
@@ -75,15 +87,14 @@ def process_form():
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
-    total_interactions = 5  # Defina o número total de interações
     previous_answer = request.form.get('previous_answer')
-    
+
+    # Adicionando mensagens ao histórico
+    add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Teoria Cognitivo-Comportamental."},
-            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
-        ],
+        messages=get_message_history(),
         max_tokens=250
     )
     
@@ -91,12 +102,16 @@ def continue_conversation():
     
     # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
     continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
+
+    # Adicionar a resposta da IA ao histórico
+    add_message_to_history("assistant", continuation_response)
     
     # Contar tokens usados na continuação
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
     session['tokens_used'] += tokens_used
     
     # Calcular a porcentagem de tokens usados
+    total_interactions = 5
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
