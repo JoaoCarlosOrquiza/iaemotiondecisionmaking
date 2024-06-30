@@ -127,6 +127,9 @@ def search_professionals():
     professional_type = request.form.get('professional_type')
     location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
     
+    if not professional_type:
+        return "Tipo de profissional é obrigatório", 400
+
     # Chamada à API do Google Places para buscar profissionais próximos
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={places_api_key}"
     response = requests.get(url)
