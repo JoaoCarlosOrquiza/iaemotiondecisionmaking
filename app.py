@@ -75,6 +75,7 @@ def process_form():
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
+    total_interactions = 5  # Defina o número total de interações
     previous_answer = request.form.get('previous_answer')
     
     response = openai.ChatCompletion.create(
