@@ -46,6 +46,16 @@ def process_form():
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
     <p>{initial_response}</p>
+    <p>1. .</p>
+    <p>2. .</p>
+    <p>3. :</p>
+    <ul>
+        <li>.</li>
+        <li>.</li>
+        <li>.</li>
+        <li>.</li>
+        <li>.</li>
+    </ul>
     """
 
     # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
