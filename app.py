@@ -33,12 +33,15 @@ def process_form():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
+            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Teoria Cognitivo-Comportamental."},
             {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}"}
         ],
         max_tokens=250
     )
     initial_response = response['choices'][0]['message']['content']
+    
+    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
+    initial_response = initial_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
     
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
@@ -77,13 +80,16 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
+            {"role": "system", "content": "Você é um assistente útil e empático, especializado em Teoria Cognitivo-Comportamental."},
             {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
         ],
         max_tokens=250
     )
     
     continuation_response = response['choices'][0]['message']['content']
+    
+    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
+    continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
     
     # Contar tokens usados na continuação
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
