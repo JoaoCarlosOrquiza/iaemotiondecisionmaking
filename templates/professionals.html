@@ -40,6 +40,8 @@
                     <strong>Especialidade:</strong> {{ professional.specialty }}<br>
                     <strong>Distância:</strong> {{ professional.distance }}
                 </li>
+            {% else %}
+                <li>Nenhum profissional encontrado.</li>
             {% endfor %}
         </ul>
         <a href="/">Voltar</a>
