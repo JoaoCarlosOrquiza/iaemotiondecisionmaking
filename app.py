@@ -14,6 +14,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 # Configuração das chaves de API
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
+places_api_key = os.getenv('PLACES_API_KEY')
 
 # Função para acumular histórico de mensagens
 def get_message_history():
@@ -127,7 +128,7 @@ def search_professionals():
     location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
     
     # Chamada à API do Google Places para buscar profissionais próximos
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={google_api_key}"
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={places_api_key}"
     response = requests.get(url)
     places = response.json().get('results', [])
 
