@@ -46,7 +46,7 @@ def process_form():
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
-            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}"}
+            {"role": "user", "content": f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nInstruções para a IA: Siga o roteiro abaixo ao responder, mas não exiba estas instruções ou o texto do roteiro na resposta final.\n\nRoteiro:\n{script}"}
         ],
         max_tokens=250
     )
@@ -55,13 +55,23 @@ def process_form():
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
     <p>{initial_response}</p>
-    <!-- Adicione os parágrafos e sugestões aqui -->
-    <p>1. [Estratégia 1]</p>
-    <p>2. [Estratégia 2]</p>
-    <p>- [Subestratégia 1]</p>
-    <p>- [Subestratégia 2]</p>
+    <p>1. Primeiramente, entendo que a situação pode ser desconfortável e causar estresse.</p>
+    <p>2. Segundo, é importante reconhecer seus sentimentos e como eles afetam seu comportamento.</p>
+    <p>3. Terceiro, sugiro estratégias práticas para lidar com a situação:</p>
+    <ul>
+        <li>Escolha o Momento Certo: Encontre um momento em que ambos estejam calmos e sem pressa.</li>
+        <li>Use um Tom Calmo e Amigável: Mantenha sua voz calma e amigável.</li>
+        <li>Inicie com um Elogio: Comece com algo positivo.</li>
+        <li>Seja Claro e Direto: Explique como você se sente sem rodeios.</li>
+        <li>Ofereça uma Solução: Sugira uma forma de resolver a situação.</li>
+    </ul>
     """
 
+    # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
+    additional_info_request = ""
+    if "precisamos de mais informações" in initial_response.lower():
+        additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
+    
     # Contar tokens usados
     encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
     tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}")) + len(encoding.encode(initial_response))
@@ -80,7 +90,7 @@ def process_form():
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
     
-    return render_template('results.html', description=situation_description, answer=formatted_response, tokens_used=percentage_remaining)
+    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=percentage_remaining)
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -92,14 +102,13 @@ def continue_conversation():
             {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
             {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
         ],
-        max_tokens=150
+        max_tokens=250
     )
     
     continuation_response = response['choices'][0]['message']['content']
     
     # Contar tokens usados na continuação
-    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    tokens_used = len(encoding.encode(f"Continuar a conversa: {previous_answer}")) + len(encoding.encode(continuation_response))
+    tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
     session['tokens_used'] += tokens_used
     
     # Calcular a porcentagem de tokens usados
@@ -137,6 +146,11 @@ def search_professionals():
 @app.route('/final')
 def final():
     return render_template('final.html')
+
+@app.route('/reset')
+def reset():
+    session.clear()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
