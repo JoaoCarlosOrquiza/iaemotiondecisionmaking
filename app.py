@@ -3,6 +3,7 @@ import openai
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for
 from dotenv import load_dotenv
+import tiktoken
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -28,7 +29,6 @@ script = """
 
 @app.route('/')
 def index():
-    session.clear()  # Limpar a sessão ao iniciar uma nova interação
     return render_template('index.html')
 
 @app.route('/process-form', methods=['POST'])
@@ -41,14 +41,6 @@ def process_form():
     if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
     
-    # Armazenar dados na sessão
-    session['situation_description'] = situation_description
-    session['feelings'] = feelings
-    session['support_reason'] = support_reason
-    session['ia_action'] = ia_action
-    session['history'] = []  # Inicializar histórico da conversa
-    session['tokens_used'] = 0  # Inicializar contagem de tokens usados
-    
     # Gerar uma resposta inicial com base nas informações fornecidas e no roteiro
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -60,56 +52,60 @@ def process_form():
     )
     initial_response = response['choices'][0]['message']['content']
     
-    # Armazenar a resposta no histórico da sessão
-    session['history'].append(initial_response)
-    session['tokens_used'] += response['usage']['total_tokens']
-
+    # Contar tokens usados
+    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}\n\nRoteiro:\n{script}")) + len(encoding.encode(initial_response))
+    
+    # Atualizar a contagem de tokens na sessão
+    if 'tokens_used' not in session:
+        session['tokens_used'] = 0
+    session['tokens_used'] += tokens_used
+    
+    # Calcular a porcentagem de tokens usados
+    total_interactions = 5
+    current_interaction = session['tokens_used'] // 250
+    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
+    percentage_remaining = 100 - tokens_used_percentage
+    
     # Formatar a resposta inicial com a resposta da IA incorporada
     formatted_response = f"""
     <p>{initial_response}</p>
     """
-
-    # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
-    additional_info_request = ""
-    if "precisamos de mais informações" in initial_response.lower():
-        additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
-    # Calcular a porcentagem de tokens usados
-    tokens_used = 100 - round((session['tokens_used'] / 150) * 100, 2)
-
-    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=tokens_used)
+    if current_interaction >= total_interactions:
+        return redirect(url_for('final'))
+    
+    return render_template('results.html', description=situation_description, answer=formatted_response, tokens_used=percentage_remaining)
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
     previous_answer = request.form.get('previous_answer')
     
-    # Atualizar histórico da sessão com a resposta anterior do usuário
-    session['history'].append(previous_answer)
-    
-    # Gerar uma resposta de continuação com base no histórico atualizado
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Você é um assistente útil e empático, especializado em Terapia Cognitivo-Comportamental."},
-            {"role": "user", "content": "\n\n".join(session['history'])}
+            {"role": "user", "content": f"Continuar a conversa: {previous_answer}"}
         ],
         max_tokens=150
     )
     
     continuation_response = response['choices'][0]['message']['content']
     
-    # Armazenar a resposta no histórico da sessão
-    session['history'].append(continuation_response)
-    session['tokens_used'] += response['usage']['total_tokens']
+    # Contar tokens usados na continuação
+    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    tokens_used = len(encoding.encode(f"Continuar a conversa: {previous_answer}")) + len(encoding.encode(continuation_response))
+    session['tokens_used'] += tokens_used
     
     # Calcular a porcentagem de tokens usados
-    tokens_used = 100 - round((session['tokens_used'] / 150) * 100, 2)
+    current_interaction = session['tokens_used'] // 250
+    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
+    percentage_remaining = 100 - tokens_used_percentage
     
-    # Verificar se os tokens usados atingiram o limite e redirecionar para a página final se necessário
-    if session['tokens_used'] >= 150:
+    if current_interaction >= total_interactions:
         return redirect(url_for('final'))
     
-    return render_template('results.html', answer=continuation_response, tokens_used=tokens_used)
+    return render_template('results.html', answer=continuation_response, tokens_used=percentage_remaining)
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
