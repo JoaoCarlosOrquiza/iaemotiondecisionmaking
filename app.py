@@ -39,6 +39,12 @@ def process_form():
     if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
 
+    # Armazenar informações iniciais na sessão
+    session['situation_description'] = situation_description
+    session['feelings'] = feelings
+    session['support_reason'] = support_reason
+    session['ia_action'] = ia_action
+
     # Adicionando mensagens ao histórico
     add_message_to_history("user", f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")
 
@@ -84,7 +90,15 @@ def process_form():
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
     
-    return render_template('results.html', description=situation_description, answer=formatted_response, additional_info=additional_info_request, tokens_used=percentage_remaining)
+    return render_template('results.html', 
+                           description=situation_description, 
+                           answer=formatted_response, 
+                           additional_info=additional_info_request, 
+                           tokens_used=percentage_remaining,
+                           initial_description=session['situation_description'],
+                           initial_feelings=session['feelings'],
+                           initial_support_reason=session['support_reason'],
+                           initial_ia_action=session['ia_action'])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -120,7 +134,13 @@ def continue_conversation():
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
     
-    return render_template('results.html', answer=continuation_response, tokens_used=percentage_remaining)
+    return render_template('results.html', 
+                           answer=continuation_response, 
+                           tokens_used=percentage_remaining,
+                           initial_description=session['situation_description'],
+                           initial_feelings=session['feelings'],
+                           initial_support_reason=session['support_reason'],
+                           initial_ia_action=session['ia_action'])
 
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
