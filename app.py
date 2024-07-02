@@ -49,9 +49,16 @@ def process_form():
     add_message_to_history("user", f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")
 
     # Gerar uma resposta inicial com base nas informações fornecidas
+    prompt = (
+        f"Descrição: {situation_description}\n"
+        f"Emoções: {feelings}\n"
+        f"Razão do apoio: {support_reason}\n"
+        f"Ação da IA: {ia_action}\n"
+        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita."
+    )
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=get_message_history(),
+        messages=[{"role": "user", "content": prompt}] + get_message_history(),
         max_tokens=500  # Dobrar os tokens de saída
     )
     initial_response = response['choices'][0]['message']['content']
@@ -74,7 +81,7 @@ def process_form():
     
     # Contar tokens usados
     encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    tokens_used = len(encoding.encode(f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")) + len(encoding.encode(initial_response))
+    tokens_used = len(encoding.encode(prompt)) + len(encoding.encode(initial_response))
     
     # Atualizar a contagem de tokens na sessão
     if 'tokens_used' not in session:
