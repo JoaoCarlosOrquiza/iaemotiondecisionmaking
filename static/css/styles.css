@@ -64,7 +64,7 @@ button:hover {
 
 /* Estilo adicionado para o contêiner da resposta */
 .response-container {
-    height: auto;
+    max-height: none; /* Ajuste este valor conforme necessário */
     overflow: auto;
     margin-bottom: 20px;
     padding: 10px;

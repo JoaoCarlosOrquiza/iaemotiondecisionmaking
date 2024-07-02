@@ -25,11 +25,13 @@
                 <p>{{ additional_info }}</p>
             {% endif %}
             <h3>Essas informações foram suficientes?</h3>
-            <form id="feedback-form" method="POST" action="/feedback">
-                <input type="hidden" id="feedback" name="feedback">
-                <button type="button" onclick="submitFeedback('👍')">👍</button>
-                <button type="button" onclick="submitFeedback('👎')">👎</button>
-            </form>
+			<form id="feedback-form" method="POST" action="/feedback">
+				<input type="hidden" id="feedback" name="feedback">
+			<div style="display: flex; gap: 10px;">
+			<button type="button" onclick="submitFeedback('👍')">👍</button>
+			<button type="button" onclick="submitFeedback('👎')">👎</button>
+			</div>
+			</form>
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
             <h3>Busca por Profissionais/Entidades de Apoio (Note: abrirá em nova aba)</h3>
             <form id="location-form" method="POST" action="/search_professionals" target="_blank">
