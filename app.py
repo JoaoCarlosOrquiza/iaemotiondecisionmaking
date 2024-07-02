@@ -1,7 +1,7 @@
 import os
 import openai
 import requests
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from dotenv import load_dotenv
 import tiktoken
 
@@ -46,7 +46,7 @@ def process_form():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=get_message_history(),
-        max_tokens=250
+        max_tokens=500  # Dobrar os tokens de saída
     )
     initial_response = response['choices'][0]['message']['content']
     
@@ -96,13 +96,13 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=get_message_history(),
-        max_tokens=250
+        max_tokens=500  # Dobrar os tokens de saída
     )
     
     continuation_response = response['choices'][0]['message']['content']
     
-    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
-    continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
+    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria e Técnicas Cognitivo-Comportamental"
+    continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria e Técnicas Cognitivo-Comportamental")
 
     # Adicionar a resposta da IA ao histórico
     add_message_to_history("assistant", continuation_response)
@@ -153,7 +153,7 @@ def feedback():
     if feedback:
         # Lógica para processar o feedback e ajustar os algoritmos
         pass
-    return redirect(url_for('index'))
+    return jsonify(success=True)  # Responder com JSON
 
 @app.route('/final')
 def final():
