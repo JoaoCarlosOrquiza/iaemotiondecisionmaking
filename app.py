@@ -70,9 +70,8 @@ def process_form():
     add_message_to_history("assistant", initial_response)
     
     # Formatar a resposta inicial com a resposta da IA incorporada
-    formatted_response = f"""
-    <p>{initial_response}</p>
-    """
+    formatted_response = initial_response.replace("**", "<b>").replace("**", "</b>").replace("\n", "<br>")
+    formatted_response = f"<p>{formatted_response}</p>"
 
     # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
     additional_info_request = ""

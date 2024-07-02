@@ -21,6 +21,11 @@
     cursor: pointer;
 }
 
+#feedback-form button i {
+    font-size: 2em;
+    color: #333;
+}
+
 #feedback-form button:hover {
     background-color: #f0f0f0;
     border-radius: 50%;
@@ -112,4 +117,3 @@ form#continue-form button {
     max-width: 200px;
     margin: 20px auto;
 }
-	
