@@ -54,7 +54,10 @@ def process_form():
         f"Emoções: {feelings}\n"
         f"Razão do apoio: {support_reason}\n"
         f"Ação da IA: {ia_action}\n"
-        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita."
+        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita.\n"
+        f"Na primeira interação, priorize segurança, proteção e uma direção clara para a tomada de decisão.\n"
+        f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
+        f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
     )
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -113,33 +116,40 @@ def continue_conversation():
     # Adicionando mensagens ao histórico
     add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
 
+    prompt = (
+        f"Continuar a conversa: {previous_answer}\n"
+        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita.\n"
+        f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
+        f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
+    )
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=get_message_history(),
+        messages=get_message_history() + [{"role": "user", "content": prompt}],
         max_tokens=500  # Dobrar os tokens de saída
     )
-    
+
     continuation_response = response['choices'][0]['message']['content']
-    
+
     # Substituir "Terapia Cognitivo-Comportamental" por "Teoria e Técnicas Cognitivo-Comportamental"
     continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria e Técnicas Cognitivo-Comportamental")
 
     # Adicionar a resposta da IA ao histórico
     add_message_to_history("assistant", continuation_response)
-    
+
     # Contar tokens usados na continuação
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
     session['tokens_used'] += tokens_used
-    
+
     # Calcular a porcentagem de tokens usados
     total_interactions = 5
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
-    
+
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
-    
+
     return render_template('results.html', 
                            answer=continuation_response, 
                            tokens_used=percentage_remaining,
