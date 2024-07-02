@@ -33,6 +33,10 @@
 			</div>
 			</form>
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
+			    <form id="feedback-form" method="POST" action="/continue">
+                <textarea id="previous_answer" name="previous_answer" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
+                <button type="submit">Continuar Conversa</button>
+            </form>
             <h3>Busca por Profissionais/Entidades de Apoio (Note: abrirá em nova aba)</h3>
             <form id="location-form" method="POST" action="/search_professionals" target="_blank">
                 <label for="user-location">Endereço ou Localização Atual:</label>
