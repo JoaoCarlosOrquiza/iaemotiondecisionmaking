@@ -25,9 +25,10 @@
                 <p>{{ additional_info }}</p>
             {% endif %}
             <h3>Essas informações foram suficientes?</h3>
-            <form id="feedback-form" method="POST" action="/continue">
-                <textarea id="previous_answer" name="previous_answer" placeholder="Ainda temos tempo, olhe abaixo e acompanhe a porcentagem de tokens ainda livres."></textarea>
-                <button type="submit">Continuar Conversa</button>
+            <form id="feedback-form" method="POST" action="/feedback">
+                <input type="hidden" id="feedback" name="feedback">
+                <button type="button" onclick="submitFeedback('👍')">👍</button>
+                <button type="button" onclick="submitFeedback('👎')">👎</button>
             </form>
             <p>Tokens usados nesta interação: {{ tokens_used }}%</p>
             <h3>Busca por Profissionais/Entidades de Apoio (Note: abrirá em nova aba)</h3>
@@ -62,6 +63,11 @@
                 alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
             }
         });
+
+        window.submitFeedback = function(feedback) {
+            document.getElementById('feedback').value = feedback;
+            document.getElementById('feedback-form').submit();
+        }
     </script>
 </body>
 </html>

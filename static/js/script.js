@@ -57,4 +57,25 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Iniciar diálogo por voz com a IA (Funcionalidade a ser implementada)');
         });
     }
+
+    // Script para obter a localização do usuário
+    document.getElementById('location-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
+                event.target.submit();
+            }, function(error) {
+                alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+            });
+        } else {
+            alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+        }
+    });
+
+    // Função para enviar feedback
+    window.submitFeedback = function(feedback) {
+        document.getElementById('feedback').value = feedback;
+        document.getElementById('feedback-form').submit();
+    }
 });

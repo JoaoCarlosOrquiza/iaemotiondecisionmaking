@@ -147,6 +147,14 @@ def search_professionals():
 
     return render_template('professionals.html', professionals=professionals)
 
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    feedback = request.form.get('feedback')
+    if feedback:
+        # Lógica para processar o feedback e ajustar os algoritmos
+        pass
+    return redirect(url_for('index'))
+
 @app.route('/final')
 def final():
     return render_template('final.html')
