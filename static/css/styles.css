@@ -1,5 +1,32 @@
 /* styles.css */
 
+/* Estilo para centralizar o contêiner de feedback */
+.feedback-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Estilo para os botões de feedback */
+#feedback-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#feedback-form button {
+    font-size: 2em;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+#feedback-form button:hover {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+}
+
+/* Outros estilos */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -72,22 +99,16 @@ button:hover {
     border-radius: 4px;
 }
 
-/* Estilo para os botões de feedback */
-#feedback-form {
-    text-align: center;
-    margin-top: 20px;
+/* Estilo para garantir que o botão "Continuar" esteja visível */
+form#feedback-form, form#location-form, form#continue-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#feedback-form button {
-    font-size: 2em;
-    margin: 0 10px;
-    padding: 10px 20px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-#feedback-form button:hover {
-    background-color: #f0f0f0;
-    border-radius: 50%;
+form#continue-form button {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
 }

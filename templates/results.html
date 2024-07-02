@@ -107,12 +107,12 @@
             <h3>Essas informações foram suficientes?</h3>
             <form id="feedback-form" method="POST">
                 <input type="hidden" id="feedback" name="feedback">
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button type="button" onclick="submitFeedback('👍')">👍</button>
-                    <button type="button" onclick="submitFeedback('👎')">👎</button>
+                <div class="feedback-buttons">
+					<button type="button" onclick="submitFeedback('👍')">👍</button>
+					<button type="button" onclick="submitFeedback('👎')">👎</button>
                 </div>
             </form>
-            <p>Temos: {{ tokens_used }}%</p> para conversar</p>
+            <p>Temos: {{ tokens_used }}% para conversar</p>
             <form id="continue-form" method="POST" action="/continue">
                 <textarea id="previous_answer" name="previous_answer" placeholder="Acompanhe o tempo de duração disponível, vamos continuar?"></textarea>
                 <button type="submit">Continuar Conversa</button>
