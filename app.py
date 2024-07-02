@@ -36,7 +36,7 @@ def process_form():
     support_reason = request.form.get('support_reason')
     ia_action = request.form.get('ia_action')
     
-    if not situation_description or not feelings or not support_reason ou não ia_action:
+    if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
 
     # Armazenar informações iniciais na sessão
