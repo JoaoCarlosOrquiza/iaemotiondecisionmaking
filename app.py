@@ -80,29 +80,21 @@ def process_form():
     if "precisamos de mais informações" in initial_response.lower():
         additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
-    # Contar tokens usados
-    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    tokens_used = len(encoding.encode(prompt)) + len(encoding.encode(initial_response))
-    
-    # Atualizar a contagem de tokens na sessão
-    if 'tokens_used' not in session:
-        session['tokens_used'] = 0
-    session['tokens_used'] += tokens_used
-    
-    # Calcular a porcentagem de tokens usados
+    # Incrementar a contagem de interações na sessão
+    if 'interaction_count' not in session:
+        session['interaction_count'] = 0
+    session['interaction_count'] += 1
+
     total_interactions = 4
-    current_interaction = session['tokens_used'] // 250
-    tokens_used_percentage = min(round((current_interaction / total_interactions) * 100, 2), 100)
-    percentage_remaining = max(100 - tokens_used_percentage, 0)
-    
-    if current_interaction >= total_interactions:
+
+    if session['interaction_count'] >= total_interactions:
         return redirect(url_for('final'))
     
     return render_template('results.html', 
                            description=situation_description, 
                            answer=formatted_response, 
                            additional_info=additional_info_request, 
-                           tokens_used=percentage_remaining,
+                           tokens_used=(session['interaction_count'] / total_interactions) * 100,
                            initial_description=session['situation_description'],
                            initial_feelings=session['feelings'],
                            initial_support_reason=session['support_reason'],
@@ -136,22 +128,17 @@ def continue_conversation():
     # Adicionar a resposta da IA ao histórico
     add_message_to_history("assistant", continuation_response)
 
-    # Contar tokens usados na continuação
-    tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
-    session['tokens_used'] += tokens_used
+    # Incrementar a contagem de interações na sessão
+    session['interaction_count'] += 1
 
-    # Calcular a porcentagem de tokens usados
     total_interactions = 4
-    current_interaction = session['tokens_used'] // 250
-    tokens_used_percentage = min(round((current_interaction / total_interactions) * 100, 2), 100)
-    percentage_remaining = max(100 - tokens_used_percentage, 0)
 
-    if current_interaction >= total_interactions:
+    if session['interaction_count'] >= total_interactions:
         return redirect(url_for('final'))
 
     return render_template('results.html', 
                            answer=continuation_response, 
-                           tokens_used=percentage_remaining,
+                           tokens_used=(session['interaction_count'] / total_interactions) * 100,
                            initial_description=session['situation_description'],
                            initial_feelings=session['feelings'],
                            initial_support_reason=session['support_reason'],
