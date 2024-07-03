@@ -27,6 +27,34 @@ def add_message_to_history(role, content):
 def format_response(response):
     return response.replace("**", "<b>").replace("**", "</b>").replace("\n", "<br>").replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
 
+def generate_prompt(situation_description, feelings, support_reason, ia_action):
+    prompt = (
+        f"Descrição: {situation_description}\n"
+        f"Emoções: {feelings}\n"
+        f"Razão do apoio: {support_reason}\n"
+        f"Ação da IA: {ia_action}\n"
+        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita.\n"
+        f"Na primeira interação, priorize segurança, proteção e uma direção clara para a tomada de decisão.\n"
+        f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
+        f"Importante: Evite fornecer informações que não sejam baseadas em fatos ou que não tenham sido solicitadas diretamente. "
+        f"Não invente detalhes ou forneça orientações específicas não solicitadas. Mantenha suas respostas dentro dos tópicos de emoções, "
+        f"sentimentos, finanças e jurídico/leis conforme descrito. Isso é para evitar 'alucinações', que são informações factualmente incorretas "
+        f"ou irrelevantes. Você deve se comportar de maneira humilde e empática, reconhecendo que os humanos, com quem interage, estão buscando ajuda "
+        f"porque enfrentam dificuldades na tomada de decisão. Evite fornecer informações ou orientações não solicitadas e, em vez disso, concentre-se "
+        f"em pedir esclarecimentos ou mais detalhes sobre a situação do usuário quando necessário. Desta forma, você favorece a tomada de decisão do usuário, "
+        f"comportando-se de maneira semelhante a um humano, com sensibilidade e compreensão das limitações humanas.\n"
+    )
+    return prompt
+
+def post_process_response(response):
+    unwanted_phrases = [
+        "suporte emocional adicional",
+        "orientações específicas não solicitadas"
+    ]
+    for phrase in unwanted_phrases:
+        response = response.replace(phrase, "")
+    return response
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -48,16 +76,7 @@ def process_form():
 
     add_message_to_history("user", f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")
 
-    prompt = (
-        f"Descrição: {situation_description}\n"
-        f"Emoções: {feelings}\n"
-        f"Razão do apoio: {support_reason}\n"
-        f"Ação da IA: {ia_action}\n"
-        f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita.\n"
-        f"Na primeira interação, priorize segurança, proteção e uma direção clara para a tomada de decisão.\n"
-        f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
-        f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
-    )
+    prompt = generate_prompt(situation_description, feelings, support_reason, ia_action)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}] + get_message_history(),
@@ -65,6 +84,7 @@ def process_form():
     )
     initial_response = response['choices'][0]['message']['content']
     
+    initial_response = post_process_response(initial_response)
     add_message_to_history("assistant", initial_response)
     
     formatted_response = format_response(initial_response)
@@ -86,7 +106,7 @@ def process_form():
     percentage_remaining = 100 - tokens_used_percentage
     
     if current_interaction >= total_interactions:
-        return redirect(url_for('final'))
+        return redirect(url_for('pre_final'))
     
     return render_template('results.html', 
                            description=situation_description, 
@@ -108,7 +128,7 @@ def continue_conversation():
         f"Continuar a conversa: {previous_answer}\n"
         f"Baseado na Teoria e Técnicas da TCC, forneça decisões práticas, eficazes e suficientes para a situação descrita.\n"
         f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
-        f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
+        f"Importante: NÃO forneça suporte emocional adicional ou orientações específicas não solicitadas. Restrinja suas respostas aos tópicos de emoções, sentimentos, finanças e jurídico/leis conforme descrito.\n"
     )
 
     response = openai.ChatCompletion.create(
@@ -119,6 +139,7 @@ def continue_conversation():
 
     continuation_response = response['choices'][0]['message']['content']
 
+    continuation_response = post_process_response(continuation_response)
     add_message_to_history("assistant", continuation_response)
 
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
@@ -130,7 +151,7 @@ def continue_conversation():
     percentage_remaining = 100 - tokens_used_percentage
 
     if current_interaction >= total_interactions:
-        return redirect(url_for('final'))
+        return redirect(url_for('pre_final'))
 
     return render_template('results.html', 
                            answer=format_response(continuation_response), 
@@ -140,38 +161,9 @@ def continue_conversation():
                            initial_support_reason=session['support_reason'],
                            initial_ia_action=session['ia_action'])
 
-@app.route('/search_professionals', methods=['POST'])
-def search_professionals():
-    professional_type = request.form.get('professional_type')
-    location = request.form.get('user_location', '-23.3106665, -51.1899247')  # Simulando a localização do usuário
-    
-    if not professional_type:
-        return "Tipo de profissional é obrigatório", 400
-
-    # Chamada à API do Google Places para buscar profissionais próximos
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=1500&type={professional_type}&key={places_api_key}"
-    response = requests.get(url)
-    places = response.json().get('results', [])
-
-    # Criando uma lista de profissionais a partir dos resultados da API
-    professionals = []
-    for place in places:
-        professional = {
-            'name': place.get('name'),
-            'specialty': professional_type,
-            'distance': '1.5 km'  # Simulando a distância
-        }
-        professionals.append(professional)
-
-    return render_template('professionals.html', professionals=professionals)
-
-@app.route('/feedback', methods=['POST'])
-def feedback():
-    feedback = request.form.get('feedback')
-    if feedback:
-        # Lógica para processar o feedback e ajustar os algoritmos
-        pass
-    return jsonify(success=True)  # Responder com JSON
+@app.route('/pre_final')
+def pre_final():
+    return render_template('pre_final.html')
 
 @app.route('/final')
 def final():
