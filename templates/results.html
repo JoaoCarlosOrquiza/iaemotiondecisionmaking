@@ -7,8 +7,8 @@
     <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
     <meta name="author" content="Seu Nome">
     <title>Resultados da Análise da IA</title>
-    <link rel="stylesheet" href="static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -22,7 +22,7 @@
             <p>Razão do apoio: {{ initial_support_reason }}</p>
             <p>Ação da IA: {{ initial_ia_action }}</p>
             <h3>Respostas e Sugestões:</h3>
-            <div id="ia-response">
+            <div class="response-container response-1">
                 {{ answer|safe }}
             </div>
             {% if additional_info %}
@@ -40,10 +40,11 @@
                     </button>
                 </div>
             </form>
+
             <p>Temos: {{ tokens_used }}% para conversar</p>
             <form id="continue-form" method="POST" action="/continue">
                 <textarea id="previous_answer" name="previous_answer" placeholder="Acompanhe o tempo de duração disponível, vamos continuar?"></textarea>
-                <button type="submit" disabled>Continuar Conversa</button>
+                <button type="submit" id="submit-button">Continuar Conversa</button>
             </form>
             <h3>Busca por Profissionais/Entidades de Apoio (Note: abrirá em nova aba)</h3>
             <form id="location-form" method="POST" action="/search_professionals" target="_blank">
@@ -51,10 +52,75 @@
                 <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
                 <label for="professional-type">Tipo de Profissional/Entidade:</label>
                 <input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
-                <button type="submit" disabled>Buscar</button>
+                <button type="submit">Buscar</button>
             </form>
         </main>
     </div>
-    <script src="static/js/script.js"></script>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'PrintScreen') {
+                event.preventDefault();
+            }
+        });
+
+        // Script para obter a localização do usuário
+        document.getElementById('location-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
+                    event.target.submit();
+                }, function(error) {
+                    alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+                });
+            } else {
+                alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+            }
+        });
+
+        // Função para enviar feedback via AJAX
+        window.submitFeedback = function(feedback) {
+            document.getElementById('feedback').value = feedback;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/feedback", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Obrigado pelo seu feedback!");
+                    } else {
+                        alert("Houve um problema ao enviar seu feedback. Por favor, tente novamente.");
+                    }
+                }
+            };
+            xhr.send("feedback=" + feedback);
+        };
+
+        // Script para habilitar o botão de continuar conversa
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('continue-form');
+            const submitButton = document.getElementById('submit-button');
+            const inputs = form.querySelectorAll('textarea');
+
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    let allFilled = true;
+                    inputs.forEach(field => {
+                        if (!field.value) {
+                            allFilled = false;
+                        }
+                    });
+                    if (allFilled) {
+                        submitButton.disabled = false;
+                        submitButton.classList.add('enabled');
+                    } else {
+                        submitButton.disabled = true;
+                        submitButton.classList.remove('enabled');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

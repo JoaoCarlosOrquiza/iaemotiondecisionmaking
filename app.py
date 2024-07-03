@@ -1,11 +1,8 @@
-import os
-import openai
-import requests
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+import openai
+import os
 from dotenv import load_dotenv
 import tiktoken
-from cachetools import TTLCache
-import asyncio
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -18,9 +15,6 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 places_api_key = os.getenv('PLACES_API_KEY')
 
-# Cache para respostas frequentes
-response_cache = TTLCache(maxsize=100, ttl=300)
-
 # Função para acumular histórico de mensagens
 def get_message_history():
     return session.get('message_history', [])
@@ -29,14 +23,6 @@ def add_message_to_history(role, content):
     message_history = get_message_history()
     message_history.append({"role": role, "content": content})
     session['message_history'] = message_history
-
-async def fetch_openai_response(prompt, history):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}] + history,
-        max_tokens=500
-    )
-    return response['choices'][0]['message']['content']
 
 @app.route('/')
 def index():
@@ -72,13 +58,12 @@ def process_form():
         f"Sempre considere as necessidades do usuário como a maior prioridade.\n"
         f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
     )
-
-    # Verificar cache
-    if prompt in response_cache:
-        initial_response = response_cache[prompt]
-    else:
-        initial_response = asyncio.run(fetch_openai_response(prompt, get_message_history()))
-        response_cache[prompt] = initial_response
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}] + get_message_history(),
+        max_tokens=500  # Dobrar os tokens de saída
+    )
+    initial_response = response['choices'][0]['message']['content']
     
     # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
     initial_response = initial_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
@@ -105,7 +90,7 @@ def process_form():
     session['tokens_used'] += tokens_used
     
     # Calcular a porcentagem de tokens usados
-    total_interactions = 5
+    total_interactions = 4
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
@@ -137,7 +122,13 @@ def continue_conversation():
         f"A IA EMOTION DECISION MAKING possui todo o conhecimento necessário nos pilares de emoções, sentimentos, finanças e jurídico/leis em qualquer região e cultura do planeta Terra."
     )
 
-    continuation_response = asyncio.run(fetch_openai_response(prompt, get_message_history()))
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=get_message_history() + [{"role": "user", "content": prompt}],
+        max_tokens=500  # Dobrar os tokens de saída
+    )
+
+    continuation_response = response['choices'][0]['message']['content']
 
     # Substituir "Terapia Cognitivo-Comportamental" por "Teoria e Técnicas Cognitivo-Comportamental"
     continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria e Técnicas Cognitivo-Comportamental")
@@ -150,7 +141,7 @@ def continue_conversation():
     session['tokens_used'] += tokens_used
 
     # Calcular a porcentagem de tokens usados
-    total_interactions = 5
+    total_interactions = 4
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
@@ -210,3 +201,4 @@ def reset():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
