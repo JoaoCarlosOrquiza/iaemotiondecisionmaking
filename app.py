@@ -24,6 +24,9 @@ def add_message_to_history(role, content):
     message_history.append({"role": role, "content": content})
     session['message_history'] = message_history
 
+def format_response(response):
+    return response.replace("**", "<b>").replace("**", "</b>").replace("\n", "<br>").replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -38,16 +41,13 @@ def process_form():
     if not situation_description or not feelings or not support_reason or not ia_action:
         return "All form fields are required", 400
 
-    # Armazenar informações iniciais na sessão
     session['situation_description'] = situation_description
     session['feelings'] = feelings
     session['support_reason'] = support_reason
     session['ia_action'] = ia_action
 
-    # Adicionando mensagens ao histórico
     add_message_to_history("user", f"Descrição: {situation_description}\nEmoções: {feelings}\nRazão do apoio: {support_reason}\nAção da IA: {ia_action}")
 
-    # Gerar uma resposta inicial com base nas informações fornecidas
     prompt = (
         f"Descrição: {situation_description}\n"
         f"Emoções: {feelings}\n"
@@ -61,40 +61,38 @@ def process_form():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}] + get_message_history(),
-        max_tokens=500
+        max_tokens=750  # Aumentar os tokens de saída
     )
     initial_response = response['choices'][0]['message']['content']
     
-    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria Cognitivo-Comportamental"
-    initial_response = initial_response.replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
-    
-    # Adicionar a resposta da IA ao histórico
     add_message_to_history("assistant", initial_response)
     
-    # Formatar a resposta inicial com a resposta da IA incorporada
-    formatted_response = initial_response.replace("**", "<b>").replace("**", "</b>").replace("\n", "<br>")
-    formatted_response = f"<p>{formatted_response}</p>"
+    formatted_response = format_response(initial_response)
 
-    # Verificar se a resposta inicial é suficiente ou se são necessárias mais informações
     additional_info_request = ""
     if "precisamos de mais informações" in initial_response.lower():
         additional_info_request = "Por favor, forneça mais detalhes sobre sua situação para que eu possa ajudar melhor."
     
-    # Incrementar a contagem de interações na sessão
-    if 'interaction_count' not in session:
-        session['interaction_count'] = 0
-    session['interaction_count'] += 1
-
+    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    tokens_used = len(encoding.encode(prompt)) + len(encoding.encode(initial_response))
+    
+    if 'tokens_used' not in session:
+        session['tokens_used'] = 0
+    session['tokens_used'] += tokens_used
+    
     total_interactions = 4
-
-    if session['interaction_count'] >= total_interactions:
+    current_interaction = session['tokens_used'] // 250
+    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
+    percentage_remaining = 100 - tokens_used_percentage
+    
+    if current_interaction >= total_interactions:
         return redirect(url_for('final'))
     
     return render_template('results.html', 
                            description=situation_description, 
                            answer=formatted_response, 
                            additional_info=additional_info_request, 
-                           tokens_used=(session['interaction_count'] / total_interactions) * 100,
+                           tokens_used=percentage_remaining,
                            initial_description=session['situation_description'],
                            initial_feelings=session['feelings'],
                            initial_support_reason=session['support_reason'],
@@ -104,7 +102,6 @@ def process_form():
 def continue_conversation():
     previous_answer = request.form.get('previous_answer')
 
-    # Adicionando mensagens ao histórico
     add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
 
     prompt = (
@@ -117,28 +114,27 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=get_message_history() + [{"role": "user", "content": prompt}],
-        max_tokens=500
+        max_tokens=750  # Aumentar os tokens de saída
     )
 
     continuation_response = response['choices'][0]['message']['content']
 
-    # Substituir "Terapia Cognitivo-Comportamental" por "Teoria e Técnicas Cognitivo-Comportamental"
-    continuation_response = continuation_response.replace("Terapia Cognitivo-Comportamental", "Teoria e Técnicas Cognitivo-Comportamental")
-
-    # Adicionar a resposta da IA ao histórico
     add_message_to_history("assistant", continuation_response)
 
-    # Incrementar a contagem de interações na sessão
-    session['interaction_count'] += 1
+    tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
+    session['tokens_used'] += tokens_used
 
     total_interactions = 4
+    current_interaction = session['tokens_used'] // 250
+    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
+    percentage_remaining = 100 - tokens_used_percentage
 
-    if session['interaction_count'] >= total_interactions:
+    if current_interaction >= total_interactions:
         return redirect(url_for('final'))
 
     return render_template('results.html', 
-                           answer=continuation_response, 
-                           tokens_used=(session['interaction_count'] / total_interactions) * 100,
+                           answer=format_response(continuation_response), 
+                           tokens_used=percentage_remaining,
                            initial_description=session['situation_description'],
                            initial_feelings=session['feelings'],
                            initial_support_reason=session['support_reason'],
