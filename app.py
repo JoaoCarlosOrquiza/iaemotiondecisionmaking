@@ -3,6 +3,7 @@ import openai
 import os
 from dotenv import load_dotenv
 import tiktoken
+import logging
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -14,6 +15,9 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 google_api_key = os.getenv('GOOGLE_API_KEY')
 places_api_key = os.getenv('PLACES_API_KEY')
+
+# Configurar logging básico
+logging.basicConfig(level=logging.DEBUG)
 
 # Função para acumular histórico de mensagens
 def get_message_history():
@@ -105,6 +109,8 @@ def process_form():
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
     
+    logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
+    
     if current_interaction >= total_interactions:
         return redirect(url_for('pre_final'))
     
@@ -149,6 +155,8 @@ def continue_conversation():
     current_interaction = session['tokens_used'] // 250
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
+
+    logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
 
     if current_interaction >= total_interactions:
         return redirect(url_for('pre_final'))
