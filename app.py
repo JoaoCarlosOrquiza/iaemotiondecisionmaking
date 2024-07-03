@@ -61,7 +61,7 @@ def process_form():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}] + get_message_history(),
-        max_tokens=500  # Dobrar os tokens de saída
+        max_tokens=500
     )
     initial_response = response['choices'][0]['message']['content']
     
@@ -92,8 +92,8 @@ def process_form():
     # Calcular a porcentagem de tokens usados
     total_interactions = 4
     current_interaction = session['tokens_used'] // 250
-    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
-    percentage_remaining = 100 - tokens_used_percentage
+    tokens_used_percentage = min(round((current_interaction / total_interactions) * 100, 2), 100)
+    percentage_remaining = max(100 - tokens_used_percentage, 0)
     
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
@@ -125,7 +125,7 @@ def continue_conversation():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=get_message_history() + [{"role": "user", "content": prompt}],
-        max_tokens=500  # Dobrar os tokens de saída
+        max_tokens=500
     )
 
     continuation_response = response['choices'][0]['message']['content']
@@ -143,8 +143,8 @@ def continue_conversation():
     # Calcular a porcentagem de tokens usados
     total_interactions = 4
     current_interaction = session['tokens_used'] // 250
-    tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
-    percentage_remaining = 100 - tokens_used_percentage
+    tokens_used_percentage = min(round((current_interaction / total_interactions) * 100, 2), 100)
+    percentage_remaining = max(100 - tokens_used_percentage, 0)
 
     if current_interaction >= total_interactions:
         return redirect(url_for('final'))
@@ -201,4 +201,3 @@ def reset():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
