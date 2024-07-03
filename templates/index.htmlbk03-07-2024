@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IA Emotion Decision Making - Suporte para tomadas de decisões emocionais utilizando IA.">
+    <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
+    <meta name="author" content="Seu Nome">
+    <title>Resultados da Análise da IA</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bem-vindo. Vamos Pensar e Analisar Juntos, ok?</h1>
+        </header>
+        <main>
+			<h2>Análise e Resposta da IA Emotion Decision Making</h2>
+				<p>Você descreveu a situação como: {{ initial_description }}</p>
+				<p>Emoções: {{ initial_feelings }}</p>
+				<p>Razão do apoio: {{ initial_support_reason }}</p>
+				<p>Ação da IA: {{ initial_ia_action }}</p>
+				<h3>Respostas e Sugestões:</h3>
+					<div id="ia-response">
+					{{ answer|safe }}
+					</div>
+					{% if additional_info %}
+					<p>{{ additional_info }}</p>
+					{% endif %}
+    <h3>Essas informações foram suficientes?</h3>
+		<form id="feedback-form" method="POST">
+			<input type="hidden" id="feedback" name="feedback">
+			<div class="feedback-buttons">
+			<button type="button" onclick="submitFeedback('👍')">
+            <i class="fa fa-thumbs-up"></i>
+			</button>
+			<button type="button" onclick="submitFeedback('👎')">
+            <i class="fa fa-thumbs-down"></i>
+			</button>
+    </div>
+</form>
+
+            <p>Temos: {{ tokens_used }}% para conversar</p>
+            <form id="continue-form" method="POST" action="/continue">
+                <textarea id="previous_answer" name="previous_answer" placeholder="Acompanhe o tempo de duração disponível, vamos continuar?"></textarea>
+                <button type="submit">Continuar Conversa</button>
+            </form>
+            <h3>Busca por Profissionais/Entidades de Apoio (Note: abrirá em nova aba)</h3>
+            <form id="location-form" method="POST" action="/search_professionals" target="_blank">
+                <label for="user-location">Endereço ou Localização Atual:</label>
+                <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
+                <label for="professional-type">Tipo de Profissional/Entidade:</label>
+                <input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
+                <button type="submit">Buscar</button>
+            </form>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'PrintScreen') {
+                event.preventDefault();
+            }
+        });
+
+        // Script para obter a localização do usuário
+        document.getElementById('location-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
+                    event.target.submit();
+                }, function(error) {
+                    alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+                });
+            } else {
+                alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+            }
+        });
+
+        // Função para enviar feedback via AJAX
+        window.submitFeedback = function(feedback) {
+            document.getElementById('feedback').value = feedback;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/feedback", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Obrigado pelo seu feedback!");
+                    } else {
+                        alert("Houve um problema ao enviar seu feedback. Por favor, tente novamente.");
+                    }
+                }
+            };
+            xhr.send("feedback=" + feedback);
+        };
+    </script>
+</body>
+</html>

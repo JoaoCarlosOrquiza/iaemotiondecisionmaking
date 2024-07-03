@@ -28,6 +28,7 @@
                 <select id="language" name="language" required>
                     <option value="pt">Português</option>
                     <option value="en">Inglês</option>
+                    <!-- Adicione mais opções conforme necessário -->
                 </select>
 
                 <label for="situation_description">Descrição da situação:</label>
@@ -46,11 +47,18 @@
                     <option value="legal_support">Legal Support (Suporte Jurídico)</option>
                 </select>
 
-                <button type="submit" disabled>Fale com a IA</button>
+                <button type="submit">Fale com a IA</button>
             </form>
             <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
         </main>
     </div>
-    <script src="static/js/script.js"></script>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'PrintScreen') {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
