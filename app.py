@@ -126,8 +126,9 @@ def process_form():
     logging.debug(f"Current interaction: {current_interaction}")
     logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
     
-    if current_interaction < total_interactions:
-        return render_template('results.html', 
+    if current_interaction == total_interactions - 1:
+        logging.debug("Rendering results_pre_final because current_interaction == total_interactions - 1")
+        return render_template('results_pre_final.html', 
                                description=situation_description, 
                                answer=formatted_response, 
                                additional_info=additional_info_request, 
@@ -136,7 +137,9 @@ def process_form():
                                initial_feelings=session['feelings'],
                                initial_support_reason=session['support_reason'],
                                initial_ia_action=session['ia_action'])
-    else:
+    
+    if current_interaction >= total_interactions:
+        logging.debug("Rendering results_final because current_interaction >= total_interactions")
         return render_template('results_final.html', 
                                description=situation_description, 
                                answer=formatted_response, 
@@ -145,6 +148,16 @@ def process_form():
                                initial_feelings=session['feelings'],
                                initial_support_reason=session['support_reason'],
                                initial_ia_action=session['ia_action'])
+    
+    return render_template('results.html', 
+                           description=situation_description, 
+                           answer=formatted_response, 
+                           additional_info=additional_info_request, 
+                           tokens_used=percentage_remaining,
+                           initial_description=session['situation_description'],
+                           initial_feelings=session['feelings'],
+                           initial_support_reason=session['support_reason'],
+                           initial_ia_action=session['ia_action'])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -190,26 +203,47 @@ def continue_conversation():
     logging.debug(f"Current interaction: {current_interaction}")
     logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
 
-    if current_interaction < total_interactions:
-        return render_template('results.html', 
+    if current_interaction == total_interactions - 1:
+        logging.debug("Rendering results_pre_final because current_interaction == total_interactions - 1")
+        return render_template('results_pre_final.html', 
                                answer=format_response(continuation_response), 
                                tokens_used=percentage_remaining,
                                initial_description=session['situation_description'],
                                initial_feelings=session['feelings'],
                                initial_support_reason=session['support_reason'],
                                initial_ia_action=session['ia_action'])
-    else:
+    
+    if current_interaction >= total_interactions:
+        logging.debug("Rendering results_final because current_interaction >= total_interactions")
         return render_template('results_final.html', 
-                               answer=format_response(continuation_response),
+                               answer=format_response(continuation_response), 
                                initial_description=session['situation_description'],
                                initial_feelings=session['feelings'],
                                initial_support_reason=session['support_reason'],
                                initial_ia_action=session['ia_action'])
 
-@app.route('/final')
-def final():
-    logging.debug("Rendering final page")
-    return render_template('final.html')
+    return render_template('results.html', 
+                           answer=format_response(continuation_response), 
+                           tokens_used=percentage_remaining,
+                           initial_description=session['situation_description'],
+                           initial_feelings=session['feelings'],
+                           initial_support_reason=session['support_reason'],
+                           initial_ia_action=session['ia_action'])
+
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    feedback = request.form.get('feedback')
+    logging.debug(f"Feedback received: {feedback}")
+    # Processar feedback conforme necessário
+    return jsonify({"status": "success"})
+
+@app.route('/search_professionals', methods=['POST'])
+def search_professionals():
+    user_location = request.form.get('user_location')
+    professional_type = request.form.get('professional_type')
+    logging.debug(f"Searching for professionals of type {professional_type} at location {user_location}")
+    # Lógica para busca de profissionais
+    return jsonify({"status": "searching", "location": user_location, "type": professional_type})
 
 @app.route('/reset')
 def reset():
