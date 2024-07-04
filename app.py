@@ -27,6 +27,7 @@ def add_message_to_history(role, content):
     message_history = get_message_history()
     message_history.append({"role": role, "content": content})
     session['message_history'] = message_history
+    logging.debug(f"Updated message history: {message_history}")
 
 def format_response(response):
     return response.replace("**", "<b>").replace("**", "</b>").replace("\n", "<br>").replace("Terapia Cognitivo-Comportamental", "Teoria Cognitivo-Comportamental")
@@ -48,6 +49,7 @@ def generate_prompt(situation_description, feelings, support_reason, ia_action):
         f"em pedir esclarecimentos ou mais detalhes sobre a situação do usuário quando necessário. Desta forma, você favorece a tomada de decisão do usuário, "
         f"comportando-se de maneira semelhante a um humano, com sensibilidade e compreensão das limitações humanas.\n"
     )
+    logging.debug(f"Generated prompt: {prompt}")
     return prompt
 
 def post_process_response(response):
@@ -57,10 +59,12 @@ def post_process_response(response):
     ]
     for phrase in unwanted_phrases:
         response = response.replace(phrase, "")
+    logging.debug(f"Post-processed response: {response}")
     return response
 
 @app.route('/')
 def index():
+    logging.debug("Rendering index page")
     return render_template('index.html')
 
 @app.route('/process-form', methods=['POST'])
@@ -70,7 +74,10 @@ def process_form():
     support_reason = request.form.get('support_reason')
     ia_action = request.form.get('ia_action')
     
+    logging.debug(f"Received form data: {situation_description}, {feelings}, {support_reason}, {ia_action}")
+    
     if not situation_description or not feelings or not support_reason or not ia_action:
+        logging.warning("Form submission missing required fields")
         return "All form fields are required", 400
 
     session['situation_description'] = situation_description
@@ -130,6 +137,8 @@ def process_form():
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
     previous_answer = request.form.get('previous_answer')
+    
+    logging.debug(f"Continuing conversation with: {previous_answer}")
 
     add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
 
@@ -177,14 +186,17 @@ def continue_conversation():
 
 @app.route('/pre_final')
 def pre_final():
+    logging.debug("Rendering pre_final page")
     return render_template('pre_final.html')
 
 @app.route('/final')
 def final():
+    logging.debug("Rendering final page")
     return render_template('final.html')
 
 @app.route('/reset')
 def reset():
+    logging.debug("Resetting session")
     session.clear()
     return redirect(url_for('index'))
 
