@@ -69,6 +69,9 @@ def index():
 
 @app.route('/process-form', methods=['POST'])
 def process_form():
+    if 'current_interaction' not in session:
+        session['current_interaction'] = 0
+    
     situation_description = request.form.get('situation_description')
     feelings = request.form.get('feelings')
     support_reason = request.form.get('support_reason')
@@ -111,11 +114,11 @@ def process_form():
         session['tokens_used'] = 0
     session['tokens_used'] += tokens_used
     
-    total_interactions = 3  # Ajustando para 3 interações
-    current_interaction = session.get('current_interaction', 0)
+    current_interaction = session['current_interaction']
     current_interaction += 1
     session['current_interaction'] = current_interaction
     
+    total_interactions = 3
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
     
@@ -139,6 +142,9 @@ def process_form():
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
+    if 'current_interaction' not in session:
+        session['current_interaction'] = 0
+    
     previous_answer = request.form.get('previous_answer')
     
     logging.debug(f"Continuing conversation with: {previous_answer}")
@@ -166,11 +172,11 @@ def continue_conversation():
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
     session['tokens_used'] += tokens_used
 
-    total_interactions = 3  # Ajustando para 3 interações
-    current_interaction = session.get('current_interaction', 0)
+    current_interaction = session['current_interaction']
     current_interaction += 1
     session['current_interaction'] = current_interaction
 
+    total_interactions = 3
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
 
