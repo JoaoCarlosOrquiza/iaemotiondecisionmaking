@@ -109,7 +109,9 @@ def process_form():
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
     
-    logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
+    logging.debug(f"Session tokens used: {session['tokens_used']}")
+    logging.debug(f"Current interaction: {current_interaction}")
+    logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
     
     if current_interaction >= total_interactions:
         logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
@@ -157,7 +159,9 @@ def continue_conversation():
     tokens_used_percentage = round((current_interaction / total_interactions) * 100, 2)
     percentage_remaining = 100 - tokens_used_percentage
 
-    logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
+    logging.debug(f"Session tokens used: {session['tokens_used']}")
+    logging.debug(f"Current interaction: {current_interaction}")
+    logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
 
     if current_interaction >= total_interactions:
         logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
