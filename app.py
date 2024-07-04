@@ -112,6 +112,7 @@ def process_form():
     logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
     
     if current_interaction >= total_interactions:
+        logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
         return redirect(url_for('pre_final'))
     
     return render_template('results.html', 
@@ -159,6 +160,7 @@ def continue_conversation():
     logging.debug(f"tokens_used: {session['tokens_used']}, current_interaction: {current_interaction}")
 
     if current_interaction >= total_interactions:
+        logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
         return redirect(url_for('pre_final'))
 
     return render_template('results.html', 
