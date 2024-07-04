@@ -126,19 +126,25 @@ def process_form():
     logging.debug(f"Current interaction: {current_interaction}")
     logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
     
-    if current_interaction >= total_interactions:
-        logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
-        return redirect(url_for('pre_final'))
-    
-    return render_template('results.html', 
-                           description=situation_description, 
-                           answer=formatted_response, 
-                           additional_info=additional_info_request, 
-                           tokens_used=percentage_remaining,
-                           initial_description=session['situation_description'],
-                           initial_feelings=session['feelings'],
-                           initial_support_reason=session['support_reason'],
-                           initial_ia_action=session['ia_action'])
+    if current_interaction < total_interactions:
+        return render_template('results.html', 
+                               description=situation_description, 
+                               answer=formatted_response, 
+                               additional_info=additional_info_request, 
+                               tokens_used=percentage_remaining,
+                               initial_description=session['situation_description'],
+                               initial_feelings=session['feelings'],
+                               initial_support_reason=session['support_reason'],
+                               initial_ia_action=session['ia_action'])
+    else:
+        return render_template('results_final.html', 
+                               description=situation_description, 
+                               answer=formatted_response, 
+                               additional_info=additional_info_request,
+                               initial_description=session['situation_description'],
+                               initial_feelings=session['feelings'],
+                               initial_support_reason=session['support_reason'],
+                               initial_ia_action=session['ia_action'])
 
 @app.route('/continue', methods=['POST'])
 def continue_conversation():
@@ -184,22 +190,21 @@ def continue_conversation():
     logging.debug(f"Current interaction: {current_interaction}")
     logging.debug(f"Tokens used percentage: {tokens_used_percentage}")
 
-    if current_interaction >= total_interactions:
-        logging.debug("Redirecting to pre_final because current_interaction >= total_interactions")
-        return redirect(url_for('pre_final'))
-
-    return render_template('results.html', 
-                           answer=format_response(continuation_response), 
-                           tokens_used=percentage_remaining,
-                           initial_description=session['situation_description'],
-                           initial_feelings=session['feelings'],
-                           initial_support_reason=session['support_reason'],
-                           initial_ia_action=session['ia_action'])
-
-@app.route('/pre_final')
-def pre_final():
-    logging.debug("Rendering pre_final page")
-    return render_template('pre_final.html')
+    if current_interaction < total_interactions:
+        return render_template('results.html', 
+                               answer=format_response(continuation_response), 
+                               tokens_used=percentage_remaining,
+                               initial_description=session['situation_description'],
+                               initial_feelings=session['feelings'],
+                               initial_support_reason=session['support_reason'],
+                               initial_ia_action=session['ia_action'])
+    else:
+        return render_template('results_final.html', 
+                               answer=format_response(continuation_response),
+                               initial_description=session['situation_description'],
+                               initial_feelings=session['feelings'],
+                               initial_support_reason=session['support_reason'],
+                               initial_ia_action=session['ia_action'])
 
 @app.route('/final')
 def final():
