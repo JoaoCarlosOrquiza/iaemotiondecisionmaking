@@ -14,29 +14,23 @@
     <div class="container">
         <header>
             <h1>IA Emotion Decision Making</h1>
-    <p style="text-align: center;">
-        Esta plataforma é gratuita para todos os usuários.<br>
-        Nosso objetivo é oferecer suporte emocional sem qualquer custo.<br>
-        Se você está passando por uma situação difícil, estamos aqui para ajudar.<br>
-        Fique seguro que não há custos algum.
-    </p>
-    <nav>
-        <ul style="text-align: center;">
-            <li style="display: inline-block; margin-right: 20px;"><a href="index.html">Home</a></li>
-            <li style="display: inline-block; margin-right: 20px;"><a href="about.html">Sobre</a></li>
-            <li style="display: inline-block; margin-right: 20px;"><a href="contact.html">Contato</a></li>
-            <li style="display: inline-block; margin-right: 20px;"><a href="privacy.html">Privacidade</a></li>
-        </ul>
-    </nav>
+            <p style="text-align: center;">
+                Esta plataforma é gratuita para todos os usuários.<br>
+                Nosso objetivo é oferecer suporte emocional sem qualquer custo.<br>
+                Se você está passando por uma situação difícil, estamos aqui para ajudar.<br>
+                Fique seguro que não há custos algum.
+            </p>
+            <nav>
+                <ul style="text-align: center;">
+                    <li style="display: inline-block; margin-right: 20px;"><a href="index.html">Home</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="about.html">Sobre</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="contact.html">Contato</a></li>
+                    <li style="display: inline-block; margin-right: 20px;"><a href="privacy.html">Privacidade</a></li>
+                </ul>
+            </nav>
         </header>
         <main>
             <form id="decision-form" method="POST" action="/process-form">
-                <label for="language">Idioma:</label>
-                <select id="language" name="language" required>
-                    <option value="pt">Português</option>
-                    <option value="en">Inglês</option>
-                </select>
-
                 <label for="situation_description">Descrição da situação:</label>
                 <textarea id="situation_description" name="situation_description" placeholder="Descreva a situação" required></textarea>
 
@@ -57,6 +51,9 @@
             </form>
             <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
         </main>
+        <footer style="text-align: center; margin-top: 20px;">
+            © 2024 IA EMOTION DECISION MAKING
+        </footer>
     </div>
     <script src="static/js/script.js"></script>
 </body>
