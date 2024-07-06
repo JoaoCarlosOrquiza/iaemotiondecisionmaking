@@ -136,6 +136,29 @@ form#continue-form button {
     margin: 20px auto;
 }
 
+/* Nova classe para centralizar o texto */
+.center-text {
+    text-align: center;
+    margin: 20px 0; /* Adiciona espaçamento vertical */
+}
+
+/* Estilos para o menu de navegação */
+.nav-list {
+    text-align: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+.nav-list li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.nav-list li:last-child {
+    margin-right: 0;
+}
+
+/* Estilos responsivos */
 @media (max-width: 600px) {
     .container {
         width: 95%;
