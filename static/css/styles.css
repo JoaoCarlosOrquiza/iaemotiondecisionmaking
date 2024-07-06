@@ -142,6 +142,11 @@ form#continue-form button {
     margin: 20px 0; /* Adiciona espaçamento vertical */
 }
 
+.no-cost {
+    display: block; /* Faz com que o texto quebre em uma nova linha em telas pequenas */
+    margin-top: 10px; /* Espaçamento adicional para separar a linha */
+}
+
 /* Estilos para o menu de navegação */
 .nav-list {
     text-align: center;
@@ -158,6 +163,12 @@ form#continue-form button {
     margin-right: 0;
 }
 
+/* Estilos para o rodapé */
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
 /* Estilos responsivos */
 @media (max-width: 600px) {
     .container {
@@ -168,5 +179,10 @@ form#continue-form button {
     button {
         width: 100%;
         padding: 15px;
+    }
+
+    .no-cost {
+        display: block;
+        margin-top: 10px;
     }
 }
