@@ -62,6 +62,17 @@ def post_process_response(response):
     logging.debug(f"Post-processed response: {response}")
     return response
 
+def detect_language():
+    # Supondo que o idioma é detectado por geoIP ou informações de sessão
+    return session.get('language', 'pt')
+
+def include_resources(response):
+    language = detect_language()
+    if language == 'en':
+        response += "<br>For free emotional support in English, you can access <a href='https://www.7cups.com/'>7 Cups</a>."
+    logging.debug(f"Response with additional resources: {response}")
+    return response
+
 @app.route('/')
 def index():
     logging.debug("Rendering index page")
@@ -99,6 +110,7 @@ def process_form():
     initial_response = response['choices'][0]['message']['content']
     
     initial_response = post_process_response(initial_response)
+    initial_response = include_resources(initial_response)
     add_message_to_history("assistant", initial_response)
     
     formatted_response = format_response(initial_response)
@@ -186,6 +198,7 @@ def continue_conversation():
     continuation_response = response['choices'][0]['message']['content']
 
     continuation_response = post_process_response(continuation_response)
+    continuation_response = include_resources(continuation_response)
     add_message_to_history("assistant", continuation_response)
 
     tokens_used = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(f"Continuar a conversa: {previous_answer}")) + len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(continuation_response))
@@ -242,8 +255,30 @@ def search_professionals():
     user_location = request.form.get('user_location')
     professional_type = request.form.get('professional_type')
     logging.debug(f"Searching for professionals of type {professional_type} at location {user_location}")
-    # Lógica para busca de profissionais
-    return jsonify({"status": "searching", "location": user_location, "type": professional_type})
+
+    # Configuração da requisição para a API do Google Places
+    places_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+    params = {
+        'location': user_location,
+        'radius': 5000,  # 5 km de raio
+        'type': professional_type,
+        'key': places_api_key
+    }
+
+    response = requests.get(places_url, params=params)
+    results = response.json().get('results', [])
+
+    professionals = []
+    for result in results:
+        professionals.append({
+            'name': result.get('name'),
+            'specialty': professional_type,
+            'distance': f"{result.get('geometry', {}).get('location', {}).get('lat')}, {result.get('geometry', {}).get('location', {}).get('lng')}"
+        })
+
+    logging.debug(f"Found professionals: {professionals}")
+
+    return render_template('professionals.html', professionals=professionals)
 
 @app.route('/reset')
 def reset():
