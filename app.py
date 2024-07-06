@@ -149,7 +149,7 @@ def process_form():
                                initial_feelings=session['feelings'],
                                initial_support_reason=session['support_reason'],
                                initial_ia_action=session['ia_action'])
-    
+
     return render_template('results.html', 
                            description=situation_description, 
                            answer=formatted_response, 
@@ -274,7 +274,7 @@ def search_professionals():
     except requests.RequestException as e:
         app.logger.error(f"Error fetching professionals: {e}")
         return render_template('error.html')
-S
+
 @app.route('/reset')
 def reset():
     logging.debug("Resetting session")
