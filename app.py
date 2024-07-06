@@ -252,20 +252,29 @@ def search_professionals():
         "type": professional_type
     }
 
-    response = requests.get(places_url, params=params)
-    results = response.json().get('results', [])
+    try:
+        response = requests.get(places_url, params=params)
+        response.raise_for_status()
+        results = response.json().get('results', [])
+        
+        if not results:
+            return render_template('no_professionals.html')
+        
+        professionals = [
+            {
+                "name": result["name"],
+                "specialty": professional_type,
+                "distance": result.get("vicinity", "Unknown")
+            }
+            for result in results
+        ]
+
+        return render_template('search_results.html', professionals=professionals)
     
-    professionals = [
-        {
-            "name": result["name"],
-            "specialty": professional_type,
-            "distance": result.get("vicinity", "Unknown")
-        }
-        for result in results
-    ]
-
-    return render_template('search_results.html', professionals=professionals)
-
+    except requests.RequestException as e:
+        app.logger.error(f"Error fetching professionals: {e}")
+        return render_template('error.html')
+S
 @app.route('/reset')
 def reset():
     logging.debug("Resetting session")
