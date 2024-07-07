@@ -5,6 +5,16 @@
     gap: 10px;
 }
 
+.spacing {
+    margin-bottom: 20px; /* Ajuste o valor conforme necessário */
+}
+
+/* Alternativamente, adicione margem ao formulário */
+form {
+    margin-top: 20px; /* Ajuste o valor conforme necessário */
+}
+
+
 /* Estilo para os botões de feedback */
 #feedback-form {
     text-align: center;
