@@ -1,11 +1,9 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', function() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         const inputs = form.querySelectorAll('input, textarea, select');
         const submitButton = form.querySelector('button[type="submit"]');
-        
+
         inputs.forEach(input => {
             input.addEventListener('input', () => {
                 let allFilled = true;

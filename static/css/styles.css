@@ -107,7 +107,7 @@ button:hover {
 }
 
 button:disabled {
-    background-color: #cccccc;
+    background-color: #d6d6d6;
     cursor: not-allowed;
 }
 
@@ -141,15 +141,6 @@ button:disabled {
     margin-right: 0;
 }
 
-.nav-list a {
-    text-decoration: none;
-    color: #333;
-}
-
-.nav-list a:hover {
-    text-decoration: underline;
-}
-
 /* Estilos responsivos */
 @media (max-width: 600px) {
     .container {
@@ -167,15 +158,9 @@ button:disabled {
         margin-top: 10px;
     }
 
-    .nav-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
     .nav-list li {
-        display: inline;
-        margin: 10px;
+        display: block;
+        margin: 10px 0;
     }
 }
 
