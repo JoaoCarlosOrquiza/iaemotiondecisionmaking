@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('input', () => {
                 let allFilled = true;
                 inputs.forEach(field => {
-                    if (!field.value) {
+                    if (!field.value.trim()) { // Use trim() para ignorar espaços em branco
                         allFilled = false;
                     }
                 });
