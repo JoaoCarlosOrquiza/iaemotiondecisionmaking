@@ -1,72 +1,74 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IA Emotion Decision Making - Suporte para tomadas de decisões emocionais utilizando IA.">
-    <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
-    <meta name="author" content="Equipe de IA Emotion Decision Making">
-    <title>IA Apoio Emocional em Urgências</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon">
+    <title>IA Emotion Decision Making</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
     <div class="container">
         <header>
-            <img src="static/images/logo.png" alt="IA Emotion Decision Making Logo" class="logo">
+            <img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
             <h1>IA de Apoio Emocional</h1>
             <h2>Um Direito Universal, Acesso Gratuito e Confidencial</h2>
-            <p class="center-text">
-                Interações Breves e Suporte em Urgências
+            <h3>Interações Breves e Suporte em Urgências</h3>
+        </header>
+
+        <nav class="nav-links">
+            <ul class="nav-list">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato">Contato</a></li>
+                <li><a href="#privacidade">Privacidade</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <p>
+                Consideramos essa ação como um direito humano universal, acessível a todos, gratuitamente e de forma confidencial. Emoções e sentimentos desencontrados podem paralisar e desequilibrar rapidamente um ser humano. Por isso, a plataforma IA proporciona interações rápidas e eficazes com o chat, especialmente projetadas para fornecer auxílio breve e focado nas necessidades emergenciais do usuário.
             </p>
-            <p class="center-text">
-                Consideramos essa ação como um direito humano universal, acessível a todos, gratuitamente e de forma confidencial. Emoções e sentimentos desencontrados podem paralisar e desequilbrar rapidamente um ser humano. Por isso, a plataforma IA proporciona interações rápidas e eficazes com o chat, especialmente projetadas para fornecer auxílio breve e focado nas necessidades emergenciais do usuário.
-            </p>
-            <p class="center-text">
+            <p>
                 A plataforma disponibiliza também um campo de pesquisa para localizar profissionais próximos ao local onde o usuário está, facilitando o acesso a ajuda especializada quando necessário.
             </p>
-            <p class="center-text">
+            <p>
                 O usuário terá quatro interações para obter suporte emocional imediato e direcionado.
             </p>
-            <nav>
-                <button class="menu-toggle" aria-label="Abrir menu de navegação">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <ul class="nav-list">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="privacy.html">Privacidade</a></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <form id="decision-form" method="POST" action="/process-form">
-                <label for="situation_description">Descrição da situação:</label>
-                <textarea id="situation_description" name="situation_description" placeholder="Descreva a situação" required></textarea>
 
-                <label for="feelings">Qual ou quais sentimentos isso gera?</label>
-                <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos e/ou inclua algo mais que você percebe necessário para eu ajudá-lo" required></textarea>
+            <!-- Formulário de descrição da situação -->
+            <form>
+                <label for="descricao">Descrição da situação:</label>
+                <textarea id="descricao" name="descricao" placeholder="Descreva a situação"></textarea>
 
-                <label for="support_reason">Para quem busca apoio?</label>
-                <textarea id="support_reason" name="support_reason" placeholder="Para mim, para um amigo, etc." required></textarea>
+                <label for="sentimentos">Qual ou quais sentimentos isso gera?</label>
+                <textarea id="sentimentos" name="sentimentos" placeholder="Descreva os sentimentos e/ou inclua algo mais que você percebe necessário para eu ajudá-lo"></textarea>
 
-                <label for="ia_action">Como a IA deve atuar?</label>
-                <select id="ia_action" name="ia_action" required>
-                    <option value="emotional_health">Saúde Emocional</option>
-                    <option value="financial_health">Saúde Financeira</option>
-                    <option value="legal_support">Suporte Jurídico</option>
+                <label for="apoio">Para quem busca apoio?</label>
+                <input type="text" id="apoio" name="apoio" placeholder="Para mim, para um amigo, etc.">
+
+                <label for="atuar">Como a IA deve atuar?</label>
+                <select id="atuar" name="atuar">
+                    <option value="saude_emocional">Saúde Emocional</option>
+                    <!-- Outras opções -->
                 </select>
 
-                <button type="submit" disabled>Fale com a IA</button>
+                <button type="submit">Fale com a IA</button>
             </form>
-            <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
+
+            <!-- Formulário de feedback -->
+            <div id="feedback-form">
+                <div class="feedback-buttons">
+                    <button><i class="fas fa-thumbs-up"></i></button>
+                    <button><i class="fas fa-thumbs-down"></i></button>
+                </div>
+            </div>
+
+            <footer>
+                <p class="privacy">Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
+                <p>© 2024 IA Emotion Decision Making</p>
+            </footer>
         </main>
-        <footer>
-            <p>© 2024 IA Emotion Decision Making</p>
-        </footer>
     </div>
-    <script src="static/js/script.js"></script>
 </body>
 </html>
