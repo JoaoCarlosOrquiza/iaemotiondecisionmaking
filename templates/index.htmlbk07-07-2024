@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial - Suporte para tomadas de decisões emocionais utilizando IA.">
+    <meta name="description" content="IA Emotion Decision Making - Suporte para tomadas de decisões emocionais utilizando IA.">
     <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
-    <meta name="author" content="Equipe de Apoio Emocional IA">
-    <title>Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial</title>
+    <meta name="author" content="Equipe de IA Emotion Decision Making">
+    <title>IA Emotion Decision Making</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <img src="static/images/logo.png" alt="Logo IA" class="center-logo">
-            <h1>Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial</h1>
+            <h1>IA Emotion Decision Making</h1>
             <p class="center-text">
-                Nosso objetivo é oferecer suporte emocional de emergência em quatro sessões. Este é um direito universal, acessível a todos, gratuitamente e de forma confidencial.
+                Esta plataforma é gratuita para todos os usuários. Nosso objetivo é oferecer suporte emocional sem qualquer custo. Se você está passando por uma situação difícil, estamos aqui para ajudar. <span class="no-cost">Fique seguro que não há custos algum.</span>
             </p>
             <nav>
                 <ul class="nav-list">
@@ -50,7 +49,7 @@
             <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
         </main>
         <footer>
-            © 2024 Apoio Emocional IA
+            © 2024 IA EMOTION DECISION MAKING
         </footer>
     </div>
     <script src="static/js/script.js"></script>

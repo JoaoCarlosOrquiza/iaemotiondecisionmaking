@@ -186,3 +186,9 @@ footer {
         margin-top: 10px;
     }
 }
+
+/* Centralização da logo */
+.center-logo {
+    display: block;
+    margin: 0 auto;
+}
