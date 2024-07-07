@@ -187,10 +187,9 @@ footer {
     }
 }
 
-/* Centralização da logo */
-.center-logo {
+.logo {
     display: block;
-    margin: 0 auto;
-    max-width: 300px;
-    width: 100%;
+    margin: 0 auto 20px;
+    max-width: 150px; /* Defina a largura máxima da logo */
+    height: auto; /* Mantém a proporção da imagem */
 }

@@ -3,56 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial - Suporte para tomadas de decisões emocionais utilizando IA.">
-    <meta name="keywords" content="IA, Decisões Emocionais, Terapia Cognitivo-Comportamental, Suporte Emocional">
-    <meta name="author" content="Equipe de Apoio Emocional IA">
-    <title>Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Apoio Emocional em Urgências IA</title>
 </head>
 <body>
     <div class="container">
         <header>
-            <img src="static/images/logo.png" alt="Logo IA" class="center-logo">
-            <h1>Apoio Emocional IA: Direito Universal, Acesso Gratuito e Confidencial</h1>
-            <p class="center-text">
-                Nosso objetivo é oferecer suporte emocional de emergência em quatro sessões. Este é um direito universal, acessível a todos, gratuitamente e de forma confidencial.
-            </p>
-            <nav>
-                <ul class="nav-list">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="privacy.html">Privacidade</a></li>
-                </ul>
-            </nav>
+            <img src="/static/images/logo.png" alt="Logo IA" class="logo">
+            <h1>Apoio Emocional em Urgências IA: Direito Universal, Acesso Gratuito e Confidencial</h1>
+            <p>Nosso objetivo é oferecer suporte emocional imediato em quatro sessões para situações de urgência. Este é um direito universal, acessível a todos, gratuitamente e de forma confidencial.</p>
         </header>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Contato</a></li>
+                <li><a href="#">Privacidade</a></li>
+            </ul>
+        </nav>
         <main>
-            <form id="decision-form" method="POST" action="/process-form">
-                <label for="situation_description">Descrição da situação:</label>
-                <textarea id="situation_description" name="situation_description" placeholder="Descreva a situação" required></textarea>
-
+            <form id="feedback-form">
+                <label for="situation-description">Descrição da situação:</label>
+                <textarea id="situation-description" name="situation-description" rows="4" placeholder="Descreva a situação"></textarea>
+                
                 <label for="feelings">Qual ou quais sentimentos isso gera?</label>
-                <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos e/ou inclua algo mais que você percebe necessário para eu ajudá-lo" required></textarea>
-
-                <label for="support_reason">Para quem busca apoio?</label>
-                <textarea id="support_reason" name="support_reason" placeholder="Para mim, para um amigo, etc." required></textarea>
-
-                <label for="ia_action">Como a IA deve atuar?</label>
-                <select id="ia_action" name="ia_action" required>
-                    <option value="emotional_health">Emotional Health (Saúde Emocional)</option>
-                    <option value="financial_health">Financial Health (Saúde Financeira)</option>
-                    <option value="legal_support">Legal Support (Suporte Jurídico)</option>
+                <textarea id="feelings" name="feelings" rows="4" placeholder="Descreva os sentimentos e/ou inclua algo mais que você percebe necessário para eu ajudá-lo"></textarea>
+                
+                <label for="support-target">Para quem busca apoio?</label>
+                <textarea id="support-target" name="support-target" rows="2" placeholder="Para mim, para um amigo, etc."></textarea>
+                
+                <label for="support-type">Como a IA deve atuar?</label>
+                <select id="support-type" name="support-type">
+                    <option value="emotional-health">Emotional Health (Saúde Emocional)</option>
                 </select>
-
-                <button type="submit" disabled>Fale com a IA</button>
+                
+                <button type="submit">Fale com a IA</button>
             </form>
-            <p class="privacy"><strong>Privacidade:</strong> Nenhum dado seu será armazenado ou compartilhado.</p>
         </main>
         <footer>
-            © 2024 Apoio Emocional IA
+            <p>Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
+            <p>&copy; 2024 Apoio Emocional IA</p>
         </footer>
     </div>
-    <script src="static/js/script.js"></script>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>
