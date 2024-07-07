@@ -32,16 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Script para para Menu Sanduíche
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navList = document.querySelector('.nav-list');
-
-    menuToggle.addEventListener('click', function() {
-        navList.classList.toggle('show');
-    });
-});
-
     // Script para obter a localização do usuário
     const locationForm = document.getElementById('location-form');
     if (locationForm) {

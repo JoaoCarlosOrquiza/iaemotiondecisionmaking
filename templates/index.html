@@ -1,37 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IA de Apoio Emocional</title>
-    <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="icon" href="templates/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/images/favicon.ico">
 </head>
 <body>
+    <header>
+        <img src="/static/images/logo.png" alt="Logo" class="logo">
+        <nav>
+            <ul class="nav-list">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Contato</a></li>
+                <li><a href="#">Privacidade</a></li>
+            </ul>
+        </nav>
+    </header>
     <div class="container">
-        <img src="templates/static/images/logo.png" alt="Logo" class="logo">
         <h1>IA de Apoio Emocional</h1>
         <h2>Um Direito Universal, Acesso Gratuito e Confidencial</h2>
         <h3>Interações Breves e Suporte em Urgências</h3>
-        <ul class="nav-list">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Contato</a></li>
-            <li><a href="#">Privacidade</a></li>
-        </ul>
-        <p>Consideramos essa ação como um direito humano universal, acessível a todos, gratuitamente e de forma confidencial. Emoções e sentimentos desencontrados podem paralisar e desequilibrar rapidamente um ser humano. Por isso, a plataforma IA proporciona interações rápidas e eficazes com o chat, especialmente projetadas para fornecer auxílio breve e focado nas necessidades emergenciais do usuário.</p>
-        <p>A plataforma disponibiliza também um campo de pesquisa para localizar profissionais próximos ao local onde o usuário está, facilitando o acesso a ajuda especializada quando necessário.</p>
-        <p>O usuário terá quatro interações para obter suporte emocional imediato e direcionado.</p>
-        
-        <form id="feedback-form">
-            <label for="description">Descrição da situação:</label>
-            <textarea id="description" name="description" placeholder="Descreva a situação"></textarea>
+        <p>Consideramos essa ação como um direito humano universal, acessível a todos...</p>
+        <!-- Formulário -->
+        <form id="support-form">
+            <label for="situation">Descrição da situação:</label>
+            <textarea id="situation" name="situation" placeholder="Descreva a situação"></textarea>
             
             <label for="feelings">Qual ou quais sentimentos isso gera?</label>
-            <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos e/ou inclua algo mais que você percebe necessário para eu ajudá-lo"></textarea>
+            <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos..."></textarea>
             
-            <label for="support">Para quem busca apoio?</label>
-            <input type="text" id="support" name="support" placeholder="Para mim, para um amigo, etc.">
+            <label for="support-for">Para quem busca apoio?</label>
+            <input id="support-for" name="support-for" type="text" placeholder="Para mim, para um amigo, etc.">
             
             <label for="action">Como a IA deve atuar?</label>
             <select id="action" name="action">
@@ -40,13 +42,13 @@
                 <option value="legal">Legal Support (Suporte Jurídico)</option>
             </select>
             
-            <button type="submit">Fale com a IA</button>
+            <button type="submit" disabled>Fale com a IA</button>
         </form>
-        
-        <p class="privacy">Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
-        <footer>
-            <p>© 2024 IA Emotion Decision Making</p>
-        </footer>
     </div>
+    <footer>
+        <p>Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
+        <p>© 2024 IA Emotion Decision Making</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>
