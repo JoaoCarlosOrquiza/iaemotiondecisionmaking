@@ -57,6 +57,7 @@ textarea, select, input {
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
 }
 
 button {
@@ -134,6 +135,11 @@ button:hover {
     .nav-list li {
         display: inline-block; /* Mantém os itens inline */
         margin: 5px; /* Ajusta a margem entre os itens */
+    }
+
+    textarea, select, input {
+        width: 100%;
+        box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
     }
 }
 
