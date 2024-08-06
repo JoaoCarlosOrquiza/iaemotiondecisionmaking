@@ -4,7 +4,7 @@ import re
 import json
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai import OpenAIError, APIError, RateLimitError
+from openai import OpenAIError, APIError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -172,7 +172,7 @@ def process_form():
     except ValueError as ve:
         logging.error(f"ValueError: {ve}")
         return "Erro ao gerar a resposta da IA.", 500
-    except (OpenAIError, APIError, RateLimitError) as e:
+    except (OpenAIError, APIError) as e:
         logging.error(f"OpenAI API error: {e}")
         return "Erro ao gerar a resposta da IA.", 500
 
@@ -220,7 +220,7 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
                 max_tokens=100
             )
         return response.choices[0].text.strip()
-    except (OpenAIError, APIError, RateLimitError) as e:
+    except (OpenAIError, APIError) as e:
         logging.error(f"OpenAI API error: {e}")
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
@@ -250,7 +250,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     except openai.error.InvalidRequestError as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
-    except (OpenAIError, APIError, RateLimitError) as e:
+    except (OpenAIError, APIError) as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
 
