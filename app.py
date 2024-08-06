@@ -171,18 +171,18 @@ def process_form():
         logging.debug("Generating response with gpt-4")
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
         initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
+        logging.debug(f"Generated response: {initial_response_content}")
     except ValueError as ve:
         logging.error(f"ValueError: {ve}")
         return "Erro ao gerar a resposta da IA.", 500
-    except (OpenAIError, APIError) as e:
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
         return "Erro ao gerar a resposta da IA.", 500
 
     formatted_response = format_response(initial_response_content, ia_action)
+    logging.debug(f"Formatted response: {formatted_response}")
 
     add_message_to_history("assistant", formatted_response)
-
-    logging.debug(f"Template sequence before pop: {session['template_sequence']}")
 
     if template_sequence:
         next_template = template_sequence.pop(0)
@@ -207,23 +207,17 @@ def increment_interaction_counter():
     logging.debug(f"Interaction counter incremented: {session['interaction_counter']}")
 
 @lru_cache(maxsize=100)
-def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
+def generate_response(prompt, message_history, ia_action):
     try:
-        if use_fine_tuned_model:
-            response = openai.Completion.create(
-                engine="davinci-codex",
-                prompt=prompt,
-                max_tokens=100
-            )
-        else:
-            response = openai.Completion.create(
-                engine="davinci",
-                prompt=prompt,
-                max_tokens=100
-            )
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Atualize o modelo aqui
+            prompt=prompt,
+            max_tokens=100
+        )
         return response.choices[0].text.strip()
-    except (OpenAIError, APIError) as e:
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
+        return "Erro ao gerar a resposta da IA."
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
     model = fine_tuned_model
