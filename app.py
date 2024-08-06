@@ -5,6 +5,7 @@ import json
 import subprocess
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
+from openai.error import OpenAIError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -229,6 +230,7 @@ def increment_interaction_counter():
     logging.debug(f"Interaction counter incremented: {session['interaction_counter']}")
 
 @lru_cache(maxsize=100)
+
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
     try:
         if use_fine_tuned_model:
