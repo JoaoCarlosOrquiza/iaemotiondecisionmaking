@@ -5,7 +5,7 @@ import json
 import subprocess
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai import OpenAIError
+from openai.error import OpenAIError, APIError, APIConnectionError, AuthenticationError, PermissionError, RateLimitError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -248,7 +248,7 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
         logging.debug(f"Resposta inicial gerada: {response_content}")
         return response_content
     
-    except openai.error.OpenAIError as e:
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, PermissionError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
         return "Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde."
 
