@@ -11,6 +11,7 @@ from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
 from flask_session import Session
 from functools import lru_cache
+
 # Adicionar a importação do requests
 import requests
 
