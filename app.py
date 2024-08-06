@@ -230,25 +230,27 @@ def increment_interaction_counter():
 
 @lru_cache(maxsize=100)
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
-    model = "gpt-4o-mini" if not use_fine_tuned_model else fine_tuned_model
+    model = "gpt-4o-mini" if not use_fine_tuned_model else "seu-modelo-ajustado"
 
     logging.debug(f"Generating response with model: {model}")
 
     try:
         response = openai.ChatCompletion.create(
             model=model,
-            messages=[{"role": "system", "content": "You are a helpful assistant."}] + [dict(item) for item in message_history_tuple] + [{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                *[{"role": item[0], "content": item[1]} for item in message_history_tuple],
+                {"role": "user", "content": prompt}
+            ],
             max_tokens=750
         )
         response_content = response['choices'][0]['message']['content']
-        
         logging.debug(f"Resposta inicial gerada: {response_content}")
-
         return response_content
-
-    except (OpenAIError, openai.error.APIError, openai.error.APIConnectionError, openai.error.AuthenticationError, openai.error.PermissionError, openai.error.RateLimitError) as e:
-        logging.error(f"Erro ao gerar a resposta da IA: {e}")
-        raise
+    
+    except openai.error.OpenAIError as e:
+        logging.error(f"OpenAI API error: {e}")
+        return "Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde."
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
     """
