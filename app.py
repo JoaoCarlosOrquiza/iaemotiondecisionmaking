@@ -5,7 +5,7 @@ import json
 import subprocess
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai.error import OpenAIError
+from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, PermissionError, RateLimitError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
