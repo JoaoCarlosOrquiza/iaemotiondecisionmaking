@@ -4,7 +4,7 @@ import re
 import json
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai import OpenAIError, APIError
+from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -168,9 +168,9 @@ def process_form():
     )
 
     try:
-        logging.debug("Generating response with gpt-4")
+        logging.debug("Generating response with gpt-4o-mini")
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
-        initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
+        initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=True)
         logging.debug(f"Generated response: {initial_response_content}")
     except ValueError as ve:
         logging.error(f"ValueError: {ve}")
@@ -206,14 +206,12 @@ def increment_interaction_counter():
     session['interaction_counter'] += 1
     logging.debug(f"Interaction counter incremented: {session['interaction_counter']}")
 
-# ID do modelo ajustado
-fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
-
 @lru_cache(maxsize=100)
-def generate_response(prompt, message_history, ia_action):
+def generate_response(prompt, message_history, ia_action, use_fine_tuned_model=True):
     try:
+        model = fine_tuned_model if use_fine_tuned_model else "gpt-4o-mini"
         response = openai.Completion.create(
-            engine="text-davinci-003",  # Modelo generativo
+            engine=model,
             prompt=prompt,
             max_tokens=100
         )
@@ -223,7 +221,7 @@ def generate_response(prompt, message_history, ia_action):
         return "Erro ao gerar a resposta da IA."
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
-    model = fine_tuned_model  # Modelo fine-tuning
+    model = fine_tuned_model
 
     logging.debug(f"Generating final response with model: {model}")
 
@@ -359,7 +357,7 @@ def continue_conversation():
 
     try:
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
-        response = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
+        response = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=True)
         formatted_response = format_response(post_process_response(response, ia_action), ia_action)
         add_message_to_history("assistant", formatted_response)
 
