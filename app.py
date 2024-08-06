@@ -36,7 +36,7 @@ bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
 logging.basicConfig(level=logging.DEBUG)
 
 # ID do modelo ajustado
-fine_tuned_model = 'ft:text-davinci-003-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
+fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
 # This is a dummy comment to force git change detection
 
@@ -206,11 +206,14 @@ def increment_interaction_counter():
     session['interaction_counter'] += 1
     logging.debug(f"Interaction counter incremented: {session['interaction_counter']}")
 
+# ID do modelo ajustado
+fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
+
 @lru_cache(maxsize=100)
 def generate_response(prompt, message_history, ia_action):
     try:
         response = openai.Completion.create(
-            engine="text-text-davinci-003-003",  # Atualize o modelo aqui
+            engine="text-davinci-003",  # Modelo generativo
             prompt=prompt,
             max_tokens=100
         )
@@ -220,7 +223,7 @@ def generate_response(prompt, message_history, ia_action):
         return "Erro ao gerar a resposta da IA."
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
-    model = fine_tuned_model
+    model = fine_tuned_model  # Modelo fine-tuning
 
     logging.debug(f"Generating final response with model: {model}")
 
