@@ -36,7 +36,7 @@ bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
 logging.basicConfig(level=logging.DEBUG)
 
 # ID do modelo ajustado
-fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
+fine_tuned_model = 'ft:text-davinci-003-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
 # This is a dummy comment to force git change detection
 
@@ -65,7 +65,7 @@ def infer_user_age(user_input):
     )
     try:
         response = openai.Completion.create(
-            engine="davinci",
+            engine="text-davinci-003",
             prompt=prompt,
             max_tokens=10
         )
@@ -210,7 +210,7 @@ def increment_interaction_counter():
 def generate_response(prompt, message_history, ia_action):
     try:
         response = openai.Completion.create(
-            engine="text-davinci-003",  # Atualize o modelo aqui
+            engine="text-text-davinci-003-003",  # Atualize o modelo aqui
             prompt=prompt,
             max_tokens=100
         )
