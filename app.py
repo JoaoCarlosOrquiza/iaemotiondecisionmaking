@@ -231,7 +231,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     Returns:
         str: A resposta final.
     """
-    model = fine_tuned_model
+    model = fine_tuned_model  # Corrigir a indentação aqui
 
     logging.debug(f"Generating final response with model: {model}")
 
