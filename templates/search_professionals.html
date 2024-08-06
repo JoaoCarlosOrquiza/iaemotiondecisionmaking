@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Profissionais</title>
+</head>
+<body>
+    <form action="/search_professionals" method="post">
+        <label for="user_location">Endereço:</label>
+        <input type="text" id="user_location" name="user_location" value="Rua Castro Alves, Londrina, Paraná" required>
+        <br>
+        <label for="professional_type">Tipo de Profissional:</label>
+        <input type="text" id="professional_type" name="professional_type" value="Psicólogo" required>
+        <br>
+        <button type="submit">Buscar Profissionais</button>
+    </form>
+</body>
+</html>

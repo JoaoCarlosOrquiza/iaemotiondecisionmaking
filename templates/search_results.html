@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +7,30 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Profissionais Encontrados</h1>
-        <div class="results">
-            {% if professionals %}
-                <ul>
-                    {% for professional in professionals %}
-                        <li>{{ professional.name }} - {{ professional.specialty }} - {{ professional.distance }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Nenhum profissional encontrado.</p>
-            {% endif %}
+   
+    <main>
+        <div class="container">
+            <h1>Profissionais Encontrados</h1>
+            <div class="results">
+                {% if results.get('webPages') %}
+                    <ul>
+                        {% for result in results['webPages']['value'] %}
+                            <li>{{ result['name'] }} - <a href="{{ result['url'] }}">{{ result['url'] }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Nenhum resultado encontrado.</p>
+                {% endif %}
+            </div>
+            <button onclick="window.close();">Fechar e Sair</button>
         </div>
-        <a href="/">Voltar</a>
-    </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 IA Emotion</p>
+        <p>Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
+    </footer>
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

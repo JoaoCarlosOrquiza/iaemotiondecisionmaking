@@ -9,50 +9,76 @@
     <title>IA de Apoio Emocional</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <script src="/static/js/script.js" defer></script> <!-- Incluindo o script principal -->
 </head>
 <body>
     <header>
         <nav>
-            <ul class="nav-list">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Sobre</a></li>
-                <li><a href="#">Contato</a></li>
-                <li><a href="#">Privacidade</a></li>
-            </ul>
+            <div class="nav-container">
+                <div class="menu-icon" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-list" id="nav-list">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sobre.html">Sobre</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                    <li><a href="privacidade.html">Privacidade</a></li>
+                </ul>
+            </div>
         </nav>
     </header>
     <div class="container">
         <h1>IA de Apoio Emocional</h1>
+        <img src="/static/images/logo.png" alt="Logo IA Emotion" class="logo">
         <h2>Um Direito Universal, Acesso Gratuito e Confidencial</h2>
         <h3>Interações Breves e Suporte em Urgências</h3>
-        <p>Consideramos essa ação como um direito humano universal, acessível a todos, gratuitamente e de forma confidencial. Emoções e sentimentos desencontrados podem paralisar e desequilbrar rapidamente um ser humano. Por isso, a plataforma IA proporciona interações rápidas e eficazes com o chat, especialmente projetadas para fornecer auxílio breve e focado nas necessidades emergenciais do usuário.</p>
-        <p>A plataforma disponibiliza também um campo de pesquisa para localizar profissionais próximos ao local onde o usuário está, facilitando o acesso a ajuda especializada quando necessário.</p>
-        <p class="spacing">O usuário terá quatro interações para obter suporte emocional imediato e direcionado.</p>
-        <!-- Formulário -->
-        <form id="support-form" method="POST" action="/process-form">
-            <label for="situation_description">Descrição da situação:</label>
-            <textarea id="situation_description" name="situation_description" placeholder="Descreva a situação"></textarea>
-            
-            <label for="feelings">Qual ou quais sentimentos isso gera?</label>
-            <textarea id="feelings" name="feelings" placeholder="Descreva os sentimentos..."></textarea>
-            
-            <label for="support_reason">Para quem busca apoio?</label>
-            <input id="support_reason" name="support_reason" type="text" placeholder="Para mim, para um amigo, etc.">
-            
-            <label for="ia_action">Como a IA deve atuar?</label>
-            <select id="ia_action" name="ia_action">
-                <option value="emotional">Emotional Health (Saúde Emocional)</option>
-                <option value="financial">Financial Health (Saúde Financeira)</option>
-                <option value="legal">Legal Support (Suporte Jurídico)</option>
-            </select>
-            
-            <button type="submit" disabled>Fale com a IA</button>
-        </form>
+        <div class="content" id="content">
+            <p>Consideramos essa ação um direito humano universal, acessível a todos, gratuitamente e de forma confidencial.</p>
+            <p>Emoções e sentimentos desencontrados podem paralisar e desequilibrar rapidamente um ser humano.</p>
+            <p>Entre as principais causas de desequilíbrio emocional estão as interações culturais humanas: relações entre os próprios humanos, humanos e áreas de negócios entre eles, e as leis que regem negócios entre humanos.</p>
+            <p>Visando proporcionar o equilíbrio fundamental para a existência de todas as pessoas, a plataforma IA oferece interações rápidas e eficazes com o chat sobre saúde emocional, saúde financeira e suporte jurídico, projetadas para fornecer auxílio breve e focado nas necessidades emergenciais do usuário.</p>
+            <p>A plataforma disponibiliza um campo de pesquisa para localizar profissionais próximos ao local onde o usuário está, facilitando o acesso a ajuda especializada quando necessário.</p>
+            <p>O usuário terá quatro interações para obter suporte emocional imediato e direcionado.</p>
+        </div>
+        <button id="show-form-button">Fale com a IA Emotion</button>
+        <button id="back-button" style="display: none;">Voltar para apresentação</button>
+
+        <!-- Formulário (oculto inicialmente) -->
+        <div id="form-container" style="display: none;">
+            <form id="support-form" method="POST" action="/process-form">
+                <label for="additional_info">Insira idade, sexo e/ou identidade sexual para respostas mais eficazes</label>
+                <input id="additional_info" name="additional_info" type="text" placeholder="Sua idade, sexo e/ou identidade sexual" required>
+                <span class="error-message error-message-small">* Este campo é obrigatório.</span>
+                
+                <label for="situation_description">Descrição da situação:</label>
+                <textarea id="situation_description" name="situation_description" placeholder="Descreva o que acontece. Note: quanto mais informação, melhor será nosso apoio" required></textarea>
+                <span class="error-message error-message-small">* Este campo é obrigatório.</span>
+                
+                <label for="feelings">Qual ou quais sentimentos isso gera?</label>
+                <textarea id="feelings" name="feelings" placeholder="O momento pelo qual você está passando gera quais emoções e sentimentos?" required></textarea>
+                <span class="error-message error-message-small">* Este campo é obrigatório.</span>
+                
+                <label for="support_reason">Para quem busca apoio?</label>
+                <input id="support_reason" name="support_reason" type="text" placeholder="Para mim, para um amigo, etc." required>
+                <span class="error-message error-message-small">* Este campo é obrigatório.</span>
+                
+                <label for="ia_action">Como a IA deve atuar?</label>
+                <select id="ia_action" name="ia_action" required>
+                    <option value="emotional">Emotional Health (Saúde Emocional)</option>
+                    <option value="financial">Financial Health (Saúde Financeira)</option>
+                    <option value="legal">Legal Support (Suporte Jurídico)</option>
+                </select>
+                <span class="error-message error-message-small">* Este campo é obrigatório.</span>
+
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
     </div>
-    <footer>
-        <p>Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
-        <p>© 2024 IA Emotion Decision Making</p>
+    <footer class="footer">
+        <p class="privacy">Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
+        <p class="privacy">© 2024 IA Emotion</p>
     </footer>
-    <script src="/static/js/script.js"></script>
 </body>
 </html>
