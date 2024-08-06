@@ -12,17 +12,9 @@ from knowledge import knowledge
 from flask_session import Session
 from functools import lru_cache
 
-# Adicionar a importação do requests
 import requests
+from langdetect import detect
 
-# Certifique-se de que langdetect esteja instalado
-try:
-    from langdetect import detect  # Biblioteca para detecção de linguagem
-except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "langdetect"])
-    from langdetect import detect
-
-# Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
 app = Flask(__name__)
@@ -31,33 +23,12 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 
-# Inicializa a sessão
 Session(app)
 
-# This is a forced update
-# Desabilitar a configuração do Azure Key Vault
-# key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
-# if not key_vault_name:
-#     raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
-
-# key_vault_url = f"https://{key_vault_name}.vault.azure.net"
-# credential = DefaultAzureCredential()
-# client = SecretClient(vault_url=key_vault_url, credential=credential)
-
-# Recuperar a chave da API do OpenAI do Azure Key Vault
-# openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
-# if not openai_api_key_secret_name:
-#     raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
-
-# openai.api_key = client.get_secret(openai_api_key_secret_name).value
-
-# Configurar a chave da API do OpenAI diretamente do .env
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Configurar logging básico
 logging.basicConfig(level=logging.DEBUG)
 
-# ID do modelo ajustado
 fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
 def get_message_history():
@@ -104,7 +75,7 @@ def detect_language(text):
         return detect(text)
     except Exception as e:
         logging.error(f"Erro ao detectar a língua: {e}")
-        return 'pt'  # Padrão para português caso a detecção falhe
+        return 'pt'
 
 def contains_satisfaction_terms(user_response):
     satisfaction_terms = ["obrigado", "excelente", "ótima resposta", "agradeço", "muito bom", "parabéns"]
@@ -112,10 +83,7 @@ def contains_satisfaction_terms(user_response):
     return any(term in user_response_lower for term in satisfaction_terms)
 
 def send_feedback_to_ia(feedback_message):
-    # Esta função simula o envio de feedback para a IA para treinamento.
-    # Dependendo do sistema, isso pode envolver chamar uma API ou registrar em um banco de dados.
     logging.info(f"Enviando feedback para IA: {feedback_message}")
-    # Implementação para enviar o feedback para a IA
 
 @app.route('/static/<path:filename>')
 def send_static(filename):
@@ -217,7 +185,7 @@ def process_form():
                                initial_ia_action=session['ia_action'],
                                additional_info=session['additional_info'],
                                user_age=session['user_age'],
-                               inferred_age='',  # Adicionar a variável inferida, se necessário
+                               inferred_age='', 
                                answer=formatted_response)
     else:
         logging.error("Template sequence is empty. Unable to proceed.")
@@ -263,7 +231,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     Returns:
         str: A resposta final.
     """
- model = fine_tuned_model
+    model = fine_tuned_model
 
     logging.debug(f"Generating final response with model: {model}")
 
@@ -296,17 +264,17 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
 def format_response(response, ia_action):
     """
     Formata a resposta final, substituindo termos e adicionando conhecimento relevante.
-    
+
     Args:
         response (str): A resposta gerada pela IA.
         ia_action (str): Ação da IA solicitada pelo usuário.
-    
+
     Returns:
         str: A resposta formatada.
     """
     relevant_knowledge = knowledge.get(ia_action, "")
     response = f"{response}\n\n{relevant_knowledge}"
-    
+
     substitutions = {
         "Terapia Cognitivo-Comportamental": "TCC",
         "Identificação e Racionalização dos Pensamentos Automáticos": "<b>Identificação e Racionalização dos Pensamentos Automáticos</b>",
@@ -330,11 +298,11 @@ def format_response(response, ia_action):
 def post_process_response(response, ia_action):
     """
     Processa a resposta após ser gerada pela IA, adicionando formatação e verificando inconsistências.
-    
+
     Args:
         response (str): A resposta gerada pela IA.
         ia_action (str): Ação da IA solicitada pelo usuário.
-    
+
     Returns:
         str: A resposta processada.
     """
@@ -342,15 +310,14 @@ def post_process_response(response, ia_action):
         logging.error("Resposta incoerente detectada, gerando nova resposta")
         raise ValueError("Resposta incoerente gerada pela IA")
 
-    # Verificar o comprimento da resposta
-    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
+    max_length = 4096
     if len(response) > max_length:
         logging.error(f"Resposta muito longa detectada: {len(response)} tokens")
         raise ValueError("Resposta muito longa gerada pela IA")
 
     relevant_knowledge = knowledge.get(ia_action, "")
     response = f"{response}\n\n{relevant_knowledge}"
-    
+
     substitutions = {
         "Terapia Cognitivo-Comportamental": "TCC",
         "Identificação e Racionalização dos Pensamentos Automáticos": "<b>Identificação e Racionalização dos Pensamentos Automáticos</b>",
@@ -364,7 +331,7 @@ def post_process_response(response, ia_action):
     response = response.replace("\n", "<br>")
     for key, value in substitutions.items():
         response = response.replace(key, value)
-    
+
     if any(term in response for term in ["def __init__", "Sequential", "Dropout"]):
         logging.error("Resposta incoerente detectada após formatação")
         raise ValueError("Resposta incoerente gerada pela IA")
@@ -380,7 +347,7 @@ def submit_feedback():
         valid_feedback = ['positive', 'negative']
         if feedback not in valid_feedback:
             raise ValueError("Tipo de feedback inválido")
-        
+
         logging.debug(f"Feedback válido recebido: {feedback}")
 
         return jsonify({"success": True})
@@ -402,8 +369,7 @@ def continue_conversation():
     if contains_satisfaction_terms(previous_answer):
         gratitude_response = "Muito obrigado pelo seu feedback positivo! Fico feliz em saber que pude ajudar. Se precisar de mais alguma coisa, estou aqui para ajudar."
         add_message_to_history("assistant", gratitude_response)
-        
-        # Enviar feedback positivo para a IA
+
         send_feedback_to_ia(previous_answer)
 
         return render_template(session['template_sequence'].pop(0) + '.html', **session, answer=gratitude_response)
@@ -437,7 +403,7 @@ def continue_conversation():
                                    initial_ia_action=session['ia_action'],
                                    additional_info=session['additional_info'],
                                    user_age=session['user_age'],
-                                   inferred_age='',  # Adicionar a variável inferida, se necessário
+                                   inferred_age='', 
                                    user_language=session['user_language'],
                                    answer=formatted_response)
         else:
@@ -457,23 +423,20 @@ def search_professionals():
     user_location = request.form.get('user_location')
     professional_type = request.form.get('professional_type')
 
-    # Configuração para chamar a API do Bing Search
-    bing_api_key = "SUA_CHAVE_DE_API_DO_BING"  # Substitua pela sua chave de API do Bing
+    bing_api_key = "SUA_CHAVE_DE_API_DO_BING"
     search_url = "https://api.bing.microsoft.com/v7.0/search"
     headers = {"Ocp-Apim-Subscription-Key": bing_api_key}
     params = {
         "q": f"{professional_type} near {user_location}",
-        "mkt": "pt-BR",  # Ajuste o mercado para o Brasil
+        "mkt": "pt-BR",
         "safesearch": "Moderate"
     }
 
     response = requests.get(search_url, headers=headers, params=params)
     search_results = response.json()
 
-    # Log da resposta para verificar a estrutura
     app.logger.debug(f"Search results: {search_results}")
 
-    # Processar os resultados conforme necessário e renderizar um template com os resultados
     return render_template('search_results.html', results=search_results)
 
 if __name__ == '__main__':
