@@ -38,6 +38,8 @@ logging.basicConfig(level=logging.DEBUG)
 # ID do modelo ajustado
 fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
+# This is a dummy comment to force git change detection
+
 def get_message_history():
     return json.loads(session.get('message_history', '[]'))
 
