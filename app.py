@@ -2,7 +2,6 @@ import os
 import logging
 import re
 import json
-import subprocess
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
 from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError
@@ -11,10 +10,10 @@ from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
 from flask_session import Session
 from functools import lru_cache
-
 import requests
 from langdetect import detect
 
+# Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
 app = Flask(__name__)
@@ -23,12 +22,20 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 
+# Inicializa a sessão
 Session(app)
 
+# Configurar a chave da API do OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Configurar a chave da API do Bing
+bing_api_key = os.getenv('BING_SEARCH_API_KEY')
+bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
+
+# Configurar logging básico
 logging.basicConfig(level=logging.DEBUG)
 
+# ID do modelo ajustado
 fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
 def get_message_history():
@@ -219,19 +226,7 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
         logging.error(f"OpenAI API error: {e}")
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
-    """
-    Gera a resposta final combinando a resposta inicial com o conhecimento relevante,
-    garantindo que a resposta não ultrapasse o limite máximo de tokens e que a frase final não seja cortada.
-
-    Args:
-        initial_response_content (str): Resposta inicial gerada pelo gpt-4o-mini.
-        relevant_knowledge (str): Conhecimento relevante do knowledge.py.
-        message_history (list): Histórico de mensagens.
-
-    Returns:
-        str: A resposta final.
-    """
-    model = fine_tuned_model  # Corrigir a indentação aqui
+    model = fine_tuned_model
 
     logging.debug(f"Generating final response with model: {model}")
 
@@ -262,16 +257,6 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
         raise
 
 def format_response(response, ia_action):
-    """
-    Formata a resposta final, substituindo termos e adicionando conhecimento relevante.
-
-    Args:
-        response (str): A resposta gerada pela IA.
-        ia_action (str): Ação da IA solicitada pelo usuário.
-
-    Returns:
-        str: A resposta formatada.
-    """
     relevant_knowledge = knowledge.get(ia_action, "")
     response = f"{response}\n\n{relevant_knowledge}"
 
@@ -296,16 +281,6 @@ def format_response(response, ia_action):
     return response
 
 def post_process_response(response, ia_action):
-    """
-    Processa a resposta após ser gerada pela IA, adicionando formatação e verificando inconsistências.
-
-    Args:
-        response (str): A resposta gerada pela IA.
-        ia_action (str): Ação da IA solicitada pelo usuário.
-
-    Returns:
-        str: A resposta processada.
-    """
     if "def __init__" in response or "Sequential" in response:
         logging.error("Resposta incoerente detectada, gerando nova resposta")
         raise ValueError("Resposta incoerente gerada pela IA")
@@ -423,8 +398,7 @@ def search_professionals():
     user_location = request.form.get('user_location')
     professional_type = request.form.get('professional_type')
 
-    bing_api_key = "SUA_CHAVE_DE_API_DO_BING"
-    search_url = "https://api.bing.microsoft.com/v7.0/search"
+    # Configuração para chamar a API do Bing Search
     headers = {"Ocp-Apim-Subscription-Key": bing_api_key}
     params = {
         "q": f"{professional_type} near {user_location}",
@@ -432,7 +406,7 @@ def search_professionals():
         "safesearch": "Moderate"
     }
 
-    response = requests.get(search_url, headers=headers, params=params)
+    response = requests.get(bing_search_endpoint, headers=headers, params=params)
     search_results = response.json()
 
     app.logger.debug(f"Search results: {search_results}")
