@@ -190,7 +190,7 @@ def process_form():
     )
 
     try:
-        logging.debug("Generating response with gpt-4o-mini")
+        logging.debug("Generating response with gpt-4")
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
         initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
     except ValueError as ve:
@@ -230,27 +230,24 @@ def increment_interaction_counter():
 
 @lru_cache(maxsize=100)
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
-    model = "gpt-4o-mini" if not use_fine_tuned_model else "seu-modelo-ajustado"
-
-    logging.debug(f"Generating response with model: {model}")
-
     try:
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                *[{"role": item[0], "content": item[1]} for item in message_history_tuple],
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=750
-        )
-        response_content = response['choices'][0]['message']['content']
-        logging.debug(f"Resposta inicial gerada: {response_content}")
-        return response_content
-
+        if use_fine_tuned_model:
+            response = openai.Completion.create(
+                engine="davinci-codex",
+                prompt=prompt,
+                max_tokens=100
+            )
+        else:
+            response = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+        return response['choices'][0]['message']['content']
     except openai.error.OpenAIError as e:
         logging.error(f"OpenAI API error: {e}")
-        return "Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde."
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
     """
