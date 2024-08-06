@@ -33,6 +33,7 @@ app.config['SESSION_USE_SIGNER'] = True
 # Inicializa a sessão
 Session(app)
 
+# This is a forced update
 # Desabilitar a configuração do Azure Key Vault
 # key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
 # if not key_vault_name:
