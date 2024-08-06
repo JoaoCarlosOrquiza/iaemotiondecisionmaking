@@ -3,7 +3,7 @@ import logging
 import re
 import json
 import subprocess
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
 from openai import OpenAIError
 from dotenv import load_dotenv
@@ -114,6 +114,10 @@ def send_feedback_to_ia(feedback_message):
     # Dependendo do sistema, isso pode envolver chamar uma API ou registrar em um banco de dados.
     logging.info(f"Enviando feedback para IA: {feedback_message}")
     # Implementação para enviar o feedback para a IA
+
+@app.route('/static/<path:filename>')
+def send_static(filename):
+    return send_from_directory('static', filename)
 
 @app.route('/')
 def index():
