@@ -5,7 +5,7 @@ import json
 import subprocess
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, PermissionError, RateLimitError
+from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -197,8 +197,8 @@ def process_form():
     except ValueError as ve:
         logging.error(f"ValueError: {ve}")
         return "Erro ao gerar a resposta da IA.", 500
-    except OpenAIError as e:
-        logging.error(f"OpenAIError: {e}")
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
+        logging.error(f"OpenAI API error: {e}")
         return "Erro ao gerar a resposta da IA.", 500
 
     formatted_response = format_response(initial_response_content, ia_action)
@@ -230,7 +230,6 @@ def increment_interaction_counter():
     logging.debug(f"Interaction counter incremented: {session['interaction_counter']}")
 
 @lru_cache(maxsize=100)
-
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
     try:
         if use_fine_tuned_model:
@@ -248,7 +247,7 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
                 ]
             )
         return response['choices'][0]['message']['content']
-    except openai.error.OpenAIError as e:
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
@@ -264,11 +263,11 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     Returns:
         str: A resposta final.
     """
-    model = fine_tuned_model
+ model = fine_tuned_model
 
     logging.debug(f"Generating final response with model: {model}")
 
-    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
+    max_length = 4096
 
     if len(initial_response_content) + len(relevant_knowledge) > max_length:
         logging.warning(f"Resposta muito longa detectada: {len(initial_response_content) + len(relevant_knowledge)} tokens")
@@ -278,7 +277,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
         response = openai.ChatCompletion.create(
             model=model,
             messages=[{"role": "system", "content": initial_response_content + relevant_knowledge}] + list(message_history) + [{"role": "user", "content": initial_response_content}],
-            max_tokens=max_length - len(initial_response_content + relevant_knowledge)  # Garantir que a resposta não ultrapasse o limite máximo
+            max_tokens=max_length - len(initial_response_content + relevant_knowledge)
         )
         final_response_content = response['choices'][0]['message']['content']
 
@@ -290,7 +289,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     except openai.error.InvalidRequestError as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
-    except (OpenAIError, openai.error.APIError, openai.error.APIConnectionError, openai.error.AuthenticationError, openai.error.PermissionError, openai.error.RateLimitError) as e:
+    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
 
