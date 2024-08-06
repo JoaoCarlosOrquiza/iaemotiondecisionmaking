@@ -4,7 +4,7 @@ import re
 import json
 from flask import Flask, render_template, send_from_directory, request, session, jsonify
 import openai
-from openai import OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError
+from openai import OpenAIError, APIError, AuthenticationError, RateLimitError
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -172,7 +172,7 @@ def process_form():
     except ValueError as ve:
         logging.error(f"ValueError: {ve}")
         return "Erro ao gerar a resposta da IA.", 500
-    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
+    except (OpenAIError, APIError, AuthenticationError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
         return "Erro ao gerar a resposta da IA.", 500
 
@@ -214,15 +214,13 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
                 max_tokens=100
             )
         else:
-            response = openai.ChatCompletion.create(
+            response = openai.Completion.create(
                 model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt}
-                ]
+                prompt=prompt,
+                max_tokens=100
             )
-        return response['choices'][0]['message']['content']
-    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
+        return response.choices[0].text.strip()
+    except (OpenAIError, APIError, AuthenticationError, RateLimitError) as e:
         logging.error(f"OpenAI API error: {e}")
 
 def generate_final_response(initial_response_content, relevant_knowledge, message_history):
@@ -237,12 +235,12 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
         raise ValueError("Resposta muito longa gerada pela IA")
 
     try:
-        response = openai.ChatCompletion.create(
+        response = openai.Completion.create(
             model=model,
-            messages=[{"role": "system", "content": initial_response_content + relevant_knowledge}] + list(message_history) + [{"role": "user", "content": initial_response_content}],
+            prompt=initial_response_content + relevant_knowledge,
             max_tokens=max_length - len(initial_response_content + relevant_knowledge)
         )
-        final_response_content = response['choices'][0]['message']['content']
+        final_response_content = response.choices[0].text.strip()
 
         return final_response_content
 
@@ -252,7 +250,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     except openai.error.InvalidRequestError as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
-    except (OpenAIError, APIError, APIConnectionError, AuthenticationError, RateLimitError) as e:
+    except (OpenAIError, APIError, AuthenticationError, RateLimitError) as e:
         logging.error(f"Erro ao gerar a resposta da IA: {e}")
         raise
 
