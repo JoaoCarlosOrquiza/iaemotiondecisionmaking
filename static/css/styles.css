@@ -274,8 +274,8 @@ footer p {
 /* 10. Media Queries para Responsividade */
 @media (max-width: 768px) {
     .container {
-        padding: 15px;
-        max-width: calc(100% - 8px); /* Reduz a largura em 8px para dispositivos móveis */
+        padding: 17px;
+        max-width: calc(100% - 6px); /* Reduz a largura em 6px para dispositivos móveis */
     }
 
     .nav-container {
