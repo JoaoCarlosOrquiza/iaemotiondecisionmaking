@@ -275,7 +275,7 @@ footer p {
 @media (max-width: 768px) {
     .container {
         padding: 14px;
-        max-width: calc(100% - 8px); /* Reduz a largura do contêiner para ser menor que o menu de navegação */
+        max-width: calc(100% - 2px); /* Reduz a largura do contêiner para ser 4px menor */
         margin: 0 auto; /* Centraliza o contêiner */
     }
 
