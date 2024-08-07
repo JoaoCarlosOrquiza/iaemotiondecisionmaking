@@ -1,7 +1,7 @@
 /* Importação da fonte Open Sans */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
 
-/* Define a fonte padrão para o corpo do documento */
+/* 1. Estilos Globais */
 body {
     font-family: 'Open Sans', Arial, sans-serif;
     background-color: #f4f4f9;
@@ -12,16 +12,53 @@ body {
     transition: background-color 0.3s ease;
 }
 
-/* Outros estilos para index.html */
+h1, h2, h3 {
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+h2, h3 {
+    font-size: 20px;
+}
+
+p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+strong {
+    font-weight: bold;
+}
+
+/* 2. Formulários */
 textarea, select, input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 5px; /* Reduzindo a margem inferior para espaçar melhor as mensagens de erro */
+    margin-bottom: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 14px;
-    transition: border-color 0.3s ease; /* Transição suave para mudança de cor da borda */
+    transition: border-color 0.3s ease;
     text-align: left;
 }
 
@@ -33,144 +70,18 @@ textarea:valid, select:valid, input:valid, .input-valid {
     border-color: #28a745; /* Verde para campos preenchidos */
 }
 
-/* 
-   Remove os marcadores de lista padrão, e define o padding e margem para zero 
-   Controla o formato das listas nas páginas sobre.html, contato.html e privacidade.html 
-*/
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* 
-   Adiciona uma margem vertical às listas de informações 
-   Específico para a classe .info-list nas páginas sobre.html, contato.html e privacidade.html 
-*/
-.info-list {
-    margin: 20px 0;
-}
-
-/* 
-   Adiciona uma margem inferior a cada item da lista de informações 
-   Específico para os itens das listas com a classe .info-list nas páginas sobre.html, contato.html e privacidade.html 
-*/
-.info-list li {
-    margin-bottom: 10px;
-}
-
-/* 
-   Define o texto em negrito 
-   Aplicável a qualquer elemento <strong> nas páginas sobre.html, contato.html e privacidade.html 
-*/
-strong {
-    font-weight: bold;
-}
-
-/* Formulário de interação IA * Este campo é obrigatório." apareçe logo abaixo dos campos de entrada */
 .error-message-small {
-    font-size: 12px; /* Fonte menor para a mensagem de erro */
-    color: #dc3545; /* Vermelho para a mensagem de erro */
-    display: block; /* Garante que a mensagem de erro ocupe uma linha inteira */
-    margin-top: 0px; /* Espaçamento superior para separar do campo de entrada */
-    margin-bottom: 10px; /* Espaçamento inferior para separar dos próximos elementos */
-}
-
-/* Define a margem inferior das seções */
-.section {
-    margin-bottom: 20px;
-}
-
-/* Define o estilo do título com negrito e tamanho de fonte */
-.title {
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-/* Define a margem esquerda do conteúdo */
-.content {
-    margin-left: 20px;
-}
-
-/* Define o estilo da lista numerada */
-.numbered-list {
-    counter-reset: item; /* Reseta o contador */
-    list-style-type: none; /* Remove marcadores de lista padrão */
-    padding: 0;
-}
-
-/* Define o estilo dos itens da lista numerada */
-.numbered-list li {
-    margin: 10px 0;
-}
-
-/* Insere os números antes dos itens da lista numerada */
-.numbered-list li:before {
-    content: counters(item, ".") " "; /* Define o conteúdo dos números */
-    counter-increment: item; /* Incrementa o contador */
-    font-weight: bold;
-}
-
-/* Define a margem esquerda das listas com marcadores */
-.bullet-list {
-    margin-left: 20px;
-}
-
-/* Adiciona quebra de palavra para evitar estouro do contêiner */
-.content p, .content li {
-    word-wrap: break-word; /* Permite quebra de palavra */
-}
-
-/* Outros estilos */
-.container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 25px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-h1 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-h2, h3 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-p {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-    text-align: center; /* Alinha o texto à esquerda */
-    line-height: 1.6;
-}
-
-label {
+    font-size: 12px;
+    color: #dc3545;
     display: block;
-    font-size: 14px; /* Ajuste para 14px para consistência */
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-    text-align: left;
+    margin-top: 0px;
+    margin-bottom: 10px;
 }
 
 button {
     padding: 10px;
-    background-color: #28a745; /* Cor verde */
-    color: #fff; /* Texto em branco */
+    background-color: #28a745;
+    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -185,52 +96,94 @@ button:hover {
 
 .feedback-buttons {
     display: flex;
-    justify-content: center; /* Centraliza os botões horizontalmente */
-    gap: 10px; /* Espaço entre os botões */
-    margin-bottom: 20px; /* Adiciona um espaçamento inferior */
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-.privacy {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: #555;
+/* 3. Listas */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
-.logo {
-    display: block;
-    margin: 0 auto 20px;
-    max-width: 150px;
-    height: auto;
+.info-list {
+    margin: 20px 0;
 }
 
-footer p {
-    text-align: center;
-}
-
-/* Estilo específico para alinhar à esquerda o conteúdo dos resultados no search_results */
-.result-item {
-    border: 1px solid #ccc;
-    padding: 10px;
+.info-list li {
     margin-bottom: 10px;
 }
 
-/* Estilo do menu */
-.nav-container {
-    display: flex;
-    justify-content: center; /* Alinha ao centro */
-    align-items: center; /* Alinha ao centro verticalmente */
-    position: relative; /* Adicionado para permitir o posicionamento absoluto do nav-list */
-    background-color: #28a745; /* Cor verde */
-    height: 50px; /* Ajusta a altura do menu de navegação */
-    max-width: 100%; /* Define a largura máxima para se ajustar ao container no desktop */
-    width: 822px;	
-    margin: 0 auto; /* Centraliza a barra de navegação */
-    padding-right: 20px; /* Adiciona espaço à direita */
+.numbered-list {
+    counter-reset: item;
+    list-style-type: none;
+    padding: 0;
 }
 
+.numbered-list li {
+    margin: 10px 0;
+}
+
+.numbered-list li:before {
+    content: counters(item, ".") " ";
+    counter-increment: item;
+    font-weight: bold;
+}
+
+.bullet-list {
+    margin-left: 20px;
+}
+
+/* 4. Containers e Seções */
+.container {
+    width: 100%;
+    max-width: 960px; /* Largura máxima adequada para desktops */
+    margin: 0 auto; /* Centraliza o contêiner */
+    padding: 25px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.content {
+    margin-left: 20px;
+    word-wrap: break-word;
+}
+
+.response-container {
+    margin-bottom: 10px;
+}
+
+.additional-info {
+    margin-top: 10px;
+}
+
+/* 5. Navegação */
+/* Menu de Navegação */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #28a745;
+    height: 50px;
+    width: calc(100% + 4px); /* Expande a largura para cobrir os 2mm de cada lado */
+    max-width: calc(960px + 50px); /* Expande a largura máxima para cobrir os 2mm de cada lado */
+    margin: 0 auto; /* Centraliza o menu de navegação */
+    padding: 0 20px; /* Adiciona padding lateral */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+
 .menu-icon {
-    display: none; /* Esconde o ícone do menu no desktop */
+    display: none;
 }
 
 .menu-icon span {
@@ -238,105 +191,75 @@ footer p {
     width: 30px;
     height: 3px;
     margin: 5px;
-    background-color: #fff; /* Cor branca para o ícone do menu */
+    background-color: #fff;
 }
 
 .nav-list {
     list-style: none;
     display: flex;
-    gap: 15px; /* Espaço entre os itens do menu */
+    gap: 15px;
 }
 
 .nav-list li a {
     text-decoration: none;
-    color: #fff; /* Cor branca para os links */
-    padding: 10px 15px; /* Diminui o tamanho dos botões */
+    color: #fff;
+    padding: 10px 15px;
     display: block;
 }
 
-/* Remove as bordas ou margens indesejadas abaixo do menu de navegação */
 nav {
-    border-bottom: none; /* Remove a borda inferior */
-    margin-bottom: 0;    /* Remove a margem inferior */
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
-/* Adicione essa regra se os traços forem causados por um elemento específico */
 nav ul, nav li {
-    border-bottom: none; /* Remove a borda inferior dos itens da lista de navegação */
-    margin-bottom: 0;    /* Remove a margem inferior dos itens da lista de navegação */
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
-/* Se houver borda ou margem específica nos links de navegação */
 nav a {
-    border-bottom: none; /* Remove a borda inferior dos links */
-    margin-bottom: 0;    /* Remove a margem inferior dos links */
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
-/* Estilos para cor de botões de compartilhamento results_final */
+/* 6. Compartilhamento */
 #share-options a {
-    color: #555; /* Cor cinza escuro */
+    color: #555;
 }
 
 #share-options a:hover {
-    color: #333; /* Cor mais escura para o hover */
-}
-
-/* Estilos para a página de resultados de busca */
-.container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-h1 {
-    font-size: 24px;
-    font-weight: bold;
     color: #333;
-    margin-bottom: 15px;
+}
+
+/* 7. Rodapé */
+footer p {
     text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+/* 8. Logo */
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 150px;
+    height: auto;
 }
 
-li {
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+/* 9. Resultados de Busca */
+.result-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-li h2 {
-    font-size: 20px;
-    margin: 0 0 5px;
-}
-
-li p {
-    margin: 0;
-    color: #666;
-}
-
-a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Estilo do botão verde "Fechar e Sair" */
+/* Botão Verde */
 .button-green {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #28a745; /* Cor verde */
-    color: #fff; /* Texto branco */
+    background-color: #28a745;
+    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -345,21 +268,22 @@ a:hover {
 }
 
 .button-green:hover {
-    background-color: #218838; /* Cor verde mais escura no hover */
+    background-color: #218838;
 }
 
-/* Ajustar a margem entre final da resposta e a idade apresentada*/
-.response-container {
-    margin-bottom: 10px; /* Ajuste conforme necessário */
-}
-
-.additional-info {
-    margin-top: 10px; /* Ajuste conforme necessário */
-}
-
-
-/* Estilos para mobile */
+/* 10. Media Queries para Responsividade */
 @media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
     .privacy {
         text-align: center;
         margin-top: 10px;
@@ -367,21 +291,7 @@ a:hover {
         color: #555;
     }
 
-    .container {
-        width: 100%; /* Ajusta a largura conforme necessário */
-        margin: 0 auto; /* Centraliza o contêiner horizontalmente */
-    }
-
     .content {
-        padding: 0 2%; /* Ajusta o padding conforme necessário para margem interna */
-    }
-
-    .nav-container {
-        width: 94%; /* Usa a mesma largura para desktop e mobile */
-    }
-
-    .nav-list {
-        width: 100%; /* Ajusta a largura conforme necessário */
-        justify-content: center; /* Centraliza os itens do menu */
+        padding: 0 2%;
     }
 }
