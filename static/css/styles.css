@@ -275,16 +275,17 @@ footer p {
 @media (max-width: 768px) {
     .container {
         padding: 14px;
-        max-width: calc(100% - 2px); /* Reduz a largura em 2px para dispositivos móveis */
+        max-width: 100%; /* Largura total do contêiner */
         margin: 0 auto; /* Centraliza o contêiner */
     }
 
     .nav-container {
         flex-direction: column;
-        align-items: flex-start;
-        padding-right: 14px;
+        align-items: center; /* Alinha os itens ao centro */
+        padding-right: 10px;
         padding-left: 10px;
-        max-width: calc(100% - 2px); /* Reduz a largura em 2px para dispositivos móveis */
+        width: 100%; /* Largura total do menu de navegação */
+        max-width: 100%; /* Garante que o menu não exceda a largura da tela */
         margin: 0 auto; /* Centraliza o menu de navegação */
     }
 
@@ -299,4 +300,3 @@ footer p {
         padding: 0 2%;
     }
 }
-
