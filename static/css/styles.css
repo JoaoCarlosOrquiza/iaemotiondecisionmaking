@@ -125,7 +125,7 @@ strong {
 /* Outros estilos */
 .container {
     width: 100%;
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 25px;
     background-color: #fff;
@@ -223,7 +223,8 @@ footer p {
     position: relative; /* Adicionado para permitir o posicionamento absoluto do nav-list */
     background-color: #28a745; /* Cor verde */
     height: 50px; /* Ajusta a altura do menu de navegação */
-    max-width: 822px; /* Define a largura máxima para se ajustar ao container no desktop */
+    max-width: 100%; /* Define a largura máxima para se ajustar ao container no desktop */
+    width: 822px;	
     margin: 0 auto; /* Centraliza a barra de navegação */
     padding-right: 20px; /* Adiciona espaço à direita */
 }
@@ -347,6 +348,16 @@ a:hover {
     background-color: #218838; /* Cor verde mais escura no hover */
 }
 
+/* Ajustar a margem entre final da resposta e a idade apresentada*/
+.response-container {
+    margin-bottom: 10px; /* Ajuste conforme necessário */
+}
+
+.additional-info {
+    margin-top: 10px; /* Ajuste conforme necessário */
+}
+
+
 /* Estilos para mobile */
 @media (max-width: 768px) {
     .privacy {
@@ -357,7 +368,7 @@ a:hover {
     }
 
     .container {
-        width: 90%; /* Ajusta a largura conforme necessário */
+        width: 100%; /* Ajusta a largura conforme necessário */
         margin: 0 auto; /* Centraliza o contêiner horizontalmente */
     }
 

@@ -10,12 +10,32 @@
     <link rel="stylesheet" href="static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        #final-message {
+            text-align: center;
+        }
+        #final-message p {
+            margin: 0px 0;
+        }
+        #final-message h1 {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        #share-options a {
+            display: inline-block;
+            margin: 10px;
+            text-decoration: none;
+            font-size: 2em;
+            color: #333;
+        }
+    </style>
+    <style>
         .response-container {
             white-space: pre-wrap; /* Mantém quebras de linha */
             word-wrap: break-word; /* Quebra palavras longas */
             overflow: visible; /* Permite que o texto transborde */
+			margin-bottom: 0px; /* Diminuído para ajustar a distância entre final resposta e idade presumida */
         }
-    </style>
+    </style>	
 </head>
 <body>
     <div class="container">
@@ -46,16 +66,19 @@
             {% if additional_info %}
             <p>{{ additional_info }}</p>
             {% endif %}
-            <h3>Essas informações foram suficientes?</h3>
+             <h3>Essas informações foram suficientes?</h3>
+            <!-- Formulário de feedback -->
             <form id="feedback-form" method="POST">
                 <input type="hidden" id="feedback" name="feedback">
                 <div class="feedback-buttons">
-                    <button type="button" onclick="submitFeedback('👍')">
+                    <button type="button" onclick="submitFeedback('positive')">
                         <i class="fa fa-thumbs-up"></i>
+                    </button>
+                    <button type="button" onclick="submitFeedback('negative')">
+                        <i class="fa fa-thumbs-down"></i>
                     </button>
                 </div>
             </form>
-
             <section id="final-message" style="text-align: center;">
                 <h1>Chegamos ao final da interação.</h1>
                 <p>Estaremos sempre à sua disposição.</p>

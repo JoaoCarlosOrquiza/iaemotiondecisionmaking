@@ -12,7 +12,7 @@
             text-align: center;
         }
         #final-message p {
-            margin: 20px 0;
+            margin: 0px 0;
         }
         #final-message h1 {
             font-size: 2em;
@@ -26,6 +26,14 @@
             color: #333;
         }
     </style>
+    <style>
+        .response-container {
+            white-space: pre-wrap; /* Mantém quebras de linha */
+            word-wrap: break-word; /* Quebra palavras longas */
+            overflow: visible; /* Permite que o texto transborde */
+			margin-bottom: 0px; /* Diminuído para ajustar a distância entre final resposta e idade presumida */
+        }
+    </style>	
 </head>
 <body>
     <div class="container">
@@ -50,8 +58,7 @@
             </div>
             
             <h3>Respostas e Sugestões:</h3>
-            <div class="response-container response-1">
-                {{ answer|safe }}
+            {{ answer|safe }}
             </div>
             {% if additional_info %}
             <p>{{ additional_info }}</p>
