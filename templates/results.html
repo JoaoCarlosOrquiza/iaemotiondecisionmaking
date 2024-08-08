@@ -57,14 +57,15 @@
                 <p>Informações adicionais: {{ additional_info }}</p>
             </div>
             
-            <h3>Respostas e Sugestões:</h3>
-            {{ answer|safe }}
-            </div>
-            {% if additional_info %}
-            <p>{{ additional_info }}</p>
-            {% endif %}
+			<h3>Respostas e Sugestões:</h3>
+			<div class="response-container">
+				{{ answer|safe }}
+			</div>
+			{% if additional_info %}
+			<p>{{ additional_info }}</p>
+			{% endif %}
 
-            <h3>Essas informações foram suficientes?</h3>
+			<h3>Essas informações foram suficientes?</h3>
             <!-- Formulário de feedback -->
             <form id="feedback-form" method="POST">
                 <input type="hidden" id="feedback" name="feedback">
