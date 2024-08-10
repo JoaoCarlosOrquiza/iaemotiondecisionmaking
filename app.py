@@ -6,8 +6,8 @@ import subprocess
 from flask import Flask, render_template, request, session, jsonify
 import openai
 from openai import OpenAIError
-from azure.keyvault.secrets import SecretClient
-from azure.identity import DefaultAzureCredential
+# from azure.keyvault.secrets import SecretClient
+# from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
@@ -38,30 +38,30 @@ def get_place_details(place_id):
 # # Adicionar esta linha para carregar o endpoint do Bing Search do .env
 # bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
 
-# Função para configurar o Azure Key Vault
-def configure_azure_key_vault():
-    key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
-    if not key_vault_name:
-        raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
+# Função para configurar o Azure Key Vault (Desabilitada)
+# def configure_azure_key_vault():
+#     key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
+#     if not key_vault_name:
+#         raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
 
-    key_vault_url = f"https://{key_vault_name}.vault.azure.net"
-    credential = DefaultAzureCredential()
-    client = SecretClient(vault_url=key_vault_url, credential=credential)
+#     key_vault_url = f"https://{key_vault_name}.vault.azure.net"
+#     credential = DefaultAzureCredential()
+#     client = SecretClient(vault_url=key_vault_url, credential=credential)
 
-    openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
-    if not openai_api_key_secret_name:
-        raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
+#     openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
+#     if not openai_api_key_secret_name:
+#         raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
 
-    # Definir a chave da API do OpenAI a partir do Azure Key Vault
-    openai.api_key = client.get_secret(openai_api_key_secret_name).value
+#     # Definir a chave da API do OpenAI a partir do Azure Key Vault
+#     openai.api_key = client.get_secret(openai_api_key_secret_name).value
 
-# Tentar configurar a chave da API do OpenAI a partir do Azure Key Vault
-try:
-    configure_azure_key_vault()
-except Exception as e:
-    logging.warning(f"Falha ao configurar a chave da API do OpenAI a partir do Azure Key Vault: {e}")
-    # Como fallback, tentar configurar a chave diretamente do .env
-    openai.api_key = os.getenv('OPENAI_API_KEY')
+# Tentar configurar a chave da API do OpenAI a partir do Azure Key Vault (Desabilitado)
+# try:
+#     configure_azure_key_vault()
+# except Exception as e:
+#     logging.warning(f"Falha ao configurar a chave da API do OpenAI a partir do Azure Key Vault: {e}")
+#     # Como fallback, tentar configurar a chave diretamente do .env
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 if not openai.api_key:
     raise ValueError("A chave da API do OpenAI não foi configurada. Verifique o Azure Key Vault ou o arquivo .env.")
