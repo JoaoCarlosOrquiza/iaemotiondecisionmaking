@@ -84,6 +84,35 @@ logging.debug("Flask app initialized")
 fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
 # Funções utilitárias
+
+def get_place_details(place_id):
+    details_url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=formatted_phone_number,international_phone_number,name,geometry,formatted_address&key={google_places_api_key}"
+    response = requests.get(details_url)
+    details_data = response.json()
+    return details_data.get('result', {})
+
+def search_and_get_details(location, professional_type):
+    google_places_url = (
+        f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        f"?location={location}"
+        f"&radius=5000"
+        f"&type={professional_type}"
+        f"&key={google_places_api_key}"
+    )
+    response = requests.get(google_places_url)
+    location_data = response.json()
+    results = location_data.get('results', [])
+
+    # Iterar sobre cada resultado e buscar detalhes adicionais
+    detailed_results = []
+    for result in results:
+        place_id = result.get('place_id')
+        if place_id:
+            details = get_place_details(place_id)
+            detailed_results.append(details)
+
+    return detailed_results
+
 def get_message_history():
     return json.loads(session.get('message_history', '[]'))
 
