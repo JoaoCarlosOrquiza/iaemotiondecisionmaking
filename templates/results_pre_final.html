@@ -84,19 +84,22 @@
                 <textarea id="previous_answer" name="previous_answer" placeholder="Esta é a última interação, faça sua pergunta final"></textarea>
                 <button type="submit" id="submit-button">Continuar Conversa</button>
             </form>
-			<h3>Busca por Profissionais/Entidades de Apoio<br>(Note: abrirá em nova aba)</h3>
+            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
+            <h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
 			<form id="location-form" method="POST" action="/search_professionals" target="_blank">
 				<label for="user-location">Endereço ou Localização Atual:</label>
 				<input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
 				<label for="professional-type">Tipo de Profissional/Entidade:</label>
-				<input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
+				<input type="text" id="professional-type" name="professional_type" placeholder="Digite sua necessidade urgente: SOS, Rede de Apoio, Psicólogo, Psiquiatra, Consultor Financeiro, Advogado" required>
 				<button type="submit">Buscar</button>
 			</form>
+
         </main>
         <footer style="text-align: center; margin-top: 0px;">
             © 2024 IA EMOTION
         </footer>
     </div>
+</body>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="/static/js/script.js"></script>	
     <script>
@@ -106,6 +109,16 @@
                 event.preventDefault();
             }
         });
+
+        // Função para mostrar/ocultar detalhes
+        function toggleDetails() {
+            var details = document.getElementById('details');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
 
         // Script para obter a localização do usuário
         document.getElementById('location-form').addEventListener('submit', function(event) {
@@ -139,41 +152,6 @@
             };
             xhr.send("feedback=" + feedback);
         };
-
-        // Função para alternar a visibilidade dos detalhes
-        function toggleDetails() {
-            const details = document.getElementById('details');
-            if (details.style.display === 'none') {
-                details.style.display = 'block';
-            } else {
-                details.style.display = 'none';
-            }
-        }
-
-        // Script para habilitar o botão de continuar conversa
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('continue-form');
-            const submitButton = document.getElementById('submit-button');
-            const inputs = form.querySelectorAll('textarea');
-
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    let allFilled = true;
-                    inputs.forEach(field => {
-                        if (!field.value) {
-                            allFilled = false;
-                        }
-                    });
-                    if (allFilled) {
-                        submitButton.disabled = false;
-                        submitButton.classList.add('enabled');
-                    } else {
-                        submitButton.disabled = true;
-                        submitButton.classList.remove('enabled');
-                    }
-                });
-            });
-        });
     </script>
 </body>
 </html>

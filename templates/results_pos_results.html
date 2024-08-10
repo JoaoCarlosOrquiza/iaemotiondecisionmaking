@@ -78,20 +78,75 @@
                 <textarea id="previous_answer" name="previous_answer" placeholder="Vamos conversar mais? Use esse campo para fazer perguntas sobre o que falei, ou sobre o que você desejar."></textarea>
                 <button type="submit" id="submit-button">Continuar Conversa</button>
             </form>
-            <h3>Busca por Profissionais/Entidades de Apoio<br>(Note: abrirá em nova aba)</h3>
-            <form id="location-form" method="POST" action="/search_professionals" target="_blank">
-                <label for="user-location">Endereço ou Localização Atual:</label>
-                <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
-                <label for="professional-type">Tipo de Profissional/Entidade:</label>
-                <input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
-                <button type="submit">Buscar</button>
-            </form>
+            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
+            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
+            <h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
+			<form id="location-form" method="POST" action="/search_professionals" target="_blank">
+				<label for="user-location">Endereço ou Localização Atual:</label>
+				<input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
+				<label for="professional-type">Tipo de Profissional/Entidade:</label>
+				<input type="text" id="professional-type" name="professional_type" placeholder="Digite sua necessidade urgente: SOS, Rede de Apoio, Psicólogo, Psiquiatra, Consultor Financeiro, Advogado" required>
+				<button type="submit">Buscar</button>
+			</form>
+
         </main>
-        <footer style="text-align: center; margin-top: 20px;">
+        <footer style="text-align: center; margin-top: 0px;">
             © 2024 IA EMOTION
         </footer>
     </div>
+</body>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script src="/static/js/script.js"></script>
+    <script src="/static/js/script.js"></script>	
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'PrintScreen') {
+                event.preventDefault();
+            }
+        });
+
+        // Função para mostrar/ocultar detalhes
+        function toggleDetails() {
+            var details = document.getElementById('details');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
+        // Script para obter a localização do usuário
+        document.getElementById('location-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
+                    event.target.submit();
+                }, function(error) {
+                    alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+                });
+            } else {
+                alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+            }
+        });
+
+        // Função para enviar feedback via AJAX
+        window.submitFeedback = function(feedback) {
+            document.getElementById('feedback').value = feedback;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/feedback", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Obrigado pelo seu feedback!");
+                    } else {
+                        alert("Houve um problema ao enviar seu feedback. Por favor, tente novamente.");
+                    }
+                }
+            };
+            xhr.send("feedback=" + feedback);
+        };
+    </script>
 </body>
 </html>

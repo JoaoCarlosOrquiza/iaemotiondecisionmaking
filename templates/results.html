@@ -51,21 +51,21 @@
                 <p>Você descreveu a situação como: {{ initial_description }}</p>
                 <p>Emoções: {{ initial_feelings }}</p>
                 <p>Razão do apoio: {{ initial_support_reason }}</p>
-                <p>Ação da IA: {{ initial_ia_action }}</p>
+                <p>Ação da IA: {{ ia_action }}</p>
                 <p>Idade fornecida: {{ user_age }}</p>
                 <p style="display: none;">Idade inferida: {{ inferred_age }}</p> <!-- Campo oculto -->
                 <p>Informações adicionais: {{ additional_info }}</p>
             </div>
             
-			<h3>Respostas e Sugestões:</h3>
-			<div class="response-container">
-				{{ answer|safe }}
-			</div>
-			{% if additional_info %}
-			<p>{{ additional_info }}</p>
-			{% endif %}
+            <h3>Respostas e Sugestões:</h3>
+            <div class="response-container">
+                {{ answer|safe }}
+            </div>
+            {% if additional_info %}
+            <p>{{ additional_info }}</p>
+            {% endif %}
 
-			<h3>Essas informações foram suficientes?</h3>
+            <h3>Essas informações foram suficientes?</h3>
             <!-- Formulário de feedback -->
             <form id="feedback-form" method="POST">
                 <input type="hidden" id="feedback" name="feedback">
@@ -78,7 +78,6 @@
                     </button>
                 </div>
             </form>
-            </form>
             <h3>1ª Interação. Você tem mais 3 interações restantes.</h3>
 
             <!-- Mensagem de aviso -->
@@ -87,19 +86,35 @@
                 <textarea id="previous_answer" name="previous_answer" placeholder="Vamos conversar mais? Use esse campo para fazer perguntas sobre o que falei, ou sobre o que você desejar."></textarea>
                 <button type="submit" id="submit-button">Continuar Conversa</button>
             </form>
-			<h3>Busca por Profissionais/Entidades de Apoio<br>(Note: abrirá em nova aba)</h3>
+
+            <!-- Comentado: Formulário relacionado ao Bing Search -->
+            <!-- 
+            <h3>Busca por Profissionais/Entidades de Apoio<br>(Note: abrirá em nova aba)</h3>
+            <form id="location-form" method="POST" action="/search_professionals" target="_blank">
+                <label for="user-location">Endereço ou Localização Atual:</label>
+                <input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
+                <label for="professional-type">Tipo de Profissional/Entidade:</label>
+                <input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
+                <button type="submit">Buscar</button>
+            </form>
+            -->
+
+            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
+            <h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
 			<form id="location-form" method="POST" action="/search_professionals" target="_blank">
 				<label for="user-location">Endereço ou Localização Atual:</label>
 				<input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
 				<label for="professional-type">Tipo de Profissional/Entidade:</label>
-				<input type="text" id="professional-type" name="professional_type" placeholder="Digite o tipo de profissional ou entidade" required>
+				<input type="text" id="professional-type" name="professional_type" placeholder="Digite sua necessidade urgente: SOS, Rede de Apoio, Psicólogo, Psiquiatra, Consultor Financeiro, Advogado" required>
 				<button type="submit">Buscar</button>
 			</form>
+
         </main>
         <footer style="text-align: center; margin-top: 0px;">
             © 2024 IA EMOTION
         </footer>
     </div>
+</body>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="/static/js/script.js"></script>	
     <script>

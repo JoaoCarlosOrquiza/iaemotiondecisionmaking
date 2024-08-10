@@ -6,12 +6,13 @@ import subprocess
 from flask import Flask, render_template, request, session, jsonify
 import openai
 from openai import OpenAIError
+from azure.keyvault.secrets import SecretClient
+from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 from prompt_generator import generate_prompt, detect_sensitive_situations
 from knowledge import knowledge
 from flask_session import Session
 from functools import lru_cache
-# Adicionar a importação do requests
 import requests
 
 # Certifique-se de que langdetect esteja instalado
@@ -24,6 +25,48 @@ except ModuleNotFoundError:
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
+# Obter a chave da API do Google Places
+google_places_api_key = os.getenv('GOOGLE_PLACES_API_KEY')
+
+# Função para obter detalhes de um lugar específico usando Place Details API
+def get_place_details(place_id):
+    details_url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={google_places_api_key}"
+    response = requests.get(details_url)
+    details_data = response.json()
+    return details_data.get('result', {})
+
+# # Adicionar esta linha para carregar o endpoint do Bing Search do .env
+# bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
+
+# Função para configurar o Azure Key Vault
+def configure_azure_key_vault():
+    key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
+    if not key_vault_name:
+        raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
+
+    key_vault_url = f"https://{key_vault_name}.vault.azure.net"
+    credential = DefaultAzureCredential()
+    client = SecretClient(vault_url=key_vault_url, credential=credential)
+
+    openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
+    if not openai_api_key_secret_name:
+        raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
+
+    # Definir a chave da API do OpenAI a partir do Azure Key Vault
+    openai.api_key = client.get_secret(openai_api_key_secret_name).value
+
+# Tentar configurar a chave da API do OpenAI a partir do Azure Key Vault
+try:
+    configure_azure_key_vault()
+except Exception as e:
+    logging.warning(f"Falha ao configurar a chave da API do OpenAI a partir do Azure Key Vault: {e}")
+    # Como fallback, tentar configurar a chave diretamente do .env
+    openai.api_key = os.getenv('OPENAI_API_KEY')
+
+if not openai.api_key:
+    raise ValueError("A chave da API do OpenAI não foi configurada. Verifique o Azure Key Vault ou o arquivo .env.")
+
+# Configurar o aplicativo Flask
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -33,31 +76,14 @@ app.config['SESSION_USE_SIGNER'] = True
 # Inicializa a sessão
 Session(app)
 
-# Desabilitar a configuração do Azure Key Vault
-# key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
-# if not key_vault_name:
-#     raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
-
-# key_vault_url = f"https://{key_vault_name}.vault.azure.net"
-# credential = DefaultAzureCredential()
-# client = SecretClient(vault_url=key_vault_url, credential=credential)
-
-# Recuperar a chave da API do OpenAI do Azure Key Vault
-# openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
-# if not openai_api_key_secret_name:
-#     raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
-
-# openai.api_key = client.get_secret(openai_api_key_secret_name).value
-
-# Configurar a chave da API do OpenAI diretamente do .env
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
-# Configurar logging básico
+# Configuração de logs
 logging.basicConfig(level=logging.DEBUG)
+logging.debug("Flask app initialized")
 
-# ID do modelo ajustado
+# ID do modelo ajustado (exemplo, ajuste conforme necessário)
 fine_tuned_model = 'ft:davinci-002:jo-ocarlosorquizanochatgpt:finoaiaemotion3ot:9q0DemaR'
 
+# Funções utilitárias
 def get_message_history():
     return json.loads(session.get('message_history', '[]'))
 
@@ -310,7 +336,7 @@ def format_response(response, ia_action):
         "Terapia Cognitivo-Comportamental": "TCC",
         "Identificação e Racionalização dos Pensamentos Automáticos": "<b>Identificação e Racionalização dos Pensamentos Automáticos</b>",
         "(TCC)": "(Teoria Cognitivo-Comportamental)",
-        "ACT": "Terapia de Aceitação e Compromisso (ACT)",
+        "(ACT)": "(Terapia de Aceitação e Compromisso)",
         "Psicanálise": "<b>Psicanálise</b>",
         "Terapia Comportamental": "<b>Terapia Comportamental</b>"
     }
@@ -387,89 +413,38 @@ def submit_feedback():
         logging.error(f"Erro ao processar feedback: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
-@app.route('/continue', methods=['POST'])
-def continue_conversation():
-    increment_interaction_counter()
-
-    if 'template_sequence' not in session:
-        session['template_sequence'] = ['results', 'results_pos_results', 'results_apos_pos_results', 'results_pre_final', 'results_final']
-
-    previous_answer = request.form.get('previous_answer')
-    logging.debug(f"Continuing conversation with: {previous_answer}")
-    add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
-
-    if contains_satisfaction_terms(previous_answer):
-        gratitude_response = "Muito obrigado pelo seu feedback positivo! Fico feliz em saber que pude ajudar. Se precisar de mais alguma coisa, estou aqui para ajudar."
-        add_message_to_history("assistant", gratitude_response)
-        
-        # Enviar feedback positivo para a IA
-        send_feedback_to_ia(previous_answer)
-
-        return render_template(session['template_sequence'].pop(0) + '.html', **session, answer=gratitude_response)
-
-    situation_description = session.get('situation_description', '')
-    feelings = session.get('feelings', '')
-    support_reason = session.get('support_reason', '')
-    ia_action = session.get('ia_action', '')
-    user_age = session.get('user_age', '')
-    additional_info = session.get('additional_info', '')
-    user_language = session.get('user_language', '')
-    interaction_number = session.get('interaction_counter', 1)
-
-    prompt = generate_prompt(situation_description, feelings, support_reason, ia_action, user_age, user_language=user_language)
-
-    try:
-        message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
-        response = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
-        formatted_response = format_response(post_process_response(response, ia_action), ia_action)
-        add_message_to_history("assistant", formatted_response)
-
-        template_sequence = session['template_sequence']
-
-        if template_sequence:
-            next_template = template_sequence.pop(0)
-            session['template_sequence'] = template_sequence
-            return render_template(next_template + '.html',
-                                   initial_description=session['situation_description'],
-                                   initial_feelings=session['feelings'],
-                                   initial_support_reason=session['support_reason'],
-                                   initial_ia_action=session['ia_action'],
-                                   additional_info=session['additional_info'],
-                                   user_age=session['user_age'],
-                                   inferred_age='',  # Adicionar a variável inferida, se necessário
-                                   user_language=session['user_language'],
-                                   answer=formatted_response)
-        else:
-            logging.error("Template sequence is empty.")
-            return "A conversa chegou ao fim.", 400
-
-    except ValueError as ve:
-        logging.error(f"Erro ao processar a resposta: {ve}")
-        return "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.", 500
-
-    except OpenAIError as e:
-        logging.error(f"Erro na OpenAI: {e}")
-        return "Ocorreu um erro ao processar sua solicitação.", 500
-
+# Endpoint para buscar profissionais usando a API do Google Places
 @app.route('/search_professionals', methods=['POST'])
 def search_professionals():
-    user_location = request.form.get('user_location')
-    professional_type = request.form.get('professional_type')
+    user_location = request.form.get('user_location')  # Endereço ou coordenadas fornecidas pelo usuário
+    professional_type = request.form.get('professional_type')  # Tipo de profissional ou entidade
+    
+    # Verifica se a localização é um endereço ou coordenadas
+    if ',' in user_location:
+        location = user_location  # Assume que é no formato "latitude,longitude"
+    else:
+        # Converte o endereço em coordenadas usando a API de Geocoding do Google, por exemplo
+        location = geocode_address_to_coordinates(user_location)
 
-    # Configuração para chamar a API do Bing Search
-    bing_api_key = os.getenv('BING_SEARCH_API_KEY')  # Diretamente do .env
-    search_url = "https://api.bing.microsoft.com/v7.0/search"
-    headers = {"Ocp-Apim-Subscription-Key": bing_api_key}
-    params = {
-        "q": f"{professional_type} near {user_location}",
-        "mkt": "pt-BR",  # Ajuste o mercado para o Brasil
-        "safesearch": "Moderate"
-    }
+    # Configura a URL para chamar a API do Google Places
+    google_places_url = (
+        f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        f"?location={location}"
+        f"&radius=5000"  # Exemplo: busca em um raio de 5km
+        f"&type=doctor"  # Exemplo de tipo, poderia ser customizado
+        f"&keyword={professional_type}"
+        f"&key={google_places_api_key}"
+    )
+    
+    response = requests.get(google_places_url)
+    location_data = response.json()
 
-    response = requests.get(search_url, headers=headers, params=params)
-    search_results = response.json()
+    logging.debug(f"Dados de busca recebidos: {location_data}")
 
-    # Processar os resultados conforme necessário e renderizar um template com os resultados
+    # Verifica se os resultados foram retornados corretamente
+    search_results = location_data.get('results', [])
+    
+    # Renderiza o template com os resultados processados
     return render_template('search_results.html', results=search_results)
 
 if __name__ == '__main__':

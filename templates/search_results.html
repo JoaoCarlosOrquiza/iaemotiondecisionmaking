@@ -5,23 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados da Busca</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .results ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .results li {
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+    </style>
 </head>
 <body>
-   
     <main>
         <div class="container">
             <h1>Profissionais Encontrados</h1>
             <div class="results">
-                {% if results.get('webPages') %}
+                {% if results %}
                     <ul>
-                        {% for result in results['webPages']['value'] %}
-                            <li>{{ result['name'] }} - <a href="{{ result['url'] }}">{{ result['url'] }}</a></li>
+                        {% for result in results[:10] %}  <!-- Limita a exibição a 10 resultados -->
+                            <li>
+                                {{ result['name'] }}<br>
+                                Telefone: 
+                                {% if result.get('formatted_phone_number') %}
+                                    {{ result['formatted_phone_number'] }}
+                                {% elif result.get('international_phone_number') %}
+                                    {{ result['international_phone_number'] }}
+                                {% else %}
+                                    Telefone não disponível. Para mais informações, clique no endereço.
+                                {% endif %}<br>
+                                
+                                <!-- Transformando o endereço em um link de busca no Google -->
+                                <a href="https://www.google.com/search?q={{ result['vicinity'] | urlencode }}" target="_blank" rel="noopener noreferrer">{{ result['vicinity'] }}</a><br>
+                                
+                                <!-- Comentado: Desabilitar o "Como Chegar" se as coordenadas não estiverem disponíveis -->
+                                <!-- <a href="https://www.google.com/maps/search/?api=1&query={{ result['geometry']['location']['lat'] }},{{ result['geometry']['location']['lng'] }}" target="_blank" rel="noopener noreferrer">Como Chegar</a> -->
+                            </li>
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <p>Nenhum resultado encontrado.</p>
+                    <p>Nenhum resultado encontrado para "{{ professional_type }}". Tente usar termos diferentes ou expandir sua área de busca.</p>
                 {% endif %}
             </div>
+
             <button onclick="window.close();">Fechar e Sair</button>
         </div>
     </main>

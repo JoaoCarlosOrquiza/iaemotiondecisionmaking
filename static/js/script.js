@@ -134,4 +134,31 @@ document.addEventListener('DOMContentLoaded', function() {
             navList.classList.toggle('active');
         });
     }
+
+    // Novo código: Captura automática da localização do usuário e envio do formulário
+    document.getElementById('location-form').addEventListener('submit', function(event) {
+        event.preventDefault();  // Previne o envio imediato do formulário
+        
+        if (navigator.geolocation) {  // Verifica se a geolocalização é suportada
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Preenche o campo de localização com a latitude e longitude obtidas
+                document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
+                event.target.submit();  // Envia o formulário
+            }, function(error) {
+                // Caso a localização não possa ser obtida, alerta o usuário e permite o envio manual
+                alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+                event.target.submit();  // Envia o formulário mesmo com erro
+            });
+        } else {
+            // Caso a geolocalização não seja suportada, alerta o usuário e permite o envio manual
+            alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+            event.target.submit();  // Envia o formulário mesmo sem geolocalização
+        }
+    });
+
+    // Novo código: Assegurar que links "Como Chegar" abram em nova aba de forma segura
+    document.querySelectorAll('a[target="_blank"]').forEach(link => {
+        link.setAttribute('rel', 'noopener noreferrer');
+    });
+
 });
