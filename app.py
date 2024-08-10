@@ -412,6 +412,70 @@ def submit_feedback():
     except Exception as e:
         logging.error(f"Erro ao processar feedback: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
+        
+@app.route('/continue', methods=['POST'])
+def continue_conversation():
+    increment_interaction_counter()
+
+    if 'template_sequence' not in session:
+        session['template_sequence'] = ['results', 'results_pos_results', 'results_apos_pos_results', 'results_pre_final', 'results_final']
+
+    previous_answer = request.form.get('previous_answer')
+    logging.debug(f"Continuing conversation with: {previous_answer}")
+    add_message_to_history("user", f"Continuar a conversa: {previous_answer}")
+
+    if contains_satisfaction_terms(previous_answer):
+        gratitude_response = "Muito obrigado pelo seu feedback positivo! Fico feliz em saber que pude ajudar. Se precisar de mais alguma coisa, estou aqui para ajudar."
+        add_message_to_history("assistant", gratitude_response)
+        
+        # Enviar feedback positivo para a IA
+        send_feedback_to_ia(previous_answer)
+
+        return render_template(session['template_sequence'].pop(0) + '.html', **session, answer=gratitude_response)
+
+    situation_description = session.get('situation_description', '')
+    feelings = session.get('feelings', '')
+    support_reason = session.get('support_reason', '')
+    ia_action = session.get('ia_action', '')
+    user_age = session.get('user_age', '')
+    additional_info = session.get('additional_info', '')
+    user_language = session.get('user_language', '')
+    interaction_number = session.get('interaction_counter', 1)
+
+    prompt = generate_prompt(situation_description, feelings, support_reason, ia_action, user_age, user_language=user_language)
+
+    try:
+        message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
+        response = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
+        formatted_response = format_response(post_process_response(response, ia_action), ia_action)
+        add_message_to_history("assistant", formatted_response)
+
+        template_sequence = session['template_sequence']
+
+        if template_sequence:
+            next_template = template_sequence.pop(0)
+            session['template_sequence'] = template_sequence
+            return render_template(next_template + '.html',
+                                   initial_description=session['situation_description'],
+                                   initial_feelings=session['feelings'],
+                                   initial_support_reason=session['support_reason'],
+                                   initial_ia_action=session['ia_action'],
+                                   additional_info=session['additional_info'],
+                                   user_age=session['user_age'],
+                                   inferred_age='',  # Adicionar a variável inferida, se necessário
+                                   user_language=session['user_language'],
+                                   answer=formatted_response)
+        else:
+            logging.error("Template sequence is empty.")
+            return "A conversa chegou ao fim.", 400
+
+    except ValueError as ve:
+        logging.error(f"Erro ao processar a resposta: {ve}")
+        return "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.", 500
+
+    except OpenAIError as e:
+        logging.error(f"Erro na OpenAI: {e}")
+        return "Ocorreu um erro ao processar sua solicitação.", 500        
 
 # Endpoint para buscar profissionais usando a API do Google Places
 @app.route('/search_professionals', methods=['POST'])
