@@ -30,20 +30,21 @@
                             <li>
                                 {{ result['name'] }}<br>
                                 
-                                {% if result.get('formatted_phone_number') or result.get('international_phone_number') %}
-                                    Telefone: 
-                                    {% if result.get('formatted_phone_number') %}
-                                        {{ result['formatted_phone_number'] }}
-                                    {% elif result.get('international_phone_number') %}
-                                        {{ result['international_phone_number'] }}
-                                    {% endif %}<br>
-                                {% endif %}
+                                Telefone: 
+                                {% if result.get('formatted_phone_number') %}
+                                    {{ result['formatted_phone_number'] }}
+                                {% elif result.get('international_phone_number') %}
+                                    {{ result['international_phone_number'] }}
+                                {% else %}
+                                    Indisponível no momento
+                                {% endif %}<br>
                                 
                                 <!-- Transformando o endereço em um link de busca no Google -->
+                                <p>Use esse link e busque no Google:</p>
                                 <a href="https://www.google.com/search?q={{ result['vicinity'] | urlencode }}" target="_blank" rel="noopener noreferrer">
-                                    Use esse link e busque no Google: {{ result['vicinity'] }}
+                                    {{ result['vicinity'] }}
                                 </a><br>
-                                
+
                                 <!-- Comentado: Desabilitar o "Como Chegar" se as coordenadas não estiverem disponíveis -->
                                 <!-- <a href="https://www.google.com/maps/search/?api=1&query={{ result['geometry']['location']['lat'] }},{{ result['geometry']['location']['lng'] }}" target="_blank" rel="noopener noreferrer">Como Chegar</a> -->
                             </li>
