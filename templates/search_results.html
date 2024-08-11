@@ -40,7 +40,9 @@
                                 {% endif %}
                                 
                                 <!-- Transformando o endereço em um link de busca no Google -->
-                                <a href="https://www.google.com/search?q={{ result['vicinity'] | urlencode }}" target="_blank" rel="noopener noreferrer">{{ result['vicinity'] }}</a><br>
+                                <a href="https://www.google.com/search?q={{ result['vicinity'] | urlencode }}" target="_blank" rel="noopener noreferrer">
+                                    Use esse link e busque no Google: {{ result['vicinity'] }}
+                                </a><br>
                                 
                                 <!-- Comentado: Desabilitar o "Como Chegar" se as coordenadas não estiverem disponíveis -->
                                 <!-- <a href="https://www.google.com/maps/search/?api=1&query={{ result['geometry']['location']['lat'] }},{{ result['geometry']['location']['lng'] }}" target="_blank" rel="noopener noreferrer">Como Chegar</a> -->

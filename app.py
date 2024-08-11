@@ -34,9 +34,18 @@ google_places_api_key = os.getenv('GOOGLE_PLACES_API_KEY')
 
 # Função para obter detalhes de um lugar específico usando Place Details API
 def get_place_details(place_id):
-    details_url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={google_places_api_key}"
-    response = requests.get(details_url)
-    details_data = response.json()
+    logging.debug(f"Solicitando detalhes para o place_id: {place_id}")
+    details_url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=formatted_phone_number,international_phone_number,name,geometry,formatted_address&key={google_places_api_key}"
+    
+    try:
+        response = requests.get(details_url)
+        response.raise_for_status()
+        details_data = response.json()
+        logging.debug(f"Detalhes obtidos para o place_id {place_id}: {details_data}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Erro ao obter detalhes para o place_id {place_id}: {e}")
+        return {}
+    
     return details_data.get('result', {})
 
 # # Adicionar esta linha para carregar o endpoint do Bing Search do .env
@@ -96,7 +105,8 @@ def get_place_details(place_id):
     return details_data.get('result', {})
 
 def search_and_get_details(location, professional_type):
-    # Prepara a solicitação de busca inicial para a API do Google Places
+    logging.debug(f"Iniciando busca por profissionais na localização: {location} do tipo: {professional_type}")
+    
     google_places_url = (
         f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         f"?location={location}"
@@ -104,29 +114,62 @@ def search_and_get_details(location, professional_type):
         f"&type={professional_type}"
         f"&key={google_places_api_key}"
     )
-    response = requests.get(google_places_url)
-    location_data = response.json()
+    
+    try:
+        response = requests.get(google_places_url)
+        response.raise_for_status()
+        location_data = response.json()
+        logging.debug(f"Dados de busca obtidos: {location_data}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Erro ao realizar busca com Google Places: {e}")
+        return []
+    
     results = location_data.get('results', [])
-
-    # Inicializa uma lista para armazenar as informações detalhadas
     detailed_results = []
+    
     for result in results:
         place_id = result.get('place_id')
         if place_id:
             details = get_place_details(place_id)
-            if details:  # Apenas adiciona se os detalhes forem obtidos com sucesso
+            if details:  # Verifica se os detalhes foram obtidos com sucesso
+                phone_number = details.get('formatted_phone_number') or details.get('international_phone_number')
+                if phone_number:
+                    phone_details = lookup_phone_number(phone_number)
+                    details.update(phone_details)
                 detailed_results.append(details)
-
+    
+    logging.debug(f"Resultados detalhados obtidos: {detailed_results}")
     return detailed_results
     
 def lookup_phone_number(phone_number):
+    # Validação preliminar do número de telefone
+    if not re.match(r'^\+?[1-9]\d{1,14}$', phone_number):  # Validação básica para números de telefone E.164
+        logging.warning(f"Número de telefone inválido: {phone_number}")
+        return {}
+
+    logging.debug(f"Verificando número de telefone: {phone_number}")
     lookup_url = f"https://lookups.twilio.com/v1/PhoneNumbers/{phone_number}?Type=carrier"
     headers = {
         "Authorization": f"Basic {base64.b64encode(f'{twilio_account_sid}:{twilio_auth_token}'.encode()).decode()}"
     }
-    response = requests.get(lookup_url, headers=headers)
-    return response.json()    
+    
+    try:
+        response = requests.get(lookup_url, headers=headers)
+        response.raise_for_status()
+        phone_details = response.json()
 
+        # Log adicional para capturar detalhes específicos
+        phone_type = phone_details.get('carrier', {}).get('type', 'Desconhecido')
+        carrier_name = phone_details.get('carrier', {}).get('name', 'Desconhecido')
+        logging.debug(f"Tipo de número: {phone_type}, Operadora: {carrier_name}")
+        logging.debug(f"Detalhes do telefone obtidos: {phone_details}")
+
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Erro ao verificar o número de telefone {phone_number} com Twilio: {e}")
+        return {}
+    
+    return phone_details
+    
 def get_message_history():
     return json.loads(session.get('message_history', '[]'))
 
