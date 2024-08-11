@@ -525,7 +525,7 @@ def search_professionals():
     google_places_url = (
         f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         f"?location={location}"
-        f"&radius=5000"  # Exemplo: busca em um raio de 5km
+        f"&radius=10000"  # Exemplo: busca em um raio de 10km
         f"&type=doctor"  # Exemplo de tipo, poderia ser customizado
         f"&keyword={professional_type}"
         f"&key={google_places_api_key}"
