@@ -92,6 +92,7 @@ def get_place_details(place_id):
     return details_data.get('result', {})
 
 def search_and_get_details(location, professional_type):
+    # Prepara a solicitação de busca inicial para a API do Google Places
     google_places_url = (
         f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         f"?location={location}"
@@ -103,13 +104,14 @@ def search_and_get_details(location, professional_type):
     location_data = response.json()
     results = location_data.get('results', [])
 
-    # Iterar sobre cada resultado e buscar detalhes adicionais
+    # Inicializa uma lista para armazenar as informações detalhadas
     detailed_results = []
     for result in results:
         place_id = result.get('place_id')
         if place_id:
             details = get_place_details(place_id)
-            detailed_results.append(details)
+            if details:  # Apenas adiciona se os detalhes forem obtidos com sucesso
+                detailed_results.append(details)
 
     return detailed_results
 
@@ -514,9 +516,9 @@ def search_professionals():
     
     # Verifica se a localização é um endereço ou coordenadas
     if ',' in user_location:
-        location = user_location  # Assume que é no formato "latitude,longitude"
+        location = user_location  # Assume que está no formato "latitude,longitude"
     else:
-        # Converte o endereço em coordenadas usando a API de Geocoding do Google, por exemplo
+        # Converte o endereço em coordenadas usando a API de Geocodificação do Google, por exemplo
         location = geocode_address_to_coordinates(user_location)
 
     # Configura a URL para chamar a API do Google Places
