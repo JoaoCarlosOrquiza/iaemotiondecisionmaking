@@ -3,6 +3,7 @@ import logging
 import re
 import json
 import subprocess
+import sys  # Adicionado para corrigir o uso em subprocess
 from flask import Flask, render_template, request, session, jsonify
 import openai
 from openai import OpenAIError
@@ -35,6 +36,11 @@ google_places_api_key = os.getenv('GOOGLE_PLACES_API_KEY')
 # Função para obter detalhes de um lugar específico usando Place Details API
 def get_place_details(place_id):
     logging.debug(f"Solicitando detalhes para o place_id: {place_id}")
+    
+    if not google_places_api_key:
+        logging.error("A chave da API do Google Places não foi configurada.")
+        return {}
+    
     details_url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=formatted_phone_number,international_phone_number,name,geometry,formatted_address&key={google_places_api_key}"
     
     try:
@@ -48,25 +54,25 @@ def get_place_details(place_id):
     
     return details_data.get('result', {})
 
-# # Adicionar esta linha para carregar o endpoint do Bing Search do .env
-# bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
+# Adicionar esta linha para carregar o endpoint do Bing Search do .env
+bing_search_endpoint = os.getenv('BING_SEARCH_ENDPOINT')
 
 # Função para configurar o Azure Key Vault (Desabilitada)
 # def configure_azure_key_vault():
-#     key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
-#     if not key_vault_name:
-#         raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
+#      key_vault_name = os.getenv('AZURE_KEY_VAULT_NAME')
+#      if not key_vault_name:
+#          raise ValueError("AZURE_KEY_VAULT_NAME não está definido no arquivo .env")
 
-#     key_vault_url = f"https://{key_vault_name}.vault.azure.net"
-#     credential = DefaultAzureCredential()
-#     client = SecretClient(vault_url=key_vault_url, credential=credential)
+#      key_vault_url = f"https://{key_vault_name}.vault.azure.net"
+#      credential = DefaultAzureCredential()
+#      client = SecretClient(vault_url=key_vault_url, credential=credential)
 
-#     openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
-#     if not openai_api_key_secret_name:
-#         raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
+#      openai_api_key_secret_name = os.getenv('OPENAI_API_KEY_SECRET_NAME')
+#      if not openai_api_key_secret_name:
+#          raise ValueError("OPENAI_API_KEY_SECRET_NAME não está definido no arquivo .env")
 
-#     # Definir a chave da API do OpenAI a partir do Azure Key Vault
-#     openai.api_key = client.get_secret(openai_api_key_secret_name).value
+#      # Definir a chave da API do OpenAI a partir do Azure Key Vault
+#      openai.api_key = client.get_secret(openai_api_key_secret_name).value
 
 # Tentar configurar a chave da API do OpenAI a partir do Azure Key Vault (Desabilitado)
 # try:
@@ -74,6 +80,7 @@ def get_place_details(place_id):
 # except Exception as e:
 #     logging.warning(f"Falha ao configurar a chave da API do OpenAI a partir do Azure Key Vault: {e}")
 #     # Como fallback, tentar configurar a chave diretamente do .env
+
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 if not openai.api_key:
@@ -301,7 +308,7 @@ def process_form():
     )
 
     try:
-        logging.debug("Generating response with gpt-4o-mini")
+        logging.debug("Generating response with gpt-4o-2024-08-06")
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
         initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
     except ValueError as ve:
@@ -341,7 +348,7 @@ def increment_interaction_counter():
 
 @lru_cache(maxsize=100)
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
-    model = "gpt-4o-mini" if not use_fine_tuned_model else fine_tuned_model
+    model = "gpt-4o-2024-08-06" if not use_fine_tuned_model else fine_tuned_model
 
     logging.debug(f"Generating response with model: {model}")
 
@@ -367,7 +374,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     garantindo que a resposta não ultrapasse o limite máximo de tokens e que a frase final não seja cortada.
 
     Args:
-        initial_response_content (str): Resposta inicial gerada pelo gpt-4o-mini.
+        initial_response_content (str): Resposta inicial gerada pelo gpt-4o-2024-08-06.
         relevant_knowledge (str): Conhecimento relevante do knowledge.py.
         message_history (list): Histórico de mensagens.
 
@@ -378,7 +385,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
 
     logging.debug(f"Generating final response with model: {model}")
 
-    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
+    max_length = 4096  # Limite máximo de tokens para gpt-4o-2024-08-06
 
     if len(initial_response_content) + len(relevant_knowledge) > max_length:
         logging.warning(f"Resposta muito longa detectada: {len(initial_response_content) + len(relevant_knowledge)} tokens")
@@ -454,7 +461,7 @@ def post_process_response(response, ia_action):
         raise ValueError("Resposta incoerente gerada pela IA")
 
     # Verificar o comprimento da resposta
-    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
+    max_length = 4096  # Limite máximo de tokens para gpt-4o-2024-08-06
     if len(response) > max_length:
         logging.error(f"Resposta muito longa detectada: {len(response)} tokens")
         raise ValueError("Resposta muito longa gerada pela IA")
