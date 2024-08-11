@@ -25,6 +25,10 @@ except ModuleNotFoundError:
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
+# Carregar as credenciais da Twilio do arquivo .env
+twilio_account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+twilio_auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+
 # Obter a chave da API do Google Places
 google_places_api_key = os.getenv('GOOGLE_PLACES_API_KEY')
 
@@ -114,6 +118,14 @@ def search_and_get_details(location, professional_type):
                 detailed_results.append(details)
 
     return detailed_results
+    
+def lookup_phone_number(phone_number):
+    lookup_url = f"https://lookups.twilio.com/v1/PhoneNumbers/{phone_number}?Type=carrier"
+    headers = {
+        "Authorization": f"Basic {base64.b64encode(f'{twilio_account_sid}:{twilio_auth_token}'.encode()).decode()}"
+    }
+    response = requests.get(lookup_url, headers=headers)
+    return response.json()    
 
 def get_message_history():
     return json.loads(session.get('message_history', '[]'))
@@ -541,6 +553,14 @@ def search_professionals():
     
     # Renderiza o template com os resultados processados
     return render_template('search_results.html', results=search_results)
+    
+@app.route('/verify_phone', methods=['POST'])
+def verify_phone():
+    phone_number = request.form.get('phone_number')
+    if phone_number:
+        phone_details = lookup_phone_number(phone_number)
+        return jsonify(phone_details)
+    return jsonify({"error": "Phone number is required"}), 400    
 
 if __name__ == '__main__':
     from waitress import serve
