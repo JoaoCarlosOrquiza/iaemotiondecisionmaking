@@ -470,12 +470,14 @@ def post_process_response(response, ia_action):
     response = f"{response}\n\n{relevant_knowledge}"
     
     substitutions = {
-        "Terapia Cognitivo-Comportamental": "TCC",
-        "Identificação e Racionalização dos Pensamentos Automáticos": "<b>Identificação e Racionalização dos Pensamentos Automáticos</b>",
-        "(TCC)": "(Teoria Cognitivo-Comportamental)",
-        "ACT": "Terapia de Aceitação e Compromisso (ACT)",
-        "Psicanálise": "<b>Psicanálise</b>",
-        "Terapia Comportamental": "<b>Terapia Comportamental</b>"
+        "Terapia Cognitivo-Comportamental": "Teoria Cognitivo-Comportamental (TCC)",  # Afirmação como teoria
+        "Identificação e Racionalização dos Pensamentos Automáticos": "<b>Teoria da Identificação e Racionalização dos Pensamentos Automáticos</b>",  # Afirmação como teoria
+        "(TCC)": "(Teoria Cognitivo-Comportamental)",  # Afirmação como teoria
+        "(ACT)": "(Teoria de Aceitação e Compromisso)",  # Afirmação como teoria
+        "TCC": "Teoria Cognitivo-Comportamental",  # Afirmação como teoria
+        "ACT": "Teoria de Aceitação e Compromisso (ACT)",  # Afirmação como teoria
+        "Psicanálise": "<b>Teoria da Psicanálise</b>",  # Afirmação como teoria
+        "Terapia Comportamental": "<b>Teoria Comportamental</b>"  # Afirmação como teoria
     }
 
     response = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', response)
