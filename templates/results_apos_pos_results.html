@@ -58,12 +58,10 @@
             </div>
             
             <h3>Respostas e Sugestões:</h3>
-            <div class="response-container response-1">
+            <div class="response-container">
                 {{ answer|safe }}
             </div>
-            {% if additional_info %}
-            <p>{{ additional_info }}</p>
-            {% endif %}
+
             <h3>Essas informações foram suficientes?</h3>
             <!-- Formulário de feedback -->
             <form id="feedback-form" method="POST">

@@ -308,7 +308,7 @@ def process_form():
     )
 
     try:
-        logging.debug("Generating response with gpt-4o-2024-08-06")
+        logging.debug("Generating response with GPT-4o-mini")
         message_history_tuple = tuple(tuple(item.items()) for item in get_message_history())
         initial_response_content = generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False)
     except ValueError as ve:
@@ -348,7 +348,7 @@ def increment_interaction_counter():
 
 @lru_cache(maxsize=100)
 def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_model=False):
-    model = "gpt-4o-2024-08-06" if not use_fine_tuned_model else fine_tuned_model
+    model = "gpt-4o-mini" if not use_fine_tuned_model else fine_tuned_model
 
     logging.debug(f"Generating response with model: {model}")
 
@@ -374,7 +374,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
     garantindo que a resposta não ultrapasse o limite máximo de tokens e que a frase final não seja cortada.
 
     Args:
-        initial_response_content (str): Resposta inicial gerada pelo gpt-4o-2024-08-06.
+        initial_response_content (str): Resposta inicial gerada pelo gpt-4o-mini.
         relevant_knowledge (str): Conhecimento relevante do knowledge.py.
         message_history (list): Histórico de mensagens.
 
@@ -385,7 +385,7 @@ def generate_final_response(initial_response_content, relevant_knowledge, messag
 
     logging.debug(f"Generating final response with model: {model}")
 
-    max_length = 4096  # Limite máximo de tokens para gpt-4o-2024-08-06
+    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
 
     if len(initial_response_content) + len(relevant_knowledge) > max_length:
         logging.warning(f"Resposta muito longa detectada: {len(initial_response_content) + len(relevant_knowledge)} tokens")
@@ -461,7 +461,7 @@ def post_process_response(response, ia_action):
         raise ValueError("Resposta incoerente gerada pela IA")
 
     # Verificar o comprimento da resposta
-    max_length = 4096  # Limite máximo de tokens para gpt-4o-2024-08-06
+    max_length = 4096  # Limite máximo de tokens para GPT-4o-mini
     if len(response) > max_length:
         logging.error(f"Resposta muito longa detectada: {len(response)} tokens")
         raise ValueError("Resposta muito longa gerada pela IA")

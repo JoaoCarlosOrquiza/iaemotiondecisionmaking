@@ -46,10 +46,11 @@
         <button id="back-button" style="display: none;">Voltar para apresentação</button>
 
         <!-- Formulário (oculto inicialmente) -->
-        <div id="form-container" style="display: none;">
+        <div id="form-container" style="display: none; margin-top: 20px;">
             <form id="support-form" method="POST" action="/process-form">
-                <label for="additional_info">Insira idade, sexo e/ou identidade sexual para respostas mais eficazes</label>
-                <input id="additional_info" name="additional_info" type="text" placeholder="Sua idade, sexo e/ou identidade sexual" required>
+                <label for="additional_info">Insira sua idade, gênero e/ou orientação sexual (LGBTQIA+) para respostas mais personalizadas.
+</label>
+                <input id="additional_info" name="additional_info" type="text" placeholder="idade, gênero e/ou orientação sexual (LGBTQIA+)" required>
                 <span class="error-message error-message-small">* Este campo é obrigatório.</span>
                 
                 <label for="situation_description">Descrição da situação:</label>
