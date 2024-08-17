@@ -181,7 +181,6 @@ ul {
     box-sizing: border-box; /* Inclui padding e borda na largura total */
 }
 
-
 .menu-icon {
     display: none;
 }
@@ -299,4 +298,40 @@ footer p {
     .content {
         padding: 0 2%;
     }
+
+    .menu-icon {
+        display: block;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        display: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-list.active {
+        display: flex;
+    }
+    
+    .autocomplete-items {
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        position: absolute;
+        background-color: white;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .autocomplete-items li {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .autocomplete-items li:hover {
+        background-color: #e9e9e9;
+    }
 }
+

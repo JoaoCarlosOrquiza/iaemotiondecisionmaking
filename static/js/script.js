@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configurar os formulários desejados
     setupForm('support-form', 'form-error');
-    setupForm('continue-form', 'form-error'); // Adiciona esta linha para configurar o continue-form
+    setupForm('continue-form', 'form-error');
 
     function submitFeedback(feedbackType) {
         const feedbackInput = document.getElementById('feedback');
@@ -111,21 +111,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const backButton = document.getElementById('back-button');
     const contentDiv = document.getElementById('content');
     const formContainer = document.getElementById('form-container');
-    const originalContent = contentDiv.innerHTML;
-    const menuToggle = document.getElementById('menu-toggle');
-    const navList = document.getElementById('nav-list');
+    const originalContent = contentDiv ? contentDiv.innerHTML : '';
 
     if (showFormButton && contentDiv && formContainer) {
         showFormButton.addEventListener('click', function() {
-            contentDiv.innerHTML = formContainer.innerHTML;
-            showFormButton.style.display = 'none';
-            backButton.style.display = 'block';
+            if (contentDiv && formContainer) {
+                contentDiv.innerHTML = formContainer.innerHTML;
+                showFormButton.style.display = 'none';
+                backButton.style.display = 'block';
+            }
         });
 
         backButton.addEventListener('click', function() {
-            contentDiv.innerHTML = originalContent;
-            showFormButton.style.display = 'block';
-            backButton.style.display = 'none';
+            if (contentDiv) {
+                contentDiv.innerHTML = originalContent;
+                showFormButton.style.display = 'block';
+                backButton.style.display = 'none';
+            }
         });
     }
 
@@ -135,30 +137,128 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Novo código: Captura automática da localização do usuário e envio do formulário
-    document.getElementById('location-form').addEventListener('submit', function(event) {
-        event.preventDefault();  // Previne o envio imediato do formulário
-        
-        if (navigator.geolocation) {  // Verifica se a geolocalização é suportada
-            navigator.geolocation.getCurrentPosition(function(position) {
-                // Preenche o campo de localização com a latitude e longitude obtidas
-                document.getElementById('user-location').value = position.coords.latitude + "," + position.coords.longitude;
-                event.target.submit();  // Envia o formulário
-            }, function(error) {
-                // Caso a localização não possa ser obtida, alerta o usuário e permite o envio manual
-                alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
-                event.target.submit();  // Envia o formulário mesmo com erro
-            });
-        } else {
-            // Caso a geolocalização não seja suportada, alerta o usuário e permite o envio manual
-            alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
-            event.target.submit();  // Envia o formulário mesmo sem geolocalização
-        }
-    });
+    // Removido código duplicado para geolocalização, mantido apenas no JS para consistência
+document.getElementById('location-form').addEventListener('submit', async function(event) {
+    event.preventDefault();  // Previne o envio imediato do formulário
 
-    // Novo código: Assegurar que links "Como Chegar" abram em nova aba de forma segura
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
+            document.getElementById('user-location').value = userLocation;
+
+            try {
+                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(userLocation)}&key=YOUR_GOOGLE_PLACES_API_KEY`);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.results.length > 0) {
+                    const location = data.results[0].geometry.location;
+
+                    const latInput = document.createElement('input');
+                    latInput.type = 'hidden';
+                    latInput.name = 'latitude';
+                    latInput.value = location.lat;
+
+                    const lngInput = document.createElement('input');
+                    lngInput.type = 'hidden';
+                    lngInput.name = 'longitude';
+                    lngInput.value = location.lng;
+
+                    // Adiciona os inputs ocultos ao formulário
+                    event.target.appendChild(latInput);
+                    event.target.appendChild(lngInput);
+
+                    // Agora envia o formulário com as coordenadas
+                    event.target.submit();
+                } else {
+                    alert('Não foi possível determinar a localização. Por favor, verifique o endereço.');
+                }
+            } catch (error) {
+                console.error('Erro ao obter a geolocalização:', error);
+                alert('Ocorreu um erro ao tentar determinar sua localização.');
+            }
+        }, (error) => {
+            alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+            event.target.submit();  // Envia o formulário mesmo com erro
+        });
+    } else {
+        alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+        event.target.submit();  // Envia o formulário mesmo sem geolocalização
+    }
+});
+
+    // Assegurar que links "Como Chegar" abram em nova aba de forma segura
     document.querySelectorAll('a[target="_blank"]').forEach(link => {
         link.setAttribute('rel', 'noopener noreferrer');
+    });
+
+    // Adição da funcionalidade de autocompletação
+    // Recebe os termos do backend
+    const terms = {{ terms | tojson | safe }};
+
+    // Seleciona o campo de entrada e a lista de autocompletação
+    const searchInput = document.getElementById('search-input');
+    const autocompleteList = document.getElementById('autocomplete-list');
+
+    searchInput.addEventListener('input', function() {
+        const input = this.value.toLowerCase();
+        autocompleteList.innerHTML = ''; // Limpa a lista de sugestões
+        
+        if (!input) return;
+        
+        // Filtra os termos que começam com o que foi digitado
+        const suggestions = terms.filter(term => term.startsWith(input));
+
+        // Cria os itens da lista de autocompletação
+        suggestions.forEach(suggestion => {
+            const item = document.createElement('li');
+            item.textContent = suggestion;
+            item.addEventListener('click', function() {
+                searchInput.value = suggestion; // Preenche o campo de entrada com a sugestão
+                autocompleteList.innerHTML = ''; // Limpa a lista
+            });
+            autocompleteList.appendChild(item);
+        });
+    });
+
+    // Função para lidar com a resposta da busca
+    function handleSearchResponse(response) {
+        if (response.success) {
+            // Exibir os resultados, manipulação de DOM, etc.
+        } else {
+            // Exibir mensagem de erro com sugestões, se disponíveis
+            if (response.suggestions && response.suggestions.length > 0) {
+                alert(`Erro: Tipo de profissional não reconhecido. Talvez você tenha querido dizer: ${response.suggestions.join(', ')}`);
+            } else {
+                alert('Erro ao buscar profissionais. Verifique sua conexão e tente novamente.');
+            }
+        }
+    }
+
+    // Validação e sugestão de termos no campo de busca do formulário
+    const validTerms = ["psicólogo", "terapeuta", "advogado", "consultoria financeira", "ajuda legal", "médico"]; // Exemplo de termos válidos
+
+    const professionalTypeInput = document.getElementById('professional-type');
+    const autocompleteList = document.getElementById('autocomplete-list');
+
+    professionalTypeInput.addEventListener('input', function() {
+        const input = this.value.toLowerCase();
+        autocompleteList.innerHTML = ''; // Limpa a lista de sugestões
+
+        if (!input) return;
+
+        // Filtra os termos válidos que começam com o que foi digitado
+        const suggestions = validTerms.filter(term => term.startsWith(input));
+
+        // Cria os itens da lista de autocompletação
+        suggestions.forEach(suggestion => {
+            const item = document.createElement('li');
+            item.textContent = suggestion;
+            item.addEventListener('click', function() {
+                professionalTypeInput.value = suggestion; // Preenche o campo de entrada com a sugestão
+                autocompleteList.innerHTML = ''; // Limpa a lista
+            });
+            autocompleteList.appendChild(item);
+        });
     });
 
 });

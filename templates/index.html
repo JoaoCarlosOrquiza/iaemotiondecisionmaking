@@ -81,5 +81,40 @@
         <p class="privacy">Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
         <p class="privacy">© 2024 IA Emotion</p>
     </footer>
+    <!-- Adiciona JavaScript aqui -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mantém o botão "Fale com a IA Emotion" sempre habilitado
+            const iaEmotionButton = document.getElementById('show-form-button');
+            if (iaEmotionButton) {
+                iaEmotionButton.disabled = false;
+                iaEmotionButton.classList.add('enabled'); // Certifique-se de que o botão esteja estilizado como habilitado
+            }
+
+            // Código específico para o botão e menu de navegação
+            const backButton = document.getElementById('back-button');
+            const contentDiv = document.getElementById('content');
+            const formContainer = document.getElementById('form-container');
+            const originalContent = contentDiv ? contentDiv.innerHTML : '';
+
+            if (iaEmotionButton && contentDiv && formContainer) {
+                iaEmotionButton.addEventListener('click', function() {
+                    if (contentDiv && formContainer) {
+                        contentDiv.innerHTML = formContainer.innerHTML;
+                        iaEmotionButton.style.display = 'none';
+                        backButton.style.display = 'block';
+                    }
+                });
+
+                backButton.addEventListener('click', function() {
+                    if (contentDiv) {
+                        contentDiv.innerHTML = originalContent;
+                        iaEmotionButton.style.display = 'block';
+                        backButton.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>	
 </body>
 </html>
