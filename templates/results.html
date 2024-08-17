@@ -96,15 +96,24 @@
             </form>
             -->
 
-            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
-            <h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
-			<form id="location-form" method="POST" action="/search_professionals" target="_blank">
+			<!-- HTML Atualizado -->
+			<h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
+			<form action="{{ url_for('render_search_results') }}" method="POST">
+				<input type="text" name="user_location" placeholder="Digite sua localização" required>
+				<input type="text" name="professional_type" placeholder="Digite o tipo de profissional ou serviço" required>
+				<button type="submit">Buscar</button>
+			</form>
+
+			<!-- Formulário original comentado e desabilitado
+			<form id="location-form" method="POST" action="/search_results" target="_blank">
 				<label for="user-location">Endereço ou Localização Atual:</label>
 				<input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
 				<label for="professional-type">Tipo de Profissional/Entidade:</label>
 				<input type="text" id="professional-type" name="professional_type" placeholder="Exemplos: Psicólogo para terapia, Advogado especialista, Consultoria financeira urgente, Ajuda legal, Apoio para crises emocionais" required>
+				<ul id="autocomplete-list"></ul> 
 				<button type="submit">Buscar</button>
 			</form>
+			-->
 
         </main>
         <footer style="text-align: center; margin-top: 0px;">

@@ -3,58 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados da Busca</title>
+    <title>Profissionais Encontrados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        .results ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        /* Estilo para o resultado da busca */
+        .cse-results {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            box-sizing: border-box;
         }
 
-        .results li {
-            margin-bottom: 15px;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
+        .cse-results h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        /* Ajuste do botão em dispositivos móveis */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .cse-results {
+                padding: 10px;
+            }
+
+            .cse-results h2 {
+                font-size: 20px;
+            }
+
+            iframe {
+                height: 400px;
+            }
+
+            button {
+                font-size: 16px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cse-results {
+                padding: 5px;
+            }
+
+            .cse-results h2 {
+                font-size: 18px;
+            }
+
+            iframe {
+                height: 300px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 6px;
+            }
         }
     </style>
 </head>
 <body>
     <main>
         <div class="container">
-            <h1>Profissionais Encontrados</h1>
-            <div class="results">
-                {% if results %}
-                    <ul>
-                        {% for result in results[:10] %}  <!-- Limita a exibição a 10 resultados -->
-                            <li>
-                                {{ result['name'] }}<br>
-                                
-                                Telefone: 
-                                {% if result.get('formatted_phone_number') %}
-                                    {{ result['formatted_phone_number'] }}
-                                {% elif result.get('international_phone_number') %}
-                                    {{ result['international_phone_number'] }}
-                                {% else %}
-                                    indisponível para nosso sistema
-                                {% endif %}<br>
-                                
-                                <!-- Transformando o endereço em um link de busca no Google -->
-                                <p style="text-align: left;">Use o link abaixo, e, após, clique na imagem "Street View":</p>
-                                <a href="https://www.google.com/search?q={{ result['vicinity'] | urlencode }}" target="_blank" rel="noopener noreferrer">
-                                    {{ result['vicinity'] }}
-                                </a><br>
-
-                                <!-- Comentado: Desabilitar o "Como Chegar" se as coordenadas não estiverem disponíveis -->
-                                <!-- <a href="https://www.google.com/maps/search/?api=1&query={{ result['geometry']['location']['lat'] }},{{ result['geometry']['location']['lng'] }}" target="_blank" rel="noopener noreferrer">Como Chegar</a> -->
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Nenhum resultado encontrado para "{{ professional_type }}". Tente usar termos diferentes ou expandir sua área de busca.</p>
-                {% endif %}
+            <h1>Resultados da Busca para "{{ query }}"</h1>
+            <div class="cse-results">
+                <iframe src="https://cse.google.com/cse?cx=5757cfa05963949dd&q={{ query }}"></iframe>
             </div>
-
             <button onclick="window.close();">Fechar e Sair</button>
         </div>
     </main>
@@ -63,7 +97,5 @@
         <p>&copy; 2024 IA Emotion</p>
         <p>Privacidade: Nenhum dado seu será armazenado ou compartilhado.</p>
     </footer>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
