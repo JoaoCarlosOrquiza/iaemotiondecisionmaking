@@ -6,7 +6,6 @@ import json
 import subprocess
 import sys
 from flask import Flask, render_template, request, session, jsonify, send_from_directory
-from flask_cors import CORS
 import openai
 from openai import OpenAIError
 from dotenv import load_dotenv
