@@ -3,37 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IA Emotion - 3ª interação">
-    <title>IA Emotion - Finalização</title>
-    <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        #final-message {
-            text-align: center;
-        }
-        #final-message p {
-            margin: 0px 0;
-        }
-        #final-message h1 {
-            font-size: 2em;
-            font-weight: bold;
-        }
-        #share-options a {
-            display: inline-block;
-            margin: 10px;
-            text-decoration: none;
-            font-size: 2em;
-            color: #333;
-        }
-    </style>
-    <style>
-        .response-container {
-            white-space: pre-wrap; /* Mantém quebras de linha */
-            word-wrap: break-word; /* Quebra palavras longas */
-            overflow: visible; /* Permite que o texto transborde */
-			margin-bottom: 0px; /* Diminuído para ajustar a distância entre final resposta e idade presumida */
-        }
-    </style>
+    <meta name="description" content="IA Emotion - 1ª interação">
+    <title>IA Emotion - 3ª Interação</title>
+    
+    <!-- Folhas de Estilo Externas -->
+    <link rel="stylesheet" href="static/css/styles.css"> <!-- Estilos customizados -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome Icons -->
+	<link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <script src="/static/js/script.js" defer></script> <!-- Incluindo o script principal -->
+	<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    
+    <!-- Comentário: Os estilos internos foram transferidos para a folha de estilo externa -->
 </head>
 <body>
     <div class="container">
@@ -75,32 +55,44 @@
                     </button>
                 </div>
             </form>
+			
+			<!-- Feedback visual para o usuário -->
+			<div id="feedback-message" style="display:none; margin-top: 10px;"></div>
+			
             <h3>3ª Interação. Você tem mais 1 interações restantes.</h3>
-
             <!-- Mensagem de aviso -->
-            <p style="color: #1E90FF;">Atenção: As respostas da IA apresentadas acima não são gravadas e não utilizamos banco de dados para sua segurança. Se você continuar, não será possível retornar para ler novamente. Faça copy/paste (copiar e colar) se quiser salvar as respostas.</p>            
+            <p style="color: #1E90FF;">Atenção: As respostas da IA apresentadas acima não são gravadas e não utilizamos banco de dados para sua segurança. Se você continuar, não será possível retornar para ler novamente. Faça copy/paste (copiar e colar) se quiser salvar as respostas.</p> 			
+			
             <form id="continue-form" method="POST" action="/continue">
-                <textarea id="previous_answer" name="previous_answer" placeholder="Vamos conversar mais? Use esse campo para fazer perguntas sobre o que falei, ou sobre o que você desejar."></textarea>
-                <button type="submit" id="submit-button">Continuar Conversa</button>
+                <textarea id="previous_answer" name="previous_answer" placeholder="Resposta à 3ª inteiração. Vamos conversar mais? Use esse campo para fazer perguntas sobre o que falei, ou sobre o que você desejar."></textarea>
+                <button type="submit" id="submit-button">Continuar Conversa com a IA Emotion</button>
             </form>
-            <!-- Novo código: Formulário para buscar profissionais usando Azure Maps -->
-            <h3>Busca por Profissionais/Entidades de Apoio<br>(Nota: abrirá em nova aba)</h3>
-			<form id="location-form" method="POST" action="/search_professionals" target="_blank">
+
+            <!-- Código de busca com borda mais sutil -->
+            <h3>Busca por Profissionais/Entidades de Apoio</h3>
+            <div style="border: 1px solid #A8D5BA; padding: 20px; margin: 20px 0; text-align: left; border-radius: 8px;">
+                <script async src="https://cse.google.com/cse.js?cx=5757cfa05963949dd"></script>
+                <div class="gcse-search"></div>
+            </div>
+
+			<!-- Código de busca anterior desativado -->
+			<!--
+			<form id="location-form" method="POST" action="/search_results" target="_blank">
 				<label for="user-location">Endereço ou Localização Atual:</label>
 				<input type="text" id="user-location" name="user_location" placeholder="Digite seu endereço ou localização atual" required>
 				<label for="professional-type">Tipo de Profissional/Entidade:</label>
-				<input type="text" id="professional-type" name="professional_type" placeholder="Exemplos: Psicólogo para terapia, Advogado 
+				<input type="text" id="professional-type" name="professional_type" placeholder="Exemplos: Psicólogo para terapia, Advogado especialista, Consultoria financeira urgente, Ajuda legal, Apoio para crises emocionais" required>
+				<ul id="autocomplete-list"></ul>
 				<button type="submit">Buscar</button>
 			</form>
+			-->
 
         </main>
-        <footer style="text-align: center; margin-top: 0px;">
+        <footer style="text-align: center; margin-top: 0px; font-weight: bold;">
             © 2024 IA EMOTION
         </footer>
     </div>
-</body>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script src="/static/js/script.js"></script>	
+	
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', event => {
@@ -133,24 +125,6 @@
                 alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
             }
         });
-
-        // Função para enviar feedback via AJAX
-        window.submitFeedback = function(feedback) {
-            document.getElementById('feedback').value = feedback;
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/feedback", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        alert("Obrigado pelo seu feedback!");
-                    } else {
-                        alert("Houve um problema ao enviar seu feedback. Por favor, tente novamente.");
-                    }
-                }
-            };
-            xhr.send("feedback=" + feedback);
-        };
     </script>
 </body>
 </html>

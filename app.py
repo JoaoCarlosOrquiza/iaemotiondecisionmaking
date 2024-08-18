@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 from flask import Flask, render_template, request, session, jsonify, send_from_directory
+from flask_cors import CORS
 import openai
 from openai import OpenAIError
 from dotenv import load_dotenv
@@ -551,7 +552,7 @@ def generate_response(prompt, message_history_tuple, ia_action, use_fine_tuned_m
         response = openai.ChatCompletion.create(
             model=model,
             messages=[{"role": "system", "content": "You are a helpful assistant."}] + [dict(item) for item in message_history_tuple] + [{"role": "user", "content": prompt}],
-            max_tokens=750
+            max_tokens=1024  # Aumente para 1024 ou 1500 conforme necessário
         )
         response_content = response['choices'][0]['message']['content']
         

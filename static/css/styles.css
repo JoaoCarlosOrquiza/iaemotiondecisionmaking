@@ -16,16 +16,33 @@ h1, h2, h3 {
     font-weight: bold;
     color: #333;
     text-align: center;
-    margin-bottom: 5px;
 }
 
 h1 {
     font-size: 24px;
-    margin-bottom: 15px;
+    margin-bottom: 15px;  /* Margem inferior para h1 */
 }
 
 h2, h3 {
     font-size: 20px;
+    margin-bottom: 5px;  /* Margem inferior para h2 e h3 */
+}
+
+.response-container {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow: visible;
+    margin-bottom: -5px; /* Tente reduzir ainda mais o espaço */
+    padding-bottom: 0px; /* Remover qualquer padding inferior */
+}
+
+.response-container + h3,
+.response-container + p,
+.response-container + div,
+.response-container + form {
+    margin-top: 0px; /* Remove a margem superior dos elementos que seguem diretamente após a resposta */
+    padding-top: 0px; /* Remove qualquer padding superior */
+    line-height: 1.2; /* Reduz a altura da linha, se necessário */
 }
 
 p {
@@ -148,6 +165,57 @@ ul {
     transition: all 0.3s ease;
 }
 
+.page-container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 25px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-align: left; /* Alinha todo o texto à esquerda */
+    font-size: 16px; /* Define o tamanho da fonte para todo o conteúdo no .page-container */
+    line-height: 1.6; /* Ajusta a altura da linha para uma melhor legibilidade */
+}
+
+.page-container h1,
+.page-container h2,
+.page-container h3,
+.page-container p,
+.page-container li {
+    text-align: left; /* Garante que todos os títulos, parágrafos e itens de lista estejam alinhados à esquerda */
+    font-size: inherit; /* Garante que todos os elementos herdem o tamanho da fonte do .page-container */
+}
+
+.page-container .values-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+    line-height: inherit; /* Herda a altura da linha definida no .page-container */
+}
+
+.page-container .values-list li {
+    margin-bottom: 10px;
+    font-size: inherit; /* Herda o tamanho da fonte definido no .page-container */
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        max-width: 100%; /* Use 100% da largura em telas menores */
+        padding: 15px; /* Reduza o padding para economizar espaço */
+        margin: 0 10px; /* Adiciona uma margem lateral para respiro */
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Reduz o sombreamento em telas menores */
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 10px; /* Reduz ainda mais o padding em telas muito pequenas */
+        margin: 0 5px; /* Margem lateral menor em telas muito pequenas */
+    }
+}
+
 .section {
     margin-bottom: 20px;
 }
@@ -155,10 +223,6 @@ ul {
 .content {
     margin-left: 20px;
     word-wrap: break-word;
-}
-
-.response-container {
-    margin-bottom: -8px;
 }
 
 .additional-info {
@@ -222,12 +286,17 @@ nav a {
 }
 
 /* 6. Compartilhamento */
+/* Comentário: Estilos transferidos do HTML para a folha de estilo externa */
 #share-options a {
-    color: #555;
+    display: inline-block;
+    margin: 10px;
+    text-decoration: none;
+    font-size: 2em;
+    color: #333;
 }
 
 #share-options a:hover {
-    color: #333;
+    color: #555;
 }
 
 /* 7. Rodapé */
@@ -270,7 +339,22 @@ footer p {
     background-color: #218838;
 }
 
-/* 10. Media Queries para Responsividade */
+/* 10. Estilos Transferidos do HTML */
+/* Comentário: Estilos transferidos do HTML para a folha de estilo externa */
+#final-message {
+    text-align: center;
+}
+
+#final-message p {
+    margin: 0px 0;
+}
+
+#final-message h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* 11. Media Queries para Responsividade */
 @media (max-width: 768px) {
     .container {
         padding: 14px;
@@ -334,4 +418,3 @@ footer p {
         background-color: #e9e9e9;
     }
 }
-

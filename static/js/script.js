@@ -58,12 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Configurar os formulários desejados
-    setupForm('support-form', 'form-error');
-    setupForm('continue-form', 'form-error');
-
+    // Função para enviar feedback
     function submitFeedback(feedbackType) {
         const feedbackInput = document.getElementById('feedback');
+        const feedbackMessage = document.getElementById('feedback-message');
+
         if (feedbackInput) {
             feedbackInput.value = feedbackType;
         }
@@ -82,19 +81,31 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Feedback enviado com sucesso!');
+                feedbackMessage.textContent = 'Feedback enviado com sucesso!';
+                feedbackMessage.style.display = 'block';
+                feedbackMessage.style.color = 'green';
             } else {
-                alert('Erro ao enviar feedback: ' + data.error);
+                feedbackMessage.textContent = 'Erro ao enviar feedback: ' + data.error;
+                feedbackMessage.style.display = 'block';
+                feedbackMessage.style.color = 'red';
             }
         })
         .catch(error => {
             console.error('Erro:', error);
-            alert('Erro ao enviar feedback.');
+            feedbackMessage.textContent = 'Erro ao enviar feedback.';
+            feedbackMessage.style.display = 'block';
+            feedbackMessage.style.color = 'red';
         });
     }
 
+    // Configurar os formulários desejados
+    setupForm('support-form', 'form-error');
+    setupForm('continue-form', 'form-error');
+
+    // Exponha a função submitFeedback globalmente
     window.submitFeedback = submitFeedback;
 
+    // Função para mostrar/ocultar detalhes
     window.toggleDetails = function() {
         var details = document.getElementById('details');
         if (details) {
@@ -131,6 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Código para menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navList = document.getElementById('nav-list');
+
     if (menuToggle && navList) {
         menuToggle.addEventListener('click', function() {
             navList.classList.toggle('active');
@@ -138,53 +153,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Removido código duplicado para geolocalização, mantido apenas no JS para consistência
-document.getElementById('location-form').addEventListener('submit', async function(event) {
-    event.preventDefault();  // Previne o envio imediato do formulário
+    document.getElementById('location-form').addEventListener('submit', async function(event) {
+        event.preventDefault();  // Previne o envio imediato do formulário
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
-            document.getElementById('user-location').value = userLocation;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
+                document.getElementById('user-location').value = userLocation;
 
-            try {
-                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(userLocation)}&key=YOUR_GOOGLE_PLACES_API_KEY`);
-                const data = await response.json();
+                try {
+                    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(userLocation)}&key=YOUR_GOOGLE_PLACES_API_KEY`);
+                    const data = await response.json();
 
-                if (data.status === 'OK' && data.results.length > 0) {
-                    const location = data.results[0].geometry.location;
+                    if (data.status === 'OK' && data.results.length > 0) {
+                        const location = data.results[0].geometry.location;
 
-                    const latInput = document.createElement('input');
-                    latInput.type = 'hidden';
-                    latInput.name = 'latitude';
-                    latInput.value = location.lat;
+                        const latInput = document.createElement('input');
+                        latInput.type = 'hidden';
+                        latInput.name = 'latitude';
+                        latInput.value = location.lat;
 
-                    const lngInput = document.createElement('input');
-                    lngInput.type = 'hidden';
-                    lngInput.name = 'longitude';
-                    lngInput.value = location.lng;
+                        const lngInput = document.createElement('input');
+                        lngInput.type = 'hidden';
+                        lngInput.name = 'longitude';
+                        lngInput.value = location.lng;
 
-                    // Adiciona os inputs ocultos ao formulário
-                    event.target.appendChild(latInput);
-                    event.target.appendChild(lngInput);
+                        // Adiciona os inputs ocultos ao formulário
+                        event.target.appendChild(latInput);
+                        event.target.appendChild(lngInput);
 
-                    // Agora envia o formulário com as coordenadas
-                    event.target.submit();
-                } else {
-                    alert('Não foi possível determinar a localização. Por favor, verifique o endereço.');
+                        // Agora envia o formulário com as coordenadas
+                        event.target.submit();
+                    } else {
+                        alert('Não foi possível determinar a localização. Por favor, verifique o endereço.');
+                    }
+                } catch (error) {
+                    console.error('Erro ao obter a geolocalização:', error);
+                    alert('Ocorreu um erro ao tentar determinar sua localização.');
                 }
-            } catch (error) {
-                console.error('Erro ao obter a geolocalização:', error);
-                alert('Ocorreu um erro ao tentar determinar sua localização.');
-            }
-        }, (error) => {
-            alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
-            event.target.submit();  // Envia o formulário mesmo com erro
-        });
-    } else {
-        alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
-        event.target.submit();  // Envia o formulário mesmo sem geolocalização
-    }
-});
+            }, (error) => {
+                alert('Erro ao obter localização. Por favor, insira sua localização manualmente.');
+                event.target.submit();  // Envia o formulário mesmo com erro
+            });
+        } else {
+            alert('Geolocalização não é suportada pelo seu navegador. Por favor, insira sua localização manualmente.');
+            event.target.submit();  // Envia o formulário mesmo sem geolocalização
+        }
+    });
 
     // Assegurar que links "Como Chegar" abram em nova aba de forma segura
     document.querySelectorAll('a[target="_blank"]').forEach(link => {
